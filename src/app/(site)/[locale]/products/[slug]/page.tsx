@@ -80,7 +80,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
         href={`/${locale}/shop?category=${p.categorySlug}`}
         className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink"
       >
-        <ChevronLeft className="size-4 rtl:rotate-180" aria-hidden />
+        <ChevronLeft className="size-4" aria-hidden />
         {p.categoryName}
       </Link>
       <div className="grid gap-8 pb-28 lg:grid-cols-2 lg:gap-14 lg:pb-0">
@@ -92,8 +92,8 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
         <div className="space-y-6">
           <div>
             <p className="text-sm font-medium text-forest">{p.categoryName}</p>
-            <h1 className="mt-1 font-display text-3xl font-semibold leading-tight sm:text-4xl">{p.name}</h1>
-            <p className="mt-2 font-display text-3xl font-semibold text-forest" data-testid="price">
+            <h1 className="mt-1 font-display text-3xl font-normal leading-tight sm:text-4xl">{p.name}</h1>
+            <p className="mt-2 font-display text-3xl font-normal text-forest" data-testid="price">
               {p.pricePerKgCents > 0 ? (
                 <>
                   {formatMoney(p.pricePerKgCents, locale)}
@@ -146,7 +146,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
       </div>
       {related.length > 0 && (
         <section className="mt-6 hidden lg:block">
-          <h2 className="mb-5 font-display text-2xl font-semibold">{p.categoryName}</h2>
+          <h2 className="mb-5 font-display text-2xl font-normal">{p.categoryName}</h2>
           <div className="grid grid-cols-4 gap-5">
             {related.map((r) => (
               <ProductCard key={r.id} p={r} locale={locale} d={d} />

@@ -16,7 +16,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link href={`/${locale}`} className={cn("inline-flex items-center gap-2", className)} aria-label={d.brand.name}>
       <Leaf className="size-8 fill-forest/15 text-forest" strokeWidth={2.2} aria-hidden />
-      <span className="font-display text-[1.65rem] font-semibold tracking-tight text-forest-dark">{d.brand.name}</span>
+      <span className="font-display text-[1.65rem] font-normal tracking-tight text-forest-dark">{d.brand.name}</span>
       <Image src="/halal-logo.svg" alt="Halal" width={44} height={44} className="size-10 sm:size-11" />
     </Link>
   );
@@ -47,7 +47,7 @@ function LanguageSwitcher() {
   const { locale, d } = useI18n();
   const pathname = usePathname();
   const search = useSearchParams().toString();
-  const rest = pathname.replace(/^\/(en|de|tr|ar)/, "") || "";
+  const rest = pathname.replace(/^\/(en|de|tr)/, "") || "";
   return (
     <details className="group relative">
       <summary

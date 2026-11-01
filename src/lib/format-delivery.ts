@@ -1,8 +1,8 @@
 import type { Locale } from "@/i18n/config";
 import { TZ, type DeliveryCheck } from "@/domain/delivery";
 
-/** BCP-47 tags for Intl. Arabic uses Latin digits so dates, times and prices read consistently. */
-export const INTL_LOCALE: Record<Locale, string> = { en: "en-GB", de: "de-DE", tr: "tr-TR", ar: "ar-u-nu-latn" };
+/** BCP-47 tags for Intl. */
+export const INTL_LOCALE: Record<Locale, string> = { en: "en-GB", de: "de-DE", tr: "tr-TR" };
 
 /** "Perşembe 6 Kasım" for a YYYY-MM-DD calendar date (no time zone shifting). */
 export function formatSlotDay(date: string, locale: Locale): string {

@@ -171,7 +171,7 @@ export function CheckoutForm() {
 
   return (
     <Container className="py-6 sm:py-10">
-      <h1 className="mb-5 font-display text-3xl font-semibold">{d.checkout.title}</h1>
+      <h1 className="mb-5 font-display text-3xl font-normal">{d.checkout.title}</h1>
       <form onSubmit={submit} noValidate className="grid gap-6 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
           {!totals.meetsMinimum && <MinOrderBanner totals={totals} />}

@@ -342,14 +342,14 @@ async function main() {
 // Create-only: re-running never overwrites what the admin changed. TODO confirm with Kevser: prices, units, cuts, images.
 // ---------------------------------------------------------------------------------------------
 interface CatalogFile {
-  categories: { slug: string; tr: string; de: string; en: string; ar: string }[];
+  categories: { slug: string; tr: string; de: string; en: string }[];
   products: {
     id: string;
     category: string;
     image: string;
     unit: string;
     status: "active" | "draft";
-    name: Record<"tr" | "de" | "en" | "ar", string>;
+    name: Record<"tr" | "de" | "en", string>;
   }[];
 }
 
@@ -364,7 +364,7 @@ async function seedCatalog(merchantId: string) {
         slug: c.slug,
         name: c.en,
         sortOrder: 20 + i,
-        translations: { tr: { name: c.tr }, de: { name: c.de }, en: { name: c.en }, ar: { name: c.ar } },
+        translations: { tr: { name: c.tr }, de: { name: c.de }, en: { name: c.en } },
       },
     });
     ids.set(c.slug, row.id);
@@ -373,7 +373,6 @@ async function seedCatalog(merchantId: string) {
     tr: "Fiyat ve ayrıntılar netleşecek.",
     de: "Preis und Details folgen.",
     en: "Price and details to be confirmed.",
-    ar: "سيتم تأكيد السعر والتفاصيل.",
   };
   for (const [i, p] of cat.products.entries()) {
     if (await db.product.findUnique({ where: { slug: p.id } })) continue;
@@ -391,7 +390,7 @@ async function seedCatalog(merchantId: string) {
         isAvailable: false,
         isHidden: p.status === "draft",
         sortOrder: 100 + i,
-        translations: Object.fromEntries((["tr", "de", "en", "ar"] as const).map((l) => [l, { name: p.name[l], description: soon[l] }])),
+        translations: Object.fromEntries((["tr", "de", "en"] as const).map((l) => [l, { name: p.name[l], description: soon[l] }])),
       },
     });
     await db.productImage.create({ data: { productId: created.id, url: p.image, alt: p.name.en } });
@@ -411,7 +410,7 @@ async function seedPreorderProducts(merchantId: string) {
       name: "Preorder",
       sortOrder: 99,
       imageUrl: "/products/cat-box.svg",
-      translations: { de: { name: "Vorbestellung" }, tr: { name: "Ön sipariş" }, ar: { name: "طلب مسبق" } },
+      translations: { de: { name: "Vorbestellung" }, tr: { name: "Ön sipariş" } },
     },
   });
   // TODO confirm with Kevser: prices, units (per-kg pricing may not fit boxes/shares), contents, availability dates.
@@ -422,7 +421,6 @@ async function seedPreorderProducts(merchantId: string) {
       en: ["Ramadan Box", "Preorder: Ramadan box. Contents and price to be confirmed."],
       de: ["Ramadan-Box", "Vorbestellung: Ramadan-Box. Inhalt und Preis folgen."],
       tr: ["Ramazan Kutusu", "Ön sipariş: Ramazan kutusu. İçerik ve fiyat netleşecek."],
-      ar: ["صندوق رمضان", "طلب مسبق: صندوق رمضان. سيتم تأكيد المحتوى والسعر."],
     },
     {
       slug: "kurban-hissesi",
@@ -430,7 +428,6 @@ async function seedPreorderProducts(merchantId: string) {
       en: ["Kurban Share", "Preorder: Kurban share. Details and price to be confirmed."],
       de: ["Kurban-Anteil", "Vorbestellung: Kurban-Anteil. Details und Preis folgen."],
       tr: ["Kurban Hissesi", "Ön sipariş: Kurban hissesi. Ayrıntılar ve fiyat netleşecek."],
-      ar: ["حصة الأضحية", "طلب مسبق: حصة أضحية. سيتم تأكيد التفاصيل والسعر."],
     },
     {
       slug: "akika",
@@ -438,7 +435,6 @@ async function seedPreorderProducts(merchantId: string) {
       en: ["Aqiqah", "Preorder: Aqiqah. Details and price to be confirmed."],
       de: ["Aqiqa", "Vorbestellung: Aqiqa. Details und Preis folgen."],
       tr: ["Akika", "Ön sipariş: Akika. Ayrıntılar ve fiyat netleşecek."],
-      ar: ["عقيقة", "طلب مسبق: عقيقة. سيتم تأكيد التفاصيل والسعر."],
     },
   ];
   for (const [i, it] of items.entries()) {
@@ -459,7 +455,6 @@ async function seedPreorderProducts(merchantId: string) {
         en: { name: it.en[0], description: it.en[1] },
         de: { name: it.de[0], description: it.de[1] },
         tr: { name: it.tr[0], description: it.tr[1] },
-        ar: { name: it.ar[0], description: it.ar[1] },
       },
     };
     // Never overwrite what the admin has since changed (price, visibility): create only.

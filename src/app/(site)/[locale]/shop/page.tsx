@@ -80,7 +80,7 @@ export default async function Shop({
           />
         )}
         <div className="relative max-w-lg">
-          <h1 className="font-display text-3xl font-semibold sm:text-5xl">{active?.name ?? d.shop.title}</h1>
+          <h1 className="font-display text-3xl font-normal sm:text-5xl">{active?.name ?? d.shop.title}</h1>
           <p className="mt-2 text-white/80">{d.home.heroText}</p>
         </div>
       </header>

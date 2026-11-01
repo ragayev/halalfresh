@@ -53,7 +53,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <Container className="relative pb-8 pt-2 lg:pb-10 lg:pt-14">
           <div className="rise max-w-xl space-y-5 lg:min-h-[330px] lg:max-w-[46rem]">
             <Image src="/halal-logo.svg" alt="Halal" width={112} height={112} priority className="size-24 drop-shadow-lg sm:size-28" />
-            <h1 className="text-balance font-display text-[2.6rem] font-semibold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
+            <h1 className="text-balance font-display text-[2.6rem] font-normal leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
               {d.home.heroTitle}
             </h1>
             <Link
@@ -61,7 +61,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               className="inline-flex h-14 items-center gap-2 rounded-md bg-forest px-7 text-base font-semibold text-white shadow-lg shadow-forest/20 transition hover:-translate-y-0.5 hover:bg-forest-dark"
             >
               {d.home.shopNow}
-              <ArrowRight className="size-5 rtl:rotate-180" aria-hidden />
+              <ArrowRight className="size-5" aria-hidden />
             </Link>
           </div>
           <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-4 rounded-2xl bg-white/80 p-4 shadow-card ring-1 ring-line/60 backdrop-blur lg:mt-6 lg:max-w-[42rem] lg:grid-cols-3">
@@ -84,7 +84,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-8">
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>
-              <h2 id="feat" className="font-display text-3xl font-semibold sm:text-4xl">
+              <h2 id="feat" className="font-display text-3xl font-normal sm:text-4xl">
                 {d.home.bestSellers}
               </h2>
               <p className="mt-1 text-muted">{d.home.bestSellersSub}</p>
@@ -94,7 +94,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-forest-dark underline underline-offset-4"
             >
               {d.home.viewAllProducts}
-              <ArrowRight className="size-4 rtl:rotate-180" aria-hidden />
+              <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
           <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-4 2xl:grid-cols-8">
@@ -113,7 +113,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       <Container className="space-y-20 pt-16 sm:pt-24">
         <section id="how" aria-labelledby="how-h" className="scroll-mt-24">
-          <h2 id="how-h" className="mb-8 font-display text-3xl font-semibold sm:text-4xl">
+          <h2 id="how-h" className="mb-8 font-display text-3xl font-normal sm:text-4xl">
             {d.home.howTitle}
           </h2>
           <ol className="grid gap-4 sm:grid-cols-3 sm:gap-6">
@@ -128,7 +128,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 key={a}
                 className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-card ring-1 ring-line/60 transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <span className="absolute -end-2 -top-6 font-display text-[7rem] font-semibold leading-none text-sage transition group-hover:text-emerald-100">
+                <span className="absolute -end-2 -top-6 font-display text-[7rem] font-normal leading-none text-sage transition group-hover:text-emerald-100">
                   {i + 1}
                 </span>
                 <span className="relative grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-forest to-emerald-700 text-white shadow-lg shadow-forest/30">
@@ -150,7 +150,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="lg:flex lg:items-end lg:justify-between lg:gap-10">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wider text-white/70">{d.home.trustTitle}</p>
-              <h2 id="trust" className="mt-3 max-w-xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
+              <h2 id="trust" className="mt-3 max-w-xl font-display text-4xl font-normal leading-tight sm:text-5xl">
                 {d.home.stdTitle}
               </h2>
             </div>
@@ -160,7 +160,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="flex min-h-72 flex-col justify-between rounded-3xl bg-white/10 ring-1 ring-white/15 p-4 sm:p-5 lg:min-h-[28rem]">
               <div className="grid flex-1 place-items-center gap-3 py-6 text-center">
                 <Image src="/halal-logo.svg" alt="Halal" width={160} height={160} className="size-28 sm:size-36" />
-                <span className="inline-flex items-center gap-2 font-display text-2xl font-semibold">
+                <span className="inline-flex items-center gap-2 font-display text-2xl font-normal">
                   <Leaf className="size-6 text-emerald-300" aria-hidden />
                   {d.brand.name}
                 </span>

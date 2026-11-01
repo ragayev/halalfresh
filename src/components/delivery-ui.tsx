@@ -245,7 +245,7 @@ export function PostcodePanel({ onResolved, autoFocus }: { onResolved?: (c: Deli
             ) : (
               <>
                 <span className="hidden sm:inline">{d.delivery.check}</span>
-                <ArrowRight className="size-5 rtl:rotate-180" aria-hidden />
+                <ArrowRight className="size-5" aria-hidden />
               </>
             )}
           </button>
@@ -289,7 +289,7 @@ export function PostcodeGate() {
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h2 id="gate-title" className="font-display text-2xl font-semibold">
+            <h2 id="gate-title" className="font-display text-2xl font-normal">
               {d.delivery.gateTitle}
             </h2>
             <p className="mt-1 text-sm text-muted">{d.delivery.gateText}</p>

@@ -27,7 +27,7 @@ export default async function Legal({ params }: { params: Promise<{ locale: stri
   const d = await getDictionary(locale);
   return (
     <Container className="max-w-3xl py-10">
-      <h1 className="font-display text-4xl font-semibold">{d.legal[TITLES[slug as LegalSlug]]}</h1>
+      <h1 className="font-display text-4xl font-normal">{d.legal[TITLES[slug as LegalSlug]]}</h1>
       <p className="mt-4 flex gap-2 rounded-xl bg-warn p-3 text-sm text-warn-ink">
         <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
         {d.legal.placeholder}

@@ -114,8 +114,6 @@ const productSchema = z.object({
   descDe: z.string().trim().max(2000).optional(),
   nameTr: z.string().trim().max(120).optional(),
   descTr: z.string().trim().max(2000).optional(),
-  nameAr: z.string().trim().max(120).optional(),
-  descAr: z.string().trim().max(2000).optional(),
 });
 
 export async function saveProductAction(id: string, _: ActionResult | null, fd: FormData): Promise<ActionResult> {
@@ -153,7 +151,6 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
       translations: {
         de: { name: v.nameDe, description: v.descDe },
         tr: { name: v.nameTr, description: v.descTr },
-        ar: { name: v.nameAr, description: v.descAr },
       },
     };
     const p =

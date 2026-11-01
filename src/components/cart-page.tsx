@@ -37,7 +37,7 @@ export function CartPage() {
     return (
       <Container className="grid place-items-center py-24 text-center">
         <ShoppingBasket className="size-14 text-muted" aria-hidden />
-        <h1 className="mt-4 font-display text-3xl font-semibold">{d.cart.empty}</h1>
+        <h1 className="mt-4 font-display text-3xl font-normal">{d.cart.empty}</h1>
         <p className="mt-1 text-muted">{d.cart.emptyText}</p>
         <Link href={`/${locale}/shop`} className={buttonClasses({ size: "lg" }) + " mt-6"}>
           {d.cart.browse}
@@ -55,7 +55,7 @@ export function CartPage() {
   return (
     <Container className="py-6 sm:py-10">
       <div className="mb-5 flex items-center justify-between">
-        <h1 className="font-display text-3xl font-semibold">{d.cart.title}</h1>
+        <h1 className="font-display text-3xl font-normal">{d.cart.title}</h1>
         <button onClick={clear} className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-danger">
           <Trash2 className="size-4" aria-hidden />
           {d.cart.clear}
@@ -186,7 +186,7 @@ export function CartPage() {
             ) : (
               <Link href={`/${locale}/checkout`} className={buttonClasses({ size: "lg", full: true })} data-testid="checkout-btn">
                 {d.cart.checkout}
-                <ArrowRight className="size-5 rtl:rotate-180" aria-hidden />
+                <ArrowRight className="size-5" aria-hidden />
               </Link>
             )}
             {delivery?.supported ? (

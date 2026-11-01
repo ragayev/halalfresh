@@ -89,12 +89,6 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
             <Field label="Description (Türkçe)" htmlFor="descTr">
               <Textarea id="descTr" name="descTr" defaultValue={tr.tr?.description ?? ""} />
             </Field>
-            <Field label="Name (العربية)" htmlFor="nameAr">
-              <Input id="nameAr" name="nameAr" dir="rtl" defaultValue={tr.ar?.name ?? ""} />
-            </Field>
-            <Field label="Description (العربية)" htmlFor="descAr">
-              <Textarea id="descAr" name="descAr" dir="rtl" defaultValue={tr.ar?.description ?? ""} />
-            </Field>
           </fieldset>
           <Field label="Image (JPEG/PNG/WebP, ≤ 2 MB; replaces current)" htmlFor="image">
             <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" className="text-sm" />

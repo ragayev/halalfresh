@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Hanken_Grotesk, Young_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 import "../../globals.css";
-import { LOCALES, isLocale, isRtl } from "@/i18n/config";
+import { LOCALES, isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { I18nProvider } from "@/i18n/provider";
 import { CartProvider } from "@/components/cart-store";
@@ -11,17 +11,17 @@ import { PostcodeGate } from "@/components/delivery-ui";
 import { Header, BottomNav, Footer } from "@/components/chrome";
 import { siteUrl } from "@/lib/env";
 
-const inter = Inter({
+const sans = Hanken_Grotesk({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-inter",
+  variable: "--font-sans-body",
   display: "swap",
 });
-const fraunces = Fraunces({
+const display = Young_Serif({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-fraunces",
+  weight: "400",
+  variable: "--font-display-head",
   display: "swap",
 });
-
 export const viewport: Viewport = {
   themeColor: "#164B39",
   width: "device-width",
@@ -63,12 +63,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   if (!isLocale(locale)) notFound();
   const dictionary = await getDictionary(locale);
   return (
-    <html
-      lang={locale}
-      dir={isRtl(locale) ? "rtl" : "ltr"}
-      data-scroll-behavior="smooth"
-      className={`${inter.variable} ${fraunces.variable}`}
-    >
+    <html lang={locale} data-scroll-behavior="smooth" className={`${sans.variable} ${display.variable}`}>
       <body className="min-h-dvh pb-20 lg:pb-0">
         <I18nProvider locale={locale} dictionary={dictionary}>
           <CartProvider>

@@ -26,7 +26,7 @@ export function OrderView({ order, d, locale, justPaid }: { order: Order; d: Dic
         ) : (
           <Clock className="mx-auto size-14 text-warn-ink" aria-hidden />
         )}
-        <h1 className="mt-3 font-display text-3xl font-semibold">
+        <h1 className="mt-3 font-display text-3xl font-normal">
           {pending && justPaid ? d.order.processing : justPaid && paid ? d.order.thanks : `${d.order.number} #HF-${order.number}`}
         </h1>
         <p className="mt-2 text-muted" role="status">

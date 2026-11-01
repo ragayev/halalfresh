@@ -19,7 +19,7 @@ export interface WhatsappOrder {
 
 export function deliveryLabel(date: string, start: string, end: string, locale = "en-GB"): string {
   const [y, m, d] = date.split("-").map(Number);
-  const day = new Intl.DateTimeFormat(locale === "ar" ? "ar-u-nu-latn" : locale, {
+  const day = new Intl.DateTimeFormat(locale, {
     weekday: "long",
     day: "numeric",
     month: "long",

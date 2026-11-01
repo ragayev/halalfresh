@@ -14,7 +14,7 @@ export default async function Cancelled({ params }: { params: Promise<{ locale: 
   return (
     <div className="mx-auto grid max-w-md place-items-center px-4 py-24 text-center">
       <XCircle className="size-14 text-muted" aria-hidden />
-      <h1 className="mt-4 font-display text-3xl font-semibold">{d.order.cancelledTitle}</h1>
+      <h1 className="mt-4 font-display text-3xl font-normal">{d.order.cancelledTitle}</h1>
       <p className="mt-2 text-muted">{d.order.cancelledText}</p>
       <Link href={`/${locale}/cart`} className={buttonClasses({ size: "lg" }) + " mt-6"}>
         {d.order.backToCart}

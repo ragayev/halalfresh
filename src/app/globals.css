@@ -12,8 +12,8 @@
   --color-warn: #fff0cc;
   --color-warn-ink: #6b4a00;
   --color-danger: #a4291f;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-head), ui-serif, Georgia, serif;
   --radius-card: 1.25rem;
   --shadow-card: 0 1px 2px rgb(24 37 30 / 0.05), 0 8px 24px -12px rgb(24 37 30 / 0.12);
 }
@@ -26,6 +26,7 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern", "liga";
 }
 :focus-visible {
   outline: 2px solid var(--color-forest);

@@ -5,50 +5,43 @@
       "slug": "dana",
       "tr": "Dana",
       "de": "Rind",
-      "en": "Beef",
-      "ar": "لحم بقري"
+      "en": "Beef"
     },
     {
       "slug": "kuzu",
       "tr": "Kuzu",
       "de": "Lamm",
-      "en": "Lamb",
-      "ar": "لحم ضأن"
+      "en": "Lamb"
     },
     {
       "slug": "tavuk",
       "tr": "Tavuk",
       "de": "Geflügel",
-      "en": "Poultry",
-      "ar": "دواجن"
+      "en": "Poultry"
     },
     {
       "slug": "mangal",
       "tr": "Mangal",
       "de": "Grill",
-      "en": "BBQ",
-      "ar": "شواء"
+      "en": "BBQ"
     },
     {
       "slug": "sarkuteri",
       "tr": "Şarküteri",
       "de": "Wurstwaren",
-      "en": "Deli",
-      "ar": "مقددات ومعلبات"
+      "en": "Deli"
     },
     {
       "slug": "sakatat",
       "tr": "Sakatat",
       "de": "Innereien",
-      "en": "Offal",
-      "ar": "أحشاء"
+      "en": "Offal"
     },
     {
       "slug": "paketler",
       "tr": "Paketler",
       "de": "Pakete",
-      "en": "Bundles",
-      "ar": "باقات"
+      "en": "Bundles"
     }
   ],
   "products": [
@@ -61,8 +54,7 @@
       "name": {
         "tr": "Dana Kıyma",
         "de": "Rinderhackfleisch",
-        "en": "Beef Mince",
-        "ar": "لحم بقري مفروم"
+        "en": "Beef Mince"
       }
     },
     {
@@ -74,8 +66,7 @@
       "name": {
         "tr": "Dana Kuşbaşı",
         "de": "Rindergulasch (gewürfelt)",
-        "en": "Diced Beef",
-        "ar": "لحم بقري مقطّع مكعبات"
+        "en": "Diced Beef"
       }
     },
     {
@@ -87,8 +78,7 @@
       "name": {
         "tr": "Dana Antrikot",
         "de": "Rinderentrecôte",
-        "en": "Beef Entrecôte",
-        "ar": "أنتريكوت بقري"
+        "en": "Beef Entrecôte"
       }
     },
     {
@@ -100,8 +90,7 @@
       "name": {
         "tr": "Dana Kaburga",
         "de": "Rinderrippen",
-        "en": "Beef Ribs",
-        "ar": "أضلاع بقري"
+        "en": "Beef Ribs"
       }
     },
     {
@@ -113,8 +102,7 @@
       "name": {
         "tr": "Dana İncik",
         "de": "Rinderhaxe",
-        "en": "Beef Shank",
-        "ar": "موزات بقري"
+        "en": "Beef Shank"
       }
     },
     {
@@ -126,8 +114,7 @@
       "name": {
         "tr": "Dana Haşlamalık",
         "de": "Rindfleisch zum Kochen",
-        "en": "Beef for Boiling",
-        "ar": "لحم بقري للسلق"
+        "en": "Beef for Boiling"
       }
     },
     {
@@ -139,8 +126,7 @@
       "name": {
         "tr": "Dana İlik Kemiği",
         "de": "Rindermarkknochen",
-        "en": "Beef Marrow Bones",
-        "ar": "عظام نخاع بقري"
+        "en": "Beef Marrow Bones"
       }
     },
     {
@@ -152,8 +138,7 @@
       "name": {
         "tr": "Dana Biftek",
         "de": "Rindersteak",
-        "en": "Beef Steak",
-        "ar": "ستيك بقري"
+        "en": "Beef Steak"
       }
     },
     {
@@ -165,8 +150,7 @@
       "name": {
         "tr": "Dana Kemikli Yemeklik Et",
         "de": "Rindfleisch mit Knochen (Eintopf)",
-        "en": "Bone-in Stewing Beef",
-        "ar": "لحم بقري بالعظم للطبخ"
+        "en": "Bone-in Stewing Beef"
       }
     },
     {
@@ -178,8 +162,7 @@
       "name": {
         "tr": "Dana Gerdan",
         "de": "Rindernacken",
-        "en": "Beef Neck",
-        "ar": "رقبة بقر"
+        "en": "Beef Neck"
       }
     },
     {
@@ -191,8 +174,7 @@
       "name": {
         "tr": "Kuzu Pirzola",
         "de": "Lammkoteletts",
-        "en": "Lamb Chops",
-        "ar": "ريش ضأن"
+        "en": "Lamb Chops"
       }
     },
     {
@@ -204,8 +186,7 @@
       "name": {
         "tr": "Kuzu But",
         "de": "Lammkeule",
-        "en": "Leg of Lamb",
-        "ar": "فخذ ضأن"
+        "en": "Leg of Lamb"
       }
     },
     {
@@ -217,8 +198,7 @@
       "name": {
         "tr": "Kuzu Kol",
         "de": "Lammschulter",
-        "en": "Lamb Shoulder",
-        "ar": "كتف ضأن"
+        "en": "Lamb Shoulder"
       }
     },
     {
@@ -230,8 +210,7 @@
       "name": {
         "tr": "Kuzu Kuşbaşı",
         "de": "Lammwürfel",
-        "en": "Diced Lamb",
-        "ar": "لحم ضأن مقطّع مكعبات"
+        "en": "Diced Lamb"
       }
     },
     {
@@ -243,8 +222,7 @@
       "name": {
         "tr": "Kuzu Kıyma",
         "de": "Lammhackfleisch",
-        "en": "Lamb Mince",
-        "ar": "لحم ضأن مفروم"
+        "en": "Lamb Mince"
       }
     },
     {
@@ -256,8 +234,7 @@
       "name": {
         "tr": "Kuzu İncik",
         "de": "Lammhaxe",
-        "en": "Lamb Shank",
-        "ar": "موزات ضأن"
+        "en": "Lamb Shank"
       }
     },
     {
@@ -269,8 +246,7 @@
       "name": {
         "tr": "Kuzu Kaburga",
         "de": "Lammrippen",
-        "en": "Lamb Ribs",
-        "ar": "أضلاع ضأن"
+        "en": "Lamb Ribs"
       }
     },
     {
@@ -282,8 +258,7 @@
       "name": {
         "tr": "Kuzu Gerdan",
         "de": "Lammnacken",
-        "en": "Lamb Neck",
-        "ar": "رقبة ضأن"
+        "en": "Lamb Neck"
       }
     },
     {
@@ -295,8 +270,7 @@
       "name": {
         "tr": "Kuzu Kuyruk Yağı",
         "de": "Lammschwanzfett",
-        "en": "Lamb Tail Fat",
-        "ar": "ألية ضأن"
+        "en": "Lamb Tail Fat"
       }
     },
     {
@@ -308,8 +282,7 @@
       "name": {
         "tr": "Bütün Tavuk",
         "de": "Ganzes Hähnchen",
-        "en": "Whole Chicken",
-        "ar": "دجاج كامل"
+        "en": "Whole Chicken"
       }
     },
     {
@@ -321,8 +294,7 @@
       "name": {
         "tr": "Tavuk Göğüs",
         "de": "Hähnchenbrust",
-        "en": "Chicken Breast",
-        "ar": "صدر دجاج"
+        "en": "Chicken Breast"
       }
     },
     {
@@ -334,8 +306,7 @@
       "name": {
         "tr": "Tavuk Kemiksiz But",
         "de": "Hähnchenschenkel ohne Knochen",
-        "en": "Boneless Chicken Thigh",
-        "ar": "فخذ دجاج بدون عظم"
+        "en": "Boneless Chicken Thigh"
       }
     },
     {
@@ -347,8 +318,7 @@
       "name": {
         "tr": "Tavuk Baget",
         "de": "Hähnchenunterkeule",
-        "en": "Chicken Drumstick",
-        "ar": "سيقان دجاج"
+        "en": "Chicken Drumstick"
       }
     },
     {
@@ -360,8 +330,7 @@
       "name": {
         "tr": "Tavuk Kanat",
         "de": "Hähnchenflügel",
-        "en": "Chicken Wings",
-        "ar": "أجنحة دجاج"
+        "en": "Chicken Wings"
       }
     },
     {
@@ -373,8 +342,7 @@
       "name": {
         "tr": "Tavuk Kemikli Kalçalı But",
         "de": "Hähnchenkeule mit Knochen",
-        "en": "Bone-in Chicken Leg Quarter",
-        "ar": "فخذ دجاج بالعظم"
+        "en": "Bone-in Chicken Leg Quarter"
       }
     },
     {
@@ -386,8 +354,7 @@
       "name": {
         "tr": "Tavuk Kuşbaşı",
         "de": "Hähnchenwürfel",
-        "en": "Diced Chicken",
-        "ar": "دجاج مقطّع مكعبات"
+        "en": "Diced Chicken"
       }
     },
     {
@@ -399,8 +366,7 @@
       "name": {
         "tr": "Hindi Göğüs",
         "de": "Putenbrust",
-        "en": "Turkey Breast",
-        "ar": "صدر ديك رومي"
+        "en": "Turkey Breast"
       }
     },
     {
@@ -412,8 +378,7 @@
       "name": {
         "tr": "Dana Ciğer",
         "de": "Rinderleber",
-        "en": "Beef Liver",
-        "ar": "كبدة بقري"
+        "en": "Beef Liver"
       }
     },
     {
@@ -425,8 +390,7 @@
       "name": {
         "tr": "Kuzu Ciğer Takımı",
         "de": "Lamminnereien-Set (Leber)",
-        "en": "Lamb Liver Set",
-        "ar": "طقم كبدة ضأن"
+        "en": "Lamb Liver Set"
       }
     },
     {
@@ -438,8 +402,7 @@
       "name": {
         "tr": "İşkembe",
         "de": "Pansen",
-        "en": "Tripe",
-        "ar": "كرشة"
+        "en": "Tripe"
       }
     },
     {
@@ -451,8 +414,7 @@
       "name": {
         "tr": "Dana Yürek",
         "de": "Rinderherz",
-        "en": "Beef Heart",
-        "ar": "قلب بقري"
+        "en": "Beef Heart"
       }
     },
     {
@@ -464,8 +426,7 @@
       "name": {
         "tr": "Adana Kebaplık Harç",
         "de": "Adana-Kebab-Hackmasse",
-        "en": "Adana Kebab Mix",
-        "ar": "خلطة كباب أضنة"
+        "en": "Adana Kebab Mix"
       }
     },
     {
@@ -477,8 +438,7 @@
       "name": {
         "tr": "Izgara Köfte",
         "de": "Gegrillte Köfte",
-        "en": "Grilled Köfte",
-        "ar": "كفتة مشوية"
+        "en": "Grilled Köfte"
       }
     },
     {
@@ -490,8 +450,7 @@
       "name": {
         "tr": "Kasap Köfte",
         "de": "Metzger-Köfte",
-        "en": "Butcher's Köfte",
-        "ar": "كفتة الجزّار"
+        "en": "Butcher's Köfte"
       }
     },
     {
@@ -503,8 +462,7 @@
       "name": {
         "tr": "Hamburger Köftesi",
         "de": "Hamburger-Patties",
-        "en": "Burger Patties",
-        "ar": "برغر لحم"
+        "en": "Burger Patties"
       }
     },
     {
@@ -516,8 +474,7 @@
       "name": {
         "tr": "Tavuk Şiş",
         "de": "Hähnchen-Spieße",
-        "en": "Chicken Skewers",
-        "ar": "أسياخ دجاج"
+        "en": "Chicken Skewers"
       }
     },
     {
@@ -529,8 +486,7 @@
       "name": {
         "tr": "Sucuk",
         "de": "Sucuk",
-        "en": "Sucuk (Spicy Sausage)",
-        "ar": "سجق تركي"
+        "en": "Sucuk (Spicy Sausage)"
       }
     },
     {
@@ -542,8 +498,7 @@
       "name": {
         "tr": "Pastırma",
         "de": "Pastırma",
-        "en": "Pastırma (Cured Beef)",
-        "ar": "بسطرمة"
+        "en": "Pastırma (Cured Beef)"
       }
     },
     {
@@ -555,8 +510,7 @@
       "name": {
         "tr": "Kavurma",
         "de": "Kavurma",
-        "en": "Kavurma (Preserved Meat)",
-        "ar": "قاورما"
+        "en": "Kavurma (Preserved Meat)"
       }
     },
     {
@@ -568,8 +522,7 @@
       "name": {
         "tr": "Helal Salam",
         "de": "Halal-Salami",
-        "en": "Halal Salami",
-        "ar": "سلامي حلال"
+        "en": "Halal Salami"
       }
     },
     {
@@ -581,8 +534,7 @@
       "name": {
         "tr": "Helal Sosis",
         "de": "Halal-Wurst",
-        "en": "Halal Sausage",
-        "ar": "نقانق حلال"
+        "en": "Halal Sausage"
       }
     },
     {
@@ -594,8 +546,7 @@
       "name": {
         "tr": "Dilimlenmiş Sucuk",
         "de": "Sucuk in Scheiben",
-        "en": "Sliced Sucuk",
-        "ar": "سجق تركي شرائح"
+        "en": "Sliced Sucuk"
       }
     },
     {
@@ -607,8 +558,7 @@
       "name": {
         "tr": "Aile Paketi",
         "de": "Familienpaket",
-        "en": "Family Pack",
-        "ar": "باقة العائلة"
+        "en": "Family Pack"
       }
     },
     {
@@ -620,8 +570,7 @@
       "name": {
         "tr": "Mangal Paketi",
         "de": "Grillpaket",
-        "en": "BBQ Pack",
-        "ar": "باقة الشواء"
+        "en": "BBQ Pack"
       }
     },
     {
@@ -633,8 +582,7 @@
       "name": {
         "tr": "Ekonomik Paket",
         "de": "Sparpaket",
-        "en": "Economy Pack",
-        "ar": "الباقة الاقتصادية"
+        "en": "Economy Pack"
       }
     }
   ]

@@ -167,46 +167,6 @@ test.describe.serial("customer journey", () => {
     await ctx.close();
   });
 
-  test("Arabic is right-to-left on the gate, cart and checkout", async ({ page }) => {
-    const noHScroll = () => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
-    const logoRightOfCart = async () => {
-      const logo = await page.getByRole("link", { name: "Halal Fresh" }).first().boundingBox();
-      const cart = await page.getByRole("link", { name: /السلة/ }).first().boundingBox();
-      return !!logo && !!cart && logo.x > cart.x;
-    };
-    // Gate (no stored postcode).
-    await page.addInitScript(() => localStorage.removeItem("hf_postcode"));
-    await page.goto("/ar");
-    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("html")).toHaveAttribute("lang", "ar");
-    const gate = page.getByTestId("postcode-gate");
-    await expect(gate.getByRole("heading", { name: "أين نوصّل طلبك؟" })).toBeVisible();
-    await gate.getByLabel("الرمز البريدي").fill("10115");
-    await gate.getByRole("button", { name: "تحقق" }).click();
-    await expect(gate.getByTestId("next-slot")).toContainText(/14:00.*18:00/);
-    expect(await noHScroll()).toBe(true);
-    await page.screenshot({ path: "test-results/rtl-gate.png" });
-    await gate.getByRole("button", { name: "متابعة" }).click();
-    expect(await logoRightOfCart()).toBe(true);
-
-    // Cart + checkout.
-    await page.goto("/ar/products/lamb-chops");
-    for (let i = 0; i < 3; i++) await page.getByTestId("add-to-cart").click();
-    await page.goto("/ar/cart");
-    await expect(page.getByTestId("cart-line")).toHaveCount(1);
-    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    expect(await noHScroll()).toBe(true);
-    await page.screenshot({ path: "test-results/rtl-cart.png", fullPage: true });
-    await page.goto("/ar/checkout");
-    await expect(page.getByTestId("estimate")).toContainText(/14:00.*18:00/);
-    expect(await noHScroll()).toBe(true);
-    await page.screenshot({ path: "test-results/rtl-checkout.png", fullPage: true });
-    // The label of a start-aligned field sits on the right edge of its card in RTL.
-    const label = await page.getByText("الاسم الكامل").first().boundingBox();
-    const card = await page.getByText("الاسم الكامل").first().locator("xpath=ancestor::*[contains(@class,'ring-1')][1]").boundingBox();
-    expect(label!.x + label!.width).toBeGreaterThan(card!.x + card!.width - 80);
-  });
-
   test("German and Turkish interfaces", async ({ page }) => {
     await page.goto("/de");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Frisches Halal-Fleisch, geliefert.");

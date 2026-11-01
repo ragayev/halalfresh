@@ -6,7 +6,7 @@ admin that forwards paid orders to the butcher through a WhatsApp click-to-chat 
 
 **Stack:** Next.js 16 (App Router) · TypeScript strict · Tailwind CSS 4 · PostgreSQL + Prisma 6 · Zod · Stripe Checkout · Vitest + Playwright.
 Admin auth is a custom signed-cookie session (bcrypt + `jose` JWT), re-verified against the DB on every admin page/action.
-i18n is a small purpose-built layer (`/de`, `/tr`, `/ar` (RTL), `/en` routes, JSON dictionaries, `proxy.ts` locale redirect: highest-q `Accept-Language` match, else German).
+i18n is a small purpose-built layer (`/de`, `/tr`, `/en` routes, JSON dictionaries, `proxy.ts` locale redirect: highest-q `Accept-Language` match, else German).
 
 ## Local development
 
