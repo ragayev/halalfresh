@@ -30,6 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                     ["Dashboard", "/admin"],
                     ["Orders", "/admin/orders"],
                     ["Products", "/admin/products"],
+                    ["Delivery", "/admin/delivery"],
                     ["Settings", "/admin/settings"],
                   ].map(([l, h]) => (
                     <Link key={h} href={h} className="rounded-full px-3 py-1.5 hover:bg-sage">

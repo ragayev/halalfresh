@@ -17,6 +17,7 @@ export interface ProductView {
   allergenInfo: string | null;
   isAvailable: boolean;
   isFeatured: boolean;
+  preorderEligible: boolean;
   categorySlug: string;
   categoryName: string;
   images: { src: string; alt: string }[];
@@ -55,6 +56,7 @@ export function toProductView(p: ProductRow, locale: string): ProductView {
     allergenInfo: p.allergenInfo,
     isAvailable: p.isAvailable,
     isFeatured: p.isFeatured,
+    preorderEligible: p.preorderEligible,
     categorySlug: p.category.slug,
     categoryName: ctr.name || p.category.name,
     images: p.images.map((i) => ({
@@ -73,7 +75,10 @@ const include = {
 };
 
 export async function listCategories(locale: string): Promise<CategoryView[]> {
-  const cats = await db.category.findMany({ orderBy: { sortOrder: "asc" } });
+  const cats = await db.category.findMany({
+    where: { products: { some: { isHidden: false } } },
+    orderBy: { sortOrder: "asc" },
+  });
   return cats.map((c) => ({
     id: c.id,
     slug: c.slug,
@@ -92,11 +97,15 @@ export async function listProducts(
     sort?: Sort;
     availableOnly?: boolean;
     featured?: boolean;
+    /** Preorder-only delivery areas: list only preorder-eligible products. */
+    preorderOnly?: boolean;
     limit?: number;
   } = {},
 ) {
   const rows = await db.product.findMany({
     where: {
+      isHidden: false,
+      ...(opts.preorderOnly ? { preorderEligible: true } : {}),
       ...(opts.category ? { category: { slug: opts.category } } : {}),
       ...(opts.availableOnly ? { isAvailable: true } : {}),
       ...(opts.featured ? { isFeatured: true } : {}),
@@ -122,12 +131,12 @@ export async function listProducts(
 
 export async function getProductBySlug(slug: string, locale: string) {
   const row = await db.product.findUnique({ where: { slug }, include });
-  return row ? toProductView(row, locale) : null;
+  return row && !row.isHidden ? toProductView(row, locale) : null;
 }
 
 export async function getProductsByIds(ids: string[], locale: string) {
   const rows = await db.product.findMany({
-    where: { id: { in: ids } },
+    where: { id: { in: ids }, isHidden: false },
     include,
   });
   return rows.map((r) => toProductView(r, locale));

@@ -8,63 +8,33 @@ export function isValidPostcode(input: string): boolean {
   return POSTCODE_RE.test(normalizePostcode(input));
 }
 
-/** pattern: exact "10115" or prefix "101*". */
-export function postcodeMatches(postcode: string, pattern: string): boolean {
-  const p = normalizePostcode(postcode);
-  const pat = pattern.trim();
-  if (!POSTCODE_RE.test(p) || !pat) return false;
-  if (pat.endsWith("*")) return p.startsWith(pat.slice(0, -1));
-  return p === pat;
+/** Inclusive numeric range as 5-digit strings (leading zeros kept), e.g. ("14467","14482"). */
+export function expandPostcodeRange(from: string, to: string): string[] {
+  if (!POSTCODE_RE.test(from) || !POSTCODE_RE.test(to) || Number(from) > Number(to)) return [];
+  const out: string[] = [];
+  for (let n = Number(from); n <= Number(to); n++) out.push(String(n).padStart(5, "0"));
+  return out;
 }
 
-export function parsePostcodePatterns(raw: string): string[] {
-  const out = new Set<string>();
-  for (const part of raw.split(/[\s,;]+/)) {
-    const t = part.trim();
-    if (/^\d{1,4}\*$/.test(t) || /^\d{5}$/.test(t)) out.add(t);
+/** Admin input: "10115, 14467-14482 03046" -> unique 5-digit strings, plus tokens that could not be parsed. */
+export function parsePostcodeList(raw: string): { postcodes: string[]; invalid: string[] } {
+  const set = new Set<string>();
+  const invalid: string[] = [];
+  for (const tok of raw.split(/[\s,;]+/).filter(Boolean)) {
+    const range = tok.match(/^(\d{5})[-–](\d{5})$/);
+    if (range) {
+      const r = expandPostcodeRange(range[1], range[2]);
+      if (!r.length || r.length > 5000) invalid.push(tok);
+      else r.forEach((p) => set.add(p));
+    } else if (POSTCODE_RE.test(tok)) set.add(tok);
+    else invalid.push(tok);
   }
-  return [...out];
+  return { postcodes: [...set], invalid };
 }
 
-export interface ZoneLike {
-  id: string;
-  isActive: boolean;
-  postcodes: { pattern: string }[];
-}
-
-/** First active zone whose patterns match; exact patterns beat prefixes. */
-export function findZoneForPostcode<Z extends ZoneLike>(zones: Z[], postcode: string): Z | null {
-  let best: { z: Z; score: number } | null = null;
-  for (const z of zones) {
-    if (!z.isActive) continue;
-    for (const { pattern } of z.postcodes) {
-      if (!postcodeMatches(postcode, pattern)) continue;
-      const score = pattern.endsWith("*") ? pattern.length - 1 : 5;
-      if (!best || score > best.score) best = { z, score };
-    }
-  }
-  return best?.z ?? null;
-}
-
-// ---- Slots (Europe/Berlin local calendar) ----
+// ---- Time (Europe/Berlin local calendar) ----
 
 export const TZ = "Europe/Berlin";
-
-export interface SlotLike {
-  id: string;
-  weekday: number;
-  startTime: string;
-  endTime: string;
-  isActive: boolean;
-}
-
-export interface SlotOption {
-  slotId: string;
-  date: string; // YYYY-MM-DD
-  startTime: string;
-  endTime: string;
-  weekday: number;
-}
 
 function tzOffsetMs(utcMs: number): number {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -91,13 +61,12 @@ export function berlinToUtc(date: string, time: string): Date {
 }
 
 export function berlinToday(now: Date): string {
-  const p = new Intl.DateTimeFormat("en-CA", {
+  return new Intl.DateTimeFormat("en-CA", {
     timeZone: TZ,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(now);
-  return p; // en-CA => YYYY-MM-DD
+  }).format(now); // en-CA => YYYY-MM-DD
 }
 
 export function addDays(date: string, n: number): string {
@@ -105,40 +74,96 @@ export function addDays(date: string, n: number): string {
   return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
 }
 
-export function weekdayOf(date: string): number {
+/** ISO weekday of a YYYY-MM-DD date: 1 = Monday ... 7 = Sunday. */
+export function isoWeekdayOf(date: string): number {
   const [y, m, d] = date.split("-").map(Number);
-  return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  const wd = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  return wd === 0 ? 7 : wd;
 }
 
-export function availableSlots(slots: SlotLike[], now: Date, leadHours: number, horizonDays: number): SlotOption[] {
-  const earliest = now.getTime() + leadHours * 3600_000;
+/** Which occurrence of its weekday this date is within its month (1..5). */
+export function nthWeekdayOfMonth(date: string): number {
+  return Math.ceil(Number(date.slice(8, 10)) / 7);
+}
+
+// ---- Schedules ----
+
+export type DeliveryMode = "REGULAR" | "PREORDER_ONLY";
+
+export interface ScheduleLike {
+  kind: "WEEKLY" | "NTH_WEEKDAY_OF_MONTH";
+  /** ISO weekday 1 = Monday ... 7 = Sunday (Sunday is never delivered). */
+  weekday: number;
+  /** 1..5, only for NTH_WEEKDAY_OF_MONTH. */
+  nth: number | null;
+  windowStart: string;
+  windowEnd: string;
+  cutoffHoursBefore: number;
+  isActive: boolean;
+}
+
+export interface DeliverySlot {
+  date: string; // YYYY-MM-DD (Berlin)
+  weekday: number; // ISO 1..7
+  windowStart: string;
+  windowEnd: string;
+  /** Last instant at which this slot can still be ordered. */
+  cutoffAt: Date;
+}
+
+/**
+ * Cutoff instant for a delivery on `date`. Whole days are subtracted on the Berlin calendar, so
+ * "48h before Tuesday 14:00" is always "Sunday 14:00 local", also across DST changes; the remainder
+ * (hours % 24) is subtracted as elapsed time.
+ */
+export function cutoffFor(date: string, windowStart: string, cutoffHoursBefore: number): Date {
+  const days = Math.floor(cutoffHoursBefore / 24);
+  const rem = cutoffHoursBefore % 24;
+  return new Date(berlinToUtc(addDays(date, -days), windowStart).getTime() - rem * 3600_000);
+}
+
+export interface NextSlotInput {
+  schedules: ScheduleLike[];
+  /** YYYY-MM-DD dates with no delivery (holidays, Bayram, ...). */
+  blackoutDates: ReadonlySet<string>;
+  now: Date;
+  horizonDays: number;
+}
+
+/**
+ * Earliest slot whose cutoff has not passed. Sundays and blackout dates are skipped.
+ * A slot is orderable strictly before its cutoff instant.
+ */
+export function nextDeliverySlot({ schedules, blackoutDates, now, horizonDays }: NextSlotInput): DeliverySlot | null {
   const today = berlinToday(now);
-  const out: SlotOption[] = [];
+  const active = schedules.filter((s) => s.isActive);
   for (let i = 0; i <= horizonDays; i++) {
     const date = addDays(today, i);
-    const wd = weekdayOf(date);
-    for (const s of slots) {
-      if (!s.isActive || s.weekday !== wd) continue;
-      if (berlinToUtc(date, s.startTime).getTime() < earliest) continue;
-      out.push({
-        slotId: s.id,
-        date,
-        startTime: s.startTime,
-        endTime: s.endTime,
-        weekday: wd,
-      });
+    const wd = isoWeekdayOf(date);
+    if (wd === 7 || blackoutDates.has(date)) continue;
+    const slots: DeliverySlot[] = [];
+    for (const s of active) {
+      if (s.weekday !== wd) continue;
+      if (s.kind === "NTH_WEEKDAY_OF_MONTH" && s.nth !== nthWeekdayOfMonth(date)) continue;
+      const cutoffAt = cutoffFor(date, s.windowStart, s.cutoffHoursBefore);
+      if (cutoffAt.getTime() <= now.getTime()) continue;
+      slots.push({ date, weekday: wd, windowStart: s.windowStart, windowEnd: s.windowEnd, cutoffAt });
     }
+    if (slots.length) return slots.sort((a, b) => a.windowStart.localeCompare(b.windowStart))[0];
   }
-  return out.sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+  return null;
 }
 
-export function isSlotBookable(
-  slots: SlotLike[],
-  slotId: string,
-  date: string,
-  now: Date,
-  leadHours: number,
-  horizonDays: number,
-): boolean {
-  return availableSlots(slots, now, leadHours, horizonDays).some((s) => s.slotId === slotId && s.date === date);
+/** Terms a postcode resolves to. Serialisable: this is the /api/delivery/check payload. */
+export interface DeliveryCheck {
+  postcode: string;
+  supported: boolean;
+  zone: { id: string; name: string } | null;
+  mode: DeliveryMode | null;
+  minOrderCents: number;
+  deliveryFeeCents: number;
+  freeDeliveryThresholdCents: number | null;
+  /** At least one visible, available preorder product exists (offered to areas we do not serve regularly). */
+  preorderProductsAvailable: boolean;
+  nextSlot: { date: string; weekday: number; windowStart: string; windowEnd: string; cutoffAt: string } | null;
 }

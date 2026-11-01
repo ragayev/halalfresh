@@ -1,5 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 
+/** Pretend the visitor already passed the postcode gate (gate tests clear this). */
+const knowPostcode = (page: Page, pc = "10115") => page.addInitScript((v) => localStorage.setItem("hf_postcode", v), pc);
+
 async function addLamb(page: Page, clicks: number) {
   await page.goto("/en/products/lamb-chops");
   // Product page offers 500 g or 1 kg (default 1 kg); the test's final add-to-cart click adds the last 1 kg.
@@ -7,9 +10,11 @@ async function addLamb(page: Page, clicks: number) {
 }
 
 test.describe.serial("customer journey", () => {
+  test.beforeEach(async ({ page }) => knowPostcode(page));
+
   test("browse catalogue and categories from the database", async ({ page }) => {
     await page.goto("/en");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Trusted Halal Meat, Ready to Order.");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Fresh Halal Meat, Delivered.");
     await page.goto("/en/shop");
     await expect(page.getByTestId("product-card").first()).toBeVisible();
     await page.goto("/en/shop?category=lamb");
@@ -23,33 +28,72 @@ test.describe.serial("customer journey", () => {
     await expect(page.getByTestId("price")).toContainText("€14.99");
   });
 
-  test("postcode verification", async ({ page }) => {
+  test("first open asks for the postcode: unsupported area gets waitlist + consent, supported shows the next date", async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem("hf_postcode"));
     await page.goto("/en");
-    await page.getByLabel("Enter your postcode").fill("80331");
-    await page.getByRole("button", { name: "Check" }).click();
-    await expect(page.getByRole("status").filter({ hasText: "don't deliver" })).toBeVisible();
-    await page.getByLabel("Enter your postcode").fill("10115");
-    await page.getByRole("button", { name: "Check" }).click();
-    await expect(page.getByRole("status").filter({ hasText: "we deliver to 10115" })).toBeVisible();
+    const gate = page.getByTestId("postcode-gate");
+    await expect(gate).toBeVisible();
+    await gate.getByLabel("Postcode").fill("1011");
+    await gate.getByRole("button", { name: "Check" }).click();
+    await expect(gate.getByText("Please enter a valid 5-digit German postcode.")).toBeVisible();
+
+    await gate.getByLabel("Postcode").fill("80331");
+    await gate.getByRole("button", { name: "Check" }).click();
+    await expect(gate.getByTestId("unsupported")).toContainText("Once 10 people from your area sign up, we'll come.");
+    const form = gate.getByTestId("waitlist-form");
+    await form.getByLabel("Name", { exact: true }).fill("Aylin Test");
+    await form.getByLabel("Phone or email").fill("aylin@example.com");
+    await expect(form.getByRole("checkbox")).not.toBeChecked(); // never pre-ticked
+    await expect(form.getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "/en/legal/privacy");
+    await form.getByRole("button", { name: "Notify me" }).click();
+    await expect(form.getByText("Please confirm your consent.")).toBeVisible();
+    await form.getByRole("checkbox").check();
+    await form.getByRole("button", { name: "Notify me" }).click();
+    await expect(gate.getByText("We'll contact you when we start delivering to 80331")).toBeVisible();
+
+    await gate.getByLabel("Postcode").fill("10115");
+    await gate.getByRole("button", { name: "Check" }).click();
+    await expect(gate.getByTestId("next-slot")).toContainText("14:00–18:00");
+    await expect(gate.getByTestId("delivery-info")).toContainText("Minimum order €60.00");
+    await expect(gate.getByTestId("delivery-info")).toContainText("Delivery fee €4.90");
+    await gate.getByRole("button", { name: "Continue" }).click();
+    await expect(gate).toBeHidden();
+    await expect(page.getByTestId("postcode-chip")).toContainText("Delivery to 10115");
+    await page.reload(); // persisted
+    await expect(page.getByTestId("postcode-gate")).toBeHidden();
+    await expect(page.getByTestId("postcode-chip")).toContainText("Delivery to 10115");
+    // change from the header
+    await page.getByTestId("postcode-chip").click();
+    await page.getByTestId("postcode-gate").getByLabel("Postcode").fill("03046");
+    await page.getByTestId("postcode-gate").getByRole("button", { name: "Check" }).click();
+    await expect(page.getByTestId("postcode-gate").getByTestId("delivery-info")).toContainText("Preorder only");
   });
 
-  test("cart enforces the €150 minimum and persists", async ({ page }) => {
+  test("legal pages are never blocked by the gate", async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem("hf_postcode"));
+    await page.goto("/en/legal/privacy");
+    await expect(page.getByTestId("postcode-gate")).toBeHidden();
+  });
+
+  test("cart enforces the zone minimum (€60 in Berlin), shows free-delivery progress and persists", async ({ page }) => {
     await addLamb(page, 2); // 2 kg = €55.98
     await page.getByTestId("add-to-cart").click();
     await page.goto("/en/cart");
     await expect(page.getByTestId("cart-line")).toHaveCount(1);
-    await expect(page.getByTestId("min-order-progress")).toContainText("Add €94.02 more to place your order");
+    await expect(page.getByTestId("min-order-progress")).toContainText("Add €4.02 more to place your order");
     await expect(page.getByTestId("checkout-btn")).toBeDisabled();
     // change quantity in cart: +500 g steps
     await page.getByRole("button", { name: "Increase quantity" }).click();
     await expect(page.getByTestId("subtotal")).toHaveText("€69.98");
+    await expect(page.getByTestId("min-order-progress")).toContainText("Minimum order reached");
+    await expect(page.getByTestId("free-delivery-progress")).toContainText("Add €50.02 more for free delivery");
+    await expect(page.getByTestId("checkout-btn")).toBeEnabled();
     await page.reload();
     await expect(page.getByTestId("cart-line")).toHaveCount(1); // persisted
-    for (let i = 0; i < 6; i++) await page.getByRole("button", { name: "Increase quantity" }).click();
-    await expect(page.getByTestId("min-order-progress")).toContainText("Minimum order reached");
-    await expect(page.getByTestId("checkout-btn")).toBeEnabled();
-    // dropping below again re-blocks checkout
-    await page.getByRole("button", { name: "Decrease quantity" }).click();
+    for (let i = 0; i < 4; i++) await page.getByRole("button", { name: "Increase quantity" }).click();
+    await expect(page.getByTestId("free-delivery-progress")).toContainText("You get free delivery");
+    // dropping below the minimum re-blocks checkout
+    for (let i = 0; i < 6; i++) await page.getByRole("button", { name: "Decrease quantity" }).click();
     await expect(page.getByTestId("checkout-btn")).toBeDisabled();
     await page.getByRole("button", { name: "Increase quantity" }).click();
   });
@@ -69,6 +113,7 @@ test.describe.serial("customer journey", () => {
     await page.getByLabel("Postal code").fill("80331");
     await expect(page.getByText("We don't deliver to this postcode yet.").first()).toBeVisible();
     await page.getByLabel("Postal code").fill("10115");
+    await expect(page.getByText("Your delivery postcode is now 10115")).toBeVisible();
     await page.getByLabel("City").fill("Berlin");
     await page.getByLabel("Delivery instructions (optional)").fill("Leave with neighbour");
     await expect(page.getByTestId("estimate")).toContainText("Estimated delivery");
@@ -114,9 +159,57 @@ test.describe.serial("customer journey", () => {
     await expect(page.getByTestId("cart-line")).toHaveCount(1);
   });
 
+  test("unknown browser languages fall back to German", async ({ browser }) => {
+    const ctx = await browser.newContext({ locale: "fr-FR", extraHTTPHeaders: { "accept-language": "fr-FR,fr;q=0.9" } });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    await expect(page).toHaveURL(/\/de$/);
+    await ctx.close();
+  });
+
+  test("Arabic is right-to-left on the gate, cart and checkout", async ({ page }) => {
+    const noHScroll = () => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+    const logoRightOfCart = async () => {
+      const logo = await page.getByRole("link", { name: "Halal Fresh" }).first().boundingBox();
+      const cart = await page.getByRole("link", { name: /السلة/ }).first().boundingBox();
+      return !!logo && !!cart && logo.x > cart.x;
+    };
+    // Gate (no stored postcode).
+    await page.addInitScript(() => localStorage.removeItem("hf_postcode"));
+    await page.goto("/ar");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.locator("html")).toHaveAttribute("lang", "ar");
+    const gate = page.getByTestId("postcode-gate");
+    await expect(gate.getByRole("heading", { name: "أين نوصّل طلبك؟" })).toBeVisible();
+    await gate.getByLabel("الرمز البريدي").fill("10115");
+    await gate.getByRole("button", { name: "تحقق" }).click();
+    await expect(gate.getByTestId("next-slot")).toContainText(/14:00.*18:00/);
+    expect(await noHScroll()).toBe(true);
+    await page.screenshot({ path: "test-results/rtl-gate.png" });
+    await gate.getByRole("button", { name: "متابعة" }).click();
+    expect(await logoRightOfCart()).toBe(true);
+
+    // Cart + checkout.
+    await page.goto("/ar/products/lamb-chops");
+    for (let i = 0; i < 3; i++) await page.getByTestId("add-to-cart").click();
+    await page.goto("/ar/cart");
+    await expect(page.getByTestId("cart-line")).toHaveCount(1);
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    expect(await noHScroll()).toBe(true);
+    await page.screenshot({ path: "test-results/rtl-cart.png", fullPage: true });
+    await page.goto("/ar/checkout");
+    await expect(page.getByTestId("estimate")).toContainText(/14:00.*18:00/);
+    expect(await noHScroll()).toBe(true);
+    await page.screenshot({ path: "test-results/rtl-checkout.png", fullPage: true });
+    // The label of a start-aligned field sits on the right edge of its card in RTL.
+    const label = await page.getByText("الاسم الكامل").first().boundingBox();
+    const card = await page.getByText("الاسم الكامل").first().locator("xpath=ancestor::*[contains(@class,'ring-1')][1]").boundingBox();
+    expect(label!.x + label!.width).toBeGreaterThan(card!.x + card!.width - 80);
+  });
+
   test("German and Turkish interfaces", async ({ page }) => {
     await page.goto("/de");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Vertrauenswürdiges Halal-Fleisch, bereit zur Bestellung.");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Frisches Halal-Fleisch, geliefert.");
     await page.goto("/de/shop");
     await expect(page.getByText(/14,99\s€/).first()).toBeVisible();
     await page.goto("/tr/products/lamb-chops");

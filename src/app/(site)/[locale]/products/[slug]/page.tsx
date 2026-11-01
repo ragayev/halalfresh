@@ -56,13 +56,16 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
     description: p.description,
     image: p.images.map((i) => new URL(i.src, siteUrl()).toString()),
     category: p.categoryName,
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: (p.pricePerKgCents / 100).toFixed(2),
-      availability: p.isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      url: `${siteUrl()}/${locale}/products/${p.slug}`,
-    },
+    offers:
+      p.pricePerKgCents > 0
+        ? {
+            "@type": "Offer",
+            priceCurrency: "EUR",
+            price: (p.pricePerKgCents / 100).toFixed(2),
+            availability: p.isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            url: `${siteUrl()}/${locale}/products/${p.slug}`,
+          }
+        : undefined,
   };
 
   return (
@@ -77,7 +80,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
         href={`/${locale}/shop?category=${p.categorySlug}`}
         className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink"
       >
-        <ChevronLeft className="size-4" aria-hidden />
+        <ChevronLeft className="size-4 rtl:rotate-180" aria-hidden />
         {p.categoryName}
       </Link>
       <div className="grid gap-8 pb-28 lg:grid-cols-2 lg:gap-14 lg:pb-0">
@@ -91,8 +94,14 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
             <p className="text-sm font-medium text-forest">{p.categoryName}</p>
             <h1 className="mt-1 font-display text-3xl font-semibold leading-tight sm:text-4xl">{p.name}</h1>
             <p className="mt-2 font-display text-3xl font-semibold text-forest" data-testid="price">
-              {formatMoney(p.pricePerKgCents, locale)}
-              <span className="text-lg">{d.common.perKg}</span>
+              {p.pricePerKgCents > 0 ? (
+                <>
+                  {formatMoney(p.pricePerKgCents, locale)}
+                  <span className="text-lg">{d.common.perKg}</span>
+                </>
+              ) : (
+                <span className="text-xl text-muted">{d.product.priceSoon}</span>
+              )}
             </p>
           </div>
           <p className="text-lg leading-relaxed text-muted">{p.description}</p>

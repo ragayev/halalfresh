@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Home, LayoutGrid, Search, ShoppingBag, Globe, Leaf, Check } from "lucide-react";
@@ -7,6 +8,7 @@ import { useI18n } from "@/i18n/provider";
 import { LOCALES, LOCALE_LABELS } from "@/i18n/config";
 import { useCart } from "./cart-store";
 import { Container } from "./ui";
+import { PostcodeChip } from "./delivery-ui";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
@@ -15,6 +17,7 @@ export function Logo({ className }: { className?: string }) {
     <Link href={`/${locale}`} className={cn("inline-flex items-center gap-2", className)} aria-label={d.brand.name}>
       <Leaf className="size-8 fill-forest/15 text-forest" strokeWidth={2.2} aria-hidden />
       <span className="font-display text-[1.65rem] font-semibold tracking-tight text-forest-dark">{d.brand.name}</span>
+      <Image src="/halal-logo.svg" alt="Halal" width={44} height={44} className="size-10 sm:size-11" />
     </Link>
   );
 }
@@ -31,7 +34,7 @@ function CartButton() {
       <ShoppingBag className="size-6" aria-hidden />
       <span
         key={count}
-        className="pop absolute right-0 top-0.5 grid min-w-5 place-items-center rounded-full bg-forest px-1 text-[11px] font-bold leading-5 text-white"
+        className="pop absolute end-0 top-0.5 grid min-w-5 place-items-center rounded-full bg-forest px-1 text-[11px] font-bold leading-5 text-white"
         data-testid="cart-count"
       >
         {ready ? count : 0}
@@ -44,7 +47,7 @@ function LanguageSwitcher() {
   const { locale, d } = useI18n();
   const pathname = usePathname();
   const search = useSearchParams().toString();
-  const rest = pathname.replace(/^\/(en|de|tr)/, "") || "";
+  const rest = pathname.replace(/^\/(en|de|tr|ar)/, "") || "";
   return (
     <details className="group relative">
       <summary
@@ -56,7 +59,7 @@ function LanguageSwitcher() {
           {locale}
         </span>
       </summary>
-      <ul className="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-2xl bg-white py-1 shadow-card ring-1 ring-line">
+      <ul className="absolute end-0 z-50 mt-2 w-40 overflow-hidden rounded-2xl bg-white py-1 shadow-card ring-1 ring-line">
         {LOCALES.map((l) => (
           <li key={l}>
             <Link
@@ -78,7 +81,7 @@ export function Header() {
   const { locale, d } = useI18n();
   return (
     <header className="sticky top-0 z-40 border-b border-line/60 bg-white/95 backdrop-blur">
-      <Container className="flex h-[72px] items-center gap-4 lg:gap-8">
+      <Container className="flex h-[72px] items-center gap-2 sm:gap-4 lg:gap-8">
         <Logo />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
           <Link href={`/${locale}/shop`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
@@ -91,18 +94,19 @@ export function Header() {
             {d.nav.delivery}
           </Link>
         </nav>
-        <form action={`/${locale}/shop`} role="search" className="relative ml-auto hidden max-w-md flex-1 md:block">
-          <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-ink" aria-hidden />
+        <form action={`/${locale}/shop`} role="search" className="relative ms-auto hidden max-w-md flex-1 md:block">
+          <Search className="pointer-events-none absolute start-4 top-1/2 size-5 -translate-y-1/2 text-ink" aria-hidden />
           <input
             type="search"
             name="q"
             maxLength={80}
             aria-label={d.nav.searchLabel}
             placeholder={d.nav.searchPlaceholder}
-            className="h-12 w-full rounded-full bg-cream pl-12 pr-4 text-[15px] ring-1 ring-line placeholder:text-muted focus:bg-white focus:outline-none focus:ring-2 focus:ring-forest/40"
+            className="h-12 w-full rounded-full bg-cream ps-12 pe-4 text-[15px] ring-1 ring-line placeholder:text-muted focus:bg-white focus:outline-none focus:ring-2 focus:ring-forest/40"
           />
         </form>
-        <div className="ml-auto flex items-center gap-1 md:ml-0">
+        <div className="ms-auto flex items-center gap-1 md:ms-0">
+          <PostcodeChip />
           <Suspense fallback={null}>
             <LanguageSwitcher />
           </Suspense>
@@ -164,7 +168,7 @@ export function BottomNav() {
                 <it.icon className="size-6" aria-hidden />
                 {it.label}
                 {it.icon === ShoppingBag && ready && count > 0 && (
-                  <span className="absolute right-[28%] top-2 grid min-w-4 place-items-center rounded-full bg-forest px-1 text-[10px] font-bold leading-4 text-white">
+                  <span className="absolute end-[28%] top-2 grid min-w-4 place-items-center rounded-full bg-forest px-1 text-[10px] font-bold leading-4 text-white">
                     {count}
                   </span>
                 )}
@@ -188,7 +192,7 @@ export function Footer() {
           <p className="pt-2 text-sm text-white/70">
             {d.footer.partnerTitle}:{" "}
             <a
-              href="http://kevser-fleischerei.de/"
+              href="https://share.google/VmenJVKEgN1HV3exG"
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-white underline underline-offset-4"

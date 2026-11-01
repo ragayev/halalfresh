@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Lets the e2e server run beside a developer's `next dev` (each needs its own dist dir / lock).
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
   serverExternalPackages: ["@prisma/client", "bcryptjs"],
   turbopack: {

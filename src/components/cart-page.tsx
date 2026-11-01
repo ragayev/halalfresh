@@ -5,7 +5,9 @@ import { ArrowRight, Minus, Plus, ShoppingBasket, Trash2, AlertTriangle } from "
 import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
 import { useCartView } from "./use-cart-view";
-import { MinOrderBanner } from "./cart-progress";
+import { FreeDeliveryBar, MinOrderBanner } from "./cart-progress";
+import { DeliveryInfo } from "./delivery-ui";
+import { useDelivery } from "./delivery-provider";
 import { buttonClasses, Button, Card, Container } from "./ui";
 import { formatMoney } from "@/domain/money";
 import { formatWeight } from "@/domain/pricing";
@@ -14,6 +16,7 @@ export function CartPage() {
   const { d, locale, t } = useI18n();
   const { change, remove, clear } = useCart();
   const { data, error, loading } = useCartView();
+  const { postcode, openGate } = useDelivery();
 
   if (loading && !data)
     return (
@@ -43,7 +46,11 @@ export function CartPage() {
     );
   }
   const totals = data.totals!;
-  const blocked = !totals.meetsMinimum || !!data.hasIssues;
+  const delivery = data.delivery;
+  const unsupported = !postcode || !delivery?.supported;
+  const noSlot = !!delivery?.supported && !delivery.nextSlot;
+  const blocked = unsupported || noSlot || !totals.meetsMinimum || !!data.hasIssues;
+  const hasNonPreorder = data.lines.some((l) => l.issue === "NOT_PREORDER");
 
   return (
     <Container className="py-6 sm:py-10">
@@ -56,8 +63,26 @@ export function CartPage() {
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]" aria-busy={loading}>
         <div className="space-y-4">
-          <MinOrderBanner totals={totals} />
-          {data.hasIssues && (
+          {unsupported ? (
+            <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-warn p-4 text-warn-ink">
+              <p className="font-semibold">{postcode ? t(d.delivery.cartUnsupported, { postcode }) : d.delivery.needPostcode}</p>
+              <Button size="sm" onClick={openGate}>
+                {d.delivery.change}
+              </Button>
+            </div>
+          ) : (
+            <>
+              <MinOrderBanner totals={totals} />
+              <FreeDeliveryBar totals={totals} check={delivery} />
+            </>
+          )}
+          {delivery?.mode === "PREORDER_ONLY" && hasNonPreorder && (
+            <div className="rounded-2xl bg-warn p-4 text-sm text-warn-ink">
+              <p className="font-semibold">{d.delivery.preorderTitle}</p>
+              <p>{d.delivery.cartPreorderOnly}</p>
+            </div>
+          )}
+          {data.hasIssues && !hasNonPreorder && (
             <p role="alert" className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-sm font-medium text-danger">
               <AlertTriangle className="size-4" aria-hidden />
               {d.cart.updated}
@@ -83,7 +108,11 @@ export function CartPage() {
                           {formatWeight(l.grams)} · {formatMoney(l.pricePerKgCents, locale)}
                           {d.common.perKg}
                         </p>
-                        {l.issue && <p className="mt-1 text-xs font-semibold text-danger">{d.common.unavailable}</p>}
+                        {l.issue && (
+                          <p className="mt-1 text-xs font-semibold text-danger">
+                            {l.issue === "NOT_PREORDER" ? d.delivery.lineNotPreorder : d.common.unavailable}
+                          </p>
+                        )}
                       </div>
                       <button
                         onClick={() => remove(l.productId)}
@@ -144,19 +173,27 @@ export function CartPage() {
             </dl>
             {blocked ? (
               <Button size="lg" full disabled data-testid="checkout-btn">
-                {totals.meetsMinimum
-                  ? d.cart.updated
-                  : t(d.cart.belowMin, {
-                      amount: formatMoney(totals.shortfallCents, locale),
-                    })}
+                {unsupported
+                  ? d.delivery.checkoutBlocked
+                  : noSlot
+                    ? d.delivery.noSlotCheckout
+                    : totals.meetsMinimum
+                      ? d.cart.updated
+                      : t(d.cart.belowMin, {
+                          amount: formatMoney(totals.shortfallCents, locale),
+                        })}
               </Button>
             ) : (
               <Link href={`/${locale}/checkout`} className={buttonClasses({ size: "lg", full: true })} data-testid="checkout-btn">
                 {d.cart.checkout}
-                <ArrowRight className="size-5" aria-hidden />
+                <ArrowRight className="size-5 rtl:rotate-180" aria-hidden />
               </Link>
             )}
-            <p className="text-center text-xs text-muted">{d.cart.deliveryCalc}</p>
+            {delivery?.supported ? (
+              <DeliveryInfo check={delivery} />
+            ) : (
+              <p className="text-center text-xs text-muted">{d.cart.deliveryCalc}</p>
+            )}
           </Card>
         </aside>
       </div>

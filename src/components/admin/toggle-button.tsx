@@ -2,7 +2,15 @@
 import { useTransition } from "react";
 import { toggleProductAction } from "@/app/(admin)/admin/actions";
 
-export function ToggleButton({ id, field, value }: { id: string; field: "isAvailable" | "isFeatured"; value: boolean }) {
+export function ToggleButton({
+  id,
+  field,
+  value,
+}: {
+  id: string;
+  field: "isAvailable" | "isFeatured" | "isHidden" | "preorderEligible";
+  value: boolean;
+}) {
   const [pending, start] = useTransition();
   return (
     <button

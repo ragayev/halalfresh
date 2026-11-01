@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { LOCALES } from "@/i18n/config";
+import { normalizePostcode } from "@/domain/delivery";
 import { cartView } from "@/server/cart-view";
 import { errorBody } from "@/server/errors";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 const body = z.object({
-  locale: z.enum(["en", "de", "tr"]).default("en"),
+  locale: z.enum(LOCALES).default("de"),
+  postcode: z.string().max(10).transform(normalizePostcode).optional(),
   lines: z
     .array(
       z.object({
@@ -23,7 +26,7 @@ export async function POST(req: Request) {
     const parsed = body.safeParse(await req.json());
     if (!parsed.success) return NextResponse.json({ error: { code: "VALIDATION", message: "Invalid cart" } }, { status: 400 });
     if (!parsed.data.lines.length) return NextResponse.json({ lines: [], totals: null });
-    return NextResponse.json(await cartView(parsed.data.lines, parsed.data.locale));
+    return NextResponse.json(await cartView(parsed.data.lines, parsed.data.locale, parsed.data.postcode));
   } catch (e) {
     const { status, body } = errorBody(e);
     return NextResponse.json(body, { status });

@@ -9,15 +9,11 @@ import { useCartView } from "./use-cart-view";
 import { MinOrderBanner } from "./cart-progress";
 import { Button, Card, Container, Field, Input, Textarea, buttonClasses } from "./ui";
 import { formatMoney } from "@/domain/money";
-import { formatWeight, computeTotals } from "@/domain/pricing";
-import { isValidPostcode, normalizePostcode, type SlotOption } from "@/domain/delivery";
-
-interface SlotsResponse {
-  supported: boolean;
-  estimate: SlotOption | null;
-  deliveryFeeCents: number;
-  freeDeliveryOverCents: number | null;
-}
+import { formatWeight } from "@/domain/pricing";
+import { isValidPostcode, normalizePostcode } from "@/domain/delivery";
+import { formatCutoff, formatSlotDay } from "@/lib/format-delivery";
+import { useDelivery } from "./delivery-provider";
+import { FreeDeliveryBar } from "./cart-progress";
 type Errors = Partial<Record<"name" | "email" | "phone" | "street" | "postalCode" | "city" | "slot" | "terms", string>>;
 
 export function CheckoutForm() {
@@ -34,10 +30,8 @@ export function CheckoutForm() {
     instructions: "",
   });
   const [terms, setTerms] = useState(false);
-  const [fetched, setFetched] = useState<{
-    pc: string;
-    data: SlotsResponse | null;
-  } | null>(null);
+  const { hydrated, postcode: savedPostcode, check, status, setPostcode } = useDelivery();
+  const [notice, setNotice] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -47,26 +41,27 @@ export function CheckoutForm() {
     setF((s) => ({ ...s, [k]: e.target.value }));
   const pc = normalizePostcode(f.postalCode);
 
+  // Prefill the address postcode with the one the customer already checked.
+  const seeded = useRef(false);
   useEffect(() => {
-    if (!isValidPostcode(pc)) return;
-    const ctrl = new AbortController();
-    fetch("/api/delivery/slots", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ postcode: pc }),
-      signal: ctrl.signal,
-    })
-      .then((r) => r.json())
-      .then((j) => setFetched({ pc, data: "supported" in j ? j : null }))
-      .catch(() => {});
-    return () => ctrl.abort();
+    if (hydrated && savedPostcode && !seeded.current) {
+      seeded.current = true;
+      setF((s) => ({ ...s, postalCode: savedPostcode }));
+    }
+  }, [hydrated, savedPostcode]);
+
+  // The address postcode drives the delivery terms: if it differs from the checked one, re-run the check.
+  useEffect(() => {
+    if (!seeded.current || !isValidPostcode(pc) || pc === savedPostcode) return;
+    void setPostcode(pc).then((c) => c && setNotice(t(d.delivery.postcodeUpdated, { postcode: pc })));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pc]);
 
-  // Derived: results only count for the postcode currently typed.
-  const slots = fetched?.pc === pc ? fetched.data : null;
-  const slotsLoading = isValidPostcode(pc) && fetched?.pc !== pc;
-
-  const estimate = slots?.estimate ?? null;
+  // Terms only count for the postcode currently typed.
+  const current = check && check.postcode === pc ? check : null;
+  const checking = isValidPostcode(pc) && (!current || status === "loading");
+  const estimate = current?.nextSlot ?? null;
+  const pricedFor = data?.delivery?.postcode === pc;
 
   if (!ready || (loading && !data))
     return (
@@ -85,15 +80,8 @@ export function CheckoutForm() {
     );
   }
 
-  const totals =
-    slots?.supported && data.totals
-      ? computeTotals({
-          subtotalCents: data.totals.subtotalCents,
-          minOrderCents: data.totals.minOrderCents,
-          deliveryFeeCents: slots.deliveryFeeCents,
-          freeDeliveryOverCents: slots.freeDeliveryOverCents,
-        })
-      : data.totals!;
+  const totals = data.totals!;
+  const hasNonPreorder = data.lines.some((l) => l.issue === "NOT_PREORDER");
 
   function validate(): Errors {
     const e: Errors = {};
@@ -102,9 +90,11 @@ export function CheckoutForm() {
     if (!/^\+?[\d\s()/-]{6,24}$/.test(f.phone.trim())) e.phone = d.checkout.invalidPhone;
     if (f.street.trim().length < 3) e.street = d.checkout.required;
     if (!isValidPostcode(pc)) e.postalCode = d.checkout.invalidPostcode;
-    else if (slots && !slots.supported) e.postalCode = d.checkout.postcodeUnsupported;
+    else if (current && !current.supported) e.postalCode = d.checkout.postcodeUnsupported;
     if (f.city.trim().length < 2) e.city = d.checkout.required;
-    if (slots?.supported && !estimate) e.slot = d.checkout.slotNone;
+    if (current?.supported && !estimate) e.slot = d.checkout.slotNone;
+    if (current?.supported && (!pricedFor || data!.hasIssues)) e.slot = hasNonPreorder ? d.delivery.cartPreorderOnly : d.cart.updated;
+    if (current?.supported && !totals.meetsMinimum) e.slot = t(d.checkout.belowMin, { amount: formatMoney(totals.minOrderCents, locale) });
     if (!terms) e.terms = d.checkout.acceptTerms;
     return e;
   }
@@ -134,6 +124,7 @@ export function CheckoutForm() {
           })),
           customer: { name: f.name, email: f.email, phone: f.phone },
           address: { street: f.street, postalCode: pc, city: f.city },
+          checkedPostcode: pc,
           deliveryInstructions: f.instructions || undefined,
           acceptTerms: true,
         }),
@@ -153,13 +144,17 @@ export function CheckoutForm() {
               })
             : code === "POSTCODE_UNSUPPORTED"
               ? d.checkout.postcodeUnsupported
-              : code === "CHECKOUT_UNAVAILABLE"
-                ? d.checkout.unavailable
-                : code === "SLOT_INVALID"
-                  ? d.checkout.slotNone
-                  : code === "RATE_LIMITED" || code === "PRODUCT_UNAVAILABLE" || code === "INVALID_QUANTITY"
-                    ? j.error.message
-                    : d.checkout.payError,
+              : code === "POSTCODE_MISMATCH"
+                ? d.delivery.postcodeUpdated.replace("{postcode}", pc)
+                : code === "PREORDER_ONLY"
+                  ? d.delivery.cartPreorderOnly
+                  : code === "CHECKOUT_UNAVAILABLE"
+                    ? d.checkout.unavailable
+                    : code === "SLOT_INVALID"
+                      ? d.checkout.slotNone
+                      : code === "RATE_LIMITED" || code === "PRODUCT_UNAVAILABLE" || code === "INVALID_QUANTITY"
+                        ? j.error.message
+                        : d.checkout.payError,
         );
         setSubmitting(false);
         return;
@@ -171,15 +166,6 @@ export function CheckoutForm() {
     }
   }
 
-  const dateLabel = (date: string) => {
-    const [y, m, dd] = date.split("-").map(Number);
-    return new Intl.DateTimeFormat(locale, {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      timeZone: "UTC",
-    }).format(new Date(Date.UTC(y, m - 1, dd)));
-  };
   const err = (k: keyof Errors) => errors[k];
   const dsc = (k: string) => (errors[k as keyof Errors] ? `${k}-err` : undefined);
 
@@ -189,6 +175,7 @@ export function CheckoutForm() {
       <form onSubmit={submit} noValidate className="grid gap-6 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
           {!totals.meetsMinimum && <MinOrderBanner totals={totals} />}
+          <FreeDeliveryBar totals={totals} check={current ?? undefined} />
           <Card className="space-y-4 p-5 sm:p-6">
             <h2 className="text-lg font-semibold">{d.checkout.contact}</h2>
             <Field label={d.checkout.name} htmlFor="name" error={err("name")}>
@@ -286,15 +273,32 @@ export function CheckoutForm() {
             <div className="text-sm">
               <p className="font-semibold">{d.checkout.estimated}</p>
               {estimate ? (
-                <p className="text-base font-bold capitalize">{dateLabel(estimate.date)}</p>
-              ) : slotsLoading ? (
+                <>
+                  <p className="text-base font-bold capitalize">
+                    {t(d.delivery.slotLine, {
+                      day: formatSlotDay(estimate.date, locale),
+                      start: estimate.windowStart,
+                      end: estimate.windowEnd,
+                    })}
+                  </p>
+                  <p className="text-xs opacity-80">{t(d.delivery.orderBy, { cutoff: formatCutoff(estimate.cutoffAt, locale) })}</p>
+                </>
+              ) : checking ? (
                 <p>{d.checkout.slotLoading}</p>
-              ) : slots && !slots.supported ? (
+              ) : current && !current.supported ? (
                 <p className="font-medium text-warn-ink">{d.checkout.postcodeUnsupported}</p>
-              ) : slots ? (
+              ) : current ? (
                 <p className="font-medium text-warn-ink">{d.checkout.slotNone}</p>
               ) : (
                 <p>{d.checkout.slotNeedPostcode}</p>
+              )}
+              {notice && (
+                <p role="status" className="mt-1 text-xs font-medium">
+                  {notice}
+                </p>
+              )}
+              {current?.mode === "PREORDER_ONLY" && (
+                <p className="mt-1 text-xs font-medium">{hasNonPreorder ? d.delivery.cartPreorderOnly : d.delivery.preorderText}</p>
               )}
               {err("slot") && (
                 <p role="alert" className="mt-1 text-xs font-medium text-danger">

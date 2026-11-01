@@ -40,7 +40,7 @@ export function ShopControls({ count }: { count: number }) {
   return (
     <div className="space-y-3" aria-busy={pending}>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
+        <Search className="pointer-events-none absolute start-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
         <input
           ref={inputRef}
           type="search"
@@ -48,7 +48,7 @@ export function ShopControls({ count }: { count: number }) {
           onChange={(e) => setQ(e.target.value)}
           placeholder={d.shop.searchPlaceholder}
           aria-label={d.shop.searchPlaceholder}
-          className="h-12 w-full rounded-full border border-line bg-white pl-12 pr-4 text-[15px] focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
+          className="h-12 w-full rounded-full border border-line bg-white ps-12 pe-4 text-[15px] focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -58,7 +58,7 @@ export function ShopControls({ count }: { count: number }) {
               <SlidersHorizontal className="size-4" aria-hidden />
               {d.shop.filters}
             </summary>
-            <div className="absolute left-0 z-20 mt-2 w-64 rounded-2xl bg-white p-4 shadow-card ring-1 ring-line">
+            <div className="absolute start-0 z-20 mt-2 w-64 rounded-2xl bg-white p-4 shadow-card ring-1 ring-line">
               <label className="flex cursor-pointer items-center gap-3 text-sm">
                 <input
                   type="checkbox"
@@ -83,7 +83,7 @@ export function ShopControls({ count }: { count: number }) {
                 sort: e.target.value === "popular" ? null : e.target.value,
               })
             }
-            className="h-10 cursor-pointer appearance-none rounded-full bg-white py-0 pl-4 pr-10 text-sm font-medium ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-forest"
+            className="h-10 cursor-pointer appearance-none rounded-full bg-white py-0 ps-4 pe-10 text-sm font-medium ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-forest"
           >
             <option value="popular">
               {d.shop.sort}: {d.shop.sortPopular}
@@ -92,7 +92,7 @@ export function ShopControls({ count }: { count: number }) {
             <option value="price-desc">{d.shop.sortPriceDesc}</option>
             <option value="name">{d.shop.sortName}</option>
           </select>
-          <ChevronDown className="pointer-events-none absolute right-3 size-4 text-muted" aria-hidden />
+          <ChevronDown className="pointer-events-none absolute end-3 size-4 text-muted" aria-hidden />
         </label>
       </div>
     </div>

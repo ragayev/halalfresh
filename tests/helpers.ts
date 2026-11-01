@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import Stripe from "stripe";
 import { db } from "@/lib/db";
-import { addDays, berlinToday, weekdayOf } from "@/domain/delivery";
+import { addDays, berlinToday } from "@/domain/delivery";
 
 export async function resetDb() {
   await db.$executeRawUnsafe(
-    `TRUNCATE "OrderEvent","Refund","Payment","CommissionRecord","OrderItem","Order","Address","Customer","DeliverySlot","DeliveryPostcode","DeliveryZone","ProductImage","Product","Category","MerchantSettings","Merchant","AdminUser","AuditLog","ProcessedWebhookEvent","RateLimit" RESTART IDENTITY CASCADE`,
+    `TRUNCATE "OrderEvent","Refund","Payment","CommissionRecord","OrderItem","Order","Address","Customer","WaitlistEntry","DeliveryBlackoutDate","PostcodeRoute","RouteSchedule","DeliveryRoute","DeliveryZone","ProductImage","Product","Category","MerchantSettings","Merchant","AdminUser","AuditLog","ProcessedWebhookEvent","RateLimit" RESTART IDENTITY CASCADE`,
   );
 }
 
@@ -15,7 +15,7 @@ export async function seedBasics() {
       name: "Test Butcher",
       whatsappNumber: "4915112345678",
       stripeAccountId: "acct_test_1",
-      settings: { create: { slotLeadTimeHours: 12 } },
+      settings: { create: {} },
     },
   });
   const cat = await db.category.create({
@@ -45,29 +45,23 @@ export async function seedBasics() {
       isAvailable: false,
     },
   });
+  // Min €150, no fee: the numbers the original checkout tests were written against.
   const zone = await db.deliveryZone.create({
+    data: { merchantId: merchant.id, name: "Berlin", minOrderCents: 15000, deliveryFeeCents: 0 },
+  });
+  // Mon–Sat every week with a 12h cutoff, so a bookable slot always exists regardless of when tests run.
+  const route = await db.deliveryRoute.create({
     data: {
-      merchantId: merchant.id,
+      zoneId: zone.id,
       name: "Berlin",
-      postcodes: { create: [{ pattern: "10*" }] },
+      schedules: {
+        create: [1, 2, 3, 4, 5, 6].map((weekday) => ({ weekday, windowStart: "10:00", windowEnd: "14:00", cutoffHoursBefore: 12 })),
+      },
+      postcodes: { create: [{ postcode: "10115" }, { postcode: "10117" }] },
     },
   });
-  // Every weekday, so a bookable slot always exists regardless of when tests run.
-  const slots = [];
-  for (let wd = 0; wd < 7; wd++)
-    slots.push(
-      await db.deliverySlot.create({
-        data: {
-          zoneId: zone.id,
-          weekday: wd,
-          startTime: "10:00",
-          endTime: "14:00",
-        },
-      }),
-    );
   const date = addDays(berlinToday(new Date()), 5);
-  const slot = slots.find((s) => s.weekday === weekdayOf(date))!;
-  return { merchant, beef, gone, zone, slot, date };
+  return { merchant, beef, gone, zone, route, date };
 }
 
 export function checkoutBody(ctx: Awaited<ReturnType<typeof seedBasics>>, over: Record<string, unknown> = {}) {

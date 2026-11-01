@@ -34,14 +34,17 @@ export function proxy(req: NextRequest) {
   let locale: string = DEFAULT_LOCALE;
   if (saved && (LOCALES as readonly string[]).includes(saved)) locale = saved;
   else {
-    const accept = req.headers.get("accept-language") ?? "";
-    for (const part of accept.split(",")) {
-      const code = part.trim().slice(0, 2).toLowerCase();
-      if ((LOCALES as readonly string[]).includes(code)) {
-        locale = code;
-        break;
-      }
-    }
+    // Highest-q supported language wins; anything unsupported falls back to DEFAULT_LOCALE (de).
+    const ranked = (req.headers.get("accept-language") ?? "")
+      .split(",")
+      .map((part) => {
+        const [tag, ...params] = part.trim().split(";");
+        const q = Number(params.find((p) => p.trim().startsWith("q="))?.split("=")[1] ?? 1);
+        return { code: tag.slice(0, 2).toLowerCase(), q: Number.isFinite(q) ? q : 0 };
+      })
+      .sort((a, b) => b.q - a.q);
+    const hit = ranked.find((r) => r.q > 0 && (LOCALES as readonly string[]).includes(r.code));
+    if (hit) locale = hit.code;
   }
   const url = req.nextUrl.clone();
   url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;

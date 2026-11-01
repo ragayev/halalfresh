@@ -2,3 +2,4 @@
 node_modules
 prisma/migrations
 package-lock.json
+.next-e2e

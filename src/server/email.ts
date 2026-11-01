@@ -5,7 +5,7 @@ import { formatWeight } from "@/domain/pricing";
 import { deliveryLabel } from "@/domain/whatsapp";
 import { siteUrl } from "@/lib/env";
 import { getDictionary } from "@/i18n/get-dictionary";
-import type { Locale } from "@/i18n/config";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 
 let transport: Transporter | null = null;
@@ -35,7 +35,7 @@ export async function sendOrderEmail(orderId: string, kind: "confirmation" | "st
     });
     if (!o) return;
     if (kind === "status" && !STATUS_NOTIFY.has(o.fulfillmentStatus)) return;
-    const locale = (["en", "de", "tr"].includes(o.locale) ? o.locale : "en") as Locale;
+    const locale = (isLocale(o.locale) ? o.locale : DEFAULT_LOCALE) as Locale;
     const d = await getDictionary(locale);
     const link = `${siteUrl()}/${locale}/order/${o.accessToken}`;
     const items = o.items

@@ -8,7 +8,6 @@ import { login, logout, requireAdmin } from "@/server/auth";
 import { AppError } from "@/server/errors";
 import { addNote, audit, cancelOrder, prepareWhatsapp, refundOrder, transitionFulfillment } from "@/server/orders";
 import { getMerchant } from "@/server/settings";
-import { parsePostcodePatterns } from "@/domain/delivery";
 import { normalizeWhatsappNumber } from "@/domain/whatsapp";
 
 export type ActionResult = { ok: boolean; message?: string; url?: string };
@@ -115,6 +114,8 @@ const productSchema = z.object({
   descDe: z.string().trim().max(2000).optional(),
   nameTr: z.string().trim().max(120).optional(),
   descTr: z.string().trim().max(2000).optional(),
+  nameAr: z.string().trim().max(120).optional(),
+  descAr: z.string().trim().max(2000).optional(),
 });
 
 export async function saveProductAction(id: string, _: ActionResult | null, fd: FormData): Promise<ActionResult> {
@@ -147,9 +148,12 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
       allergenInfo: v.allergenInfo || null,
       isAvailable: fd.get("isAvailable") === "on",
       isFeatured: fd.get("isFeatured") === "on",
+      isHidden: fd.get("isHidden") === "on",
+      preorderEligible: fd.get("preorderEligible") === "on",
       translations: {
         de: { name: v.nameDe, description: v.descDe },
         tr: { name: v.nameTr, description: v.descTr },
+        ar: { name: v.nameAr, description: v.descAr },
       },
     };
     const p =
@@ -183,7 +187,11 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
   redirect("/admin/products");
 }
 
-export async function toggleProductAction(id: string, field: "isAvailable" | "isFeatured", value: boolean) {
+export async function toggleProductAction(
+  id: string,
+  field: "isAvailable" | "isFeatured" | "isHidden" | "preorderEligible",
+  value: boolean,
+) {
   const a = await requireAdmin();
   await db.product.update({ where: { id }, data: { [field]: value } });
   await audit(a.email, `product.${field}`, "Product", id, { value });
@@ -237,79 +245,6 @@ export async function saveMerchantAction(_: ActionResult | null, fd: FormData): 
     }),
   ]);
   await audit(a.email, "merchant.update", "Merchant", m.id);
-  revalidatePath("/admin/settings");
-  return { ok: true, message: "Saved" };
-}
-
-const deliverySchema = z.object({
-  minOrder: euro,
-  deliveryFee: z
-    .string()
-    .transform((s) => Math.round(parseFloat(s.replace(",", ".") || "0") * 100))
-    .pipe(z.number().int().min(0).max(20000)),
-  freeOver: z.string().optional(),
-  leadHours: z.coerce.number().int().min(0).max(240),
-  horizonDays: z.coerce.number().int().min(1).max(60),
-  postcodes: z.string().max(5000),
-  slots: z.string().max(2000),
-});
-const DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-
-export async function saveDeliveryAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
-  const a = await requireAdmin();
-  const p = deliverySchema.safeParse(Object.fromEntries(fd.entries()));
-  if (!p.success)
-    return {
-      ok: false,
-      message: `Check fields: ${Object.keys(p.error.flatten().fieldErrors).join(", ")}`,
-    };
-  const v = p.data;
-  const slotRows = [...v.slots.matchAll(/^\s*(sun|mon|tue|wed|thu|fri|sat)\s+(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})\s*$/gim)].map((m) => ({
-    weekday: DAYS.indexOf(m[1].toLowerCase()),
-    startTime: m[2],
-    endTime: m[3],
-  }));
-  if (v.slots.trim() && slotRows.length !== v.slots.trim().split("\n").filter(Boolean).length)
-    return {
-      ok: false,
-      message: "Slots: one per line, e.g. “sat 10:00-14:00”",
-    };
-  const patterns = parsePostcodePatterns(v.postcodes);
-  const freeOver = v.freeOver?.trim() ? Math.round(parseFloat(v.freeOver.replace(",", ".")) * 100) : null;
-  const m = await getMerchant();
-  await db.$transaction(async (tx) => {
-    await tx.merchantSettings.update({
-      where: { merchantId: m.id },
-      data: {
-        minOrderCents: v.minOrder,
-        deliveryFeeCents: v.deliveryFee,
-        freeDeliveryOverCents: freeOver,
-        slotLeadTimeHours: v.leadHours,
-        slotHorizonDays: v.horizonDays,
-      },
-    });
-    const zone =
-      (await tx.deliveryZone.findFirst({ where: { merchantId: m.id } })) ??
-      (await tx.deliveryZone.create({
-        data: { merchantId: m.id, name: "Delivery area" },
-      }));
-    await tx.deliveryPostcode.deleteMany({ where: { zoneId: zone.id } });
-    await tx.deliveryPostcode.createMany({
-      data: patterns.map((pattern) => ({ zoneId: zone.id, pattern })),
-    });
-    // Slots referenced by past orders are deactivated, never deleted.
-    await tx.deliverySlot.updateMany({
-      where: { zoneId: zone.id },
-      data: { isActive: false },
-    });
-    for (const s of slotRows)
-      await tx.deliverySlot.upsert({
-        where: { zoneId_weekday_startTime_endTime: { zoneId: zone.id, ...s } },
-        update: { isActive: true },
-        create: { zoneId: zone.id, ...s },
-      });
-  });
-  await audit(a.email, "delivery.update", "Merchant", m.id);
   revalidatePath("/admin/settings");
   return { ok: true, message: "Saved" };
 }

@@ -1,0 +1,641 @@
+{
+  "_note": "Source: halalfresh_claude_code_assets bundle. Names TR from the bundle; DE/EN/AR added, need native review. No prices/halal claims: confirm with Kevser.",
+  "categories": [
+    {
+      "slug": "dana",
+      "tr": "Dana",
+      "de": "Rind",
+      "en": "Beef",
+      "ar": "لحم بقري"
+    },
+    {
+      "slug": "kuzu",
+      "tr": "Kuzu",
+      "de": "Lamm",
+      "en": "Lamb",
+      "ar": "لحم ضأن"
+    },
+    {
+      "slug": "tavuk",
+      "tr": "Tavuk",
+      "de": "Geflügel",
+      "en": "Poultry",
+      "ar": "دواجن"
+    },
+    {
+      "slug": "mangal",
+      "tr": "Mangal",
+      "de": "Grill",
+      "en": "BBQ",
+      "ar": "شواء"
+    },
+    {
+      "slug": "sarkuteri",
+      "tr": "Şarküteri",
+      "de": "Wurstwaren",
+      "en": "Deli",
+      "ar": "مقددات ومعلبات"
+    },
+    {
+      "slug": "sakatat",
+      "tr": "Sakatat",
+      "de": "Innereien",
+      "en": "Offal",
+      "ar": "أحشاء"
+    },
+    {
+      "slug": "paketler",
+      "tr": "Paketler",
+      "de": "Pakete",
+      "en": "Bundles",
+      "ar": "باقات"
+    }
+  ],
+  "products": [
+    {
+      "id": "dana-kiyma",
+      "category": "dana",
+      "image": "/images/products/dana/dana-kiyma.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana Kıyma",
+        "de": "Rinderhackfleisch",
+        "en": "Beef Mince",
+        "ar": "لحم بقري مفروم"
+      }
+    },
+    {
+      "id": "dana-kusbasi",
+      "category": "dana",
+      "image": "/images/products/dana/dana-kusbasi.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana Kuşbaşı",
+        "de": "Rindergulasch (gewürfelt)",
+        "en": "Diced Beef",
+        "ar": "لحم بقري مقطّع مكعبات"
+      }
+    },
+    {
+      "id": "dana-antrikot",
+      "category": "dana",
+      "image": "/images/products/dana/dana-antrikot.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana Antrikot",
+        "de": "Rinderentrecôte",
+        "en": "Beef Entrecôte",
+        "ar": "أنتريكوت بقري"
+      }
+    },
+    {
+      "id": "dana-kaburga",
+      "category": "dana",
+      "image": "/images/products/dana/dana-kaburga.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana Kaburga",
+        "de": "Rinderrippen",
+        "en": "Beef Ribs",
+        "ar": "أضلاع بقري"
+      }
+    },
+    {
+      "id": "dana-incik",
+      "category": "dana",
+      "image": "/images/products/dana/dana-incik.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana İncik",
+        "de": "Rinderhaxe",
+        "en": "Beef Shank",
+        "ar": "موزات بقري"
+      }
+    },
+    {
+      "id": "dana-haslamalik",
+      "category": "dana",
+      "image": "/images/products/dana/dana-haslamalik.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana Haşlamalık",
+        "de": "Rindfleisch zum Kochen",
+        "en": "Beef for Boiling",
+        "ar": "لحم بقري للسلق"
+      }
+    },
+    {
+      "id": "dana-ilik-kemigi",
+      "category": "dana",
+      "image": "/images/products/dana/dana-ilik-kemigi.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana İlik Kemiği",
+        "de": "Rindermarkknochen",
+        "en": "Beef Marrow Bones",
+        "ar": "عظام نخاع بقري"
+      }
+    },
+    {
+      "id": "dana-biftek",
+      "category": "dana",
+      "image": "/images/products/dana/dana-biftek.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Dana Biftek",
+        "de": "Rindersteak",
+        "en": "Beef Steak",
+        "ar": "ستيك بقري"
+      }
+    },
+    {
+      "id": "dana-kemikli-yemeklik-et",
+      "category": "dana",
+      "image": "/images/products/dana/dana-kemikli-yemeklik-et.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Dana Kemikli Yemeklik Et",
+        "de": "Rindfleisch mit Knochen (Eintopf)",
+        "en": "Bone-in Stewing Beef",
+        "ar": "لحم بقري بالعظم للطبخ"
+      }
+    },
+    {
+      "id": "dana-gerdan",
+      "category": "dana",
+      "image": "/images/products/dana/dana-gerdan.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Dana Gerdan",
+        "de": "Rindernacken",
+        "en": "Beef Neck",
+        "ar": "رقبة بقر"
+      }
+    },
+    {
+      "id": "kuzu-pirzola",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-pirzola.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu Pirzola",
+        "de": "Lammkoteletts",
+        "en": "Lamb Chops",
+        "ar": "ريش ضأن"
+      }
+    },
+    {
+      "id": "kuzu-but",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-but.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu But",
+        "de": "Lammkeule",
+        "en": "Leg of Lamb",
+        "ar": "فخذ ضأن"
+      }
+    },
+    {
+      "id": "kuzu-kol",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-kol.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu Kol",
+        "de": "Lammschulter",
+        "en": "Lamb Shoulder",
+        "ar": "كتف ضأن"
+      }
+    },
+    {
+      "id": "kuzu-kusbasi",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-kusbasi.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu Kuşbaşı",
+        "de": "Lammwürfel",
+        "en": "Diced Lamb",
+        "ar": "لحم ضأن مقطّع مكعبات"
+      }
+    },
+    {
+      "id": "kuzu-kiyma",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-kiyma.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu Kıyma",
+        "de": "Lammhackfleisch",
+        "en": "Lamb Mince",
+        "ar": "لحم ضأن مفروم"
+      }
+    },
+    {
+      "id": "kuzu-incik",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-incik.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu İncik",
+        "de": "Lammhaxe",
+        "en": "Lamb Shank",
+        "ar": "موزات ضأن"
+      }
+    },
+    {
+      "id": "kuzu-kaburga",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-kaburga.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Kuzu Kaburga",
+        "de": "Lammrippen",
+        "en": "Lamb Ribs",
+        "ar": "أضلاع ضأن"
+      }
+    },
+    {
+      "id": "kuzu-gerdan",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-gerdan.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Kuzu Gerdan",
+        "de": "Lammnacken",
+        "en": "Lamb Neck",
+        "ar": "رقبة ضأن"
+      }
+    },
+    {
+      "id": "kuzu-kuyruk-yagi",
+      "category": "kuzu",
+      "image": "/images/products/kuzu/kuzu-kuyruk-yagi.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Kuzu Kuyruk Yağı",
+        "de": "Lammschwanzfett",
+        "en": "Lamb Tail Fat",
+        "ar": "ألية ضأن"
+      }
+    },
+    {
+      "id": "butun-tavuk",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/butun-tavuk.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Bütün Tavuk",
+        "de": "Ganzes Hähnchen",
+        "en": "Whole Chicken",
+        "ar": "دجاج كامل"
+      }
+    },
+    {
+      "id": "tavuk-gogus",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/tavuk-gogus.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Tavuk Göğüs",
+        "de": "Hähnchenbrust",
+        "en": "Chicken Breast",
+        "ar": "صدر دجاج"
+      }
+    },
+    {
+      "id": "tavuk-kemiksiz-but",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/tavuk-kemiksiz-but.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Tavuk Kemiksiz But",
+        "de": "Hähnchenschenkel ohne Knochen",
+        "en": "Boneless Chicken Thigh",
+        "ar": "فخذ دجاج بدون عظم"
+      }
+    },
+    {
+      "id": "tavuk-baget",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/tavuk-baget.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Tavuk Baget",
+        "de": "Hähnchenunterkeule",
+        "en": "Chicken Drumstick",
+        "ar": "سيقان دجاج"
+      }
+    },
+    {
+      "id": "tavuk-kanat",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/tavuk-kanat.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Tavuk Kanat",
+        "de": "Hähnchenflügel",
+        "en": "Chicken Wings",
+        "ar": "أجنحة دجاج"
+      }
+    },
+    {
+      "id": "tavuk-kemikli-kalcali-but",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/tavuk-kemikli-kalcali-but.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Tavuk Kemikli Kalçalı But",
+        "de": "Hähnchenkeule mit Knochen",
+        "en": "Bone-in Chicken Leg Quarter",
+        "ar": "فخذ دجاج بالعظم"
+      }
+    },
+    {
+      "id": "tavuk-kusbasi",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/tavuk-kusbasi.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Tavuk Kuşbaşı",
+        "de": "Hähnchenwürfel",
+        "en": "Diced Chicken",
+        "ar": "دجاج مقطّع مكعبات"
+      }
+    },
+    {
+      "id": "hindi-gogus",
+      "category": "tavuk",
+      "image": "/images/products/tavuk/hindi-gogus.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Hindi Göğüs",
+        "de": "Putenbrust",
+        "en": "Turkey Breast",
+        "ar": "صدر ديك رومي"
+      }
+    },
+    {
+      "id": "dana-ciger",
+      "category": "sakatat",
+      "image": "/images/products/sakatat/dana-ciger.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Dana Ciğer",
+        "de": "Rinderleber",
+        "en": "Beef Liver",
+        "ar": "كبدة بقري"
+      }
+    },
+    {
+      "id": "kuzu-ciger-takimi",
+      "category": "sakatat",
+      "image": "/images/products/sakatat/kuzu-ciger-takimi.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kuzu Ciğer Takımı",
+        "de": "Lamminnereien-Set (Leber)",
+        "en": "Lamb Liver Set",
+        "ar": "طقم كبدة ضأن"
+      }
+    },
+    {
+      "id": "iskembe",
+      "category": "sakatat",
+      "image": "/images/products/sakatat/iskembe.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "İşkembe",
+        "de": "Pansen",
+        "en": "Tripe",
+        "ar": "كرشة"
+      }
+    },
+    {
+      "id": "dana-yurek",
+      "category": "sakatat",
+      "image": "/images/products/sakatat/dana-yurek.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Dana Yürek",
+        "de": "Rinderherz",
+        "en": "Beef Heart",
+        "ar": "قلب بقري"
+      }
+    },
+    {
+      "id": "adana-kebaplik-harc",
+      "category": "mangal",
+      "image": "/images/products/mangal/adana-kebaplik-harc.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Adana Kebaplık Harç",
+        "de": "Adana-Kebab-Hackmasse",
+        "en": "Adana Kebab Mix",
+        "ar": "خلطة كباب أضنة"
+      }
+    },
+    {
+      "id": "izgara-kofte",
+      "category": "mangal",
+      "image": "/images/products/mangal/izgara-kofte.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Izgara Köfte",
+        "de": "Gegrillte Köfte",
+        "en": "Grilled Köfte",
+        "ar": "كفتة مشوية"
+      }
+    },
+    {
+      "id": "kasap-kofte",
+      "category": "mangal",
+      "image": "/images/products/mangal/kasap-kofte.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Kasap Köfte",
+        "de": "Metzger-Köfte",
+        "en": "Butcher's Köfte",
+        "ar": "كفتة الجزّار"
+      }
+    },
+    {
+      "id": "hamburger-koftesi",
+      "category": "mangal",
+      "image": "/images/products/mangal/hamburger-koftesi.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Hamburger Köftesi",
+        "de": "Hamburger-Patties",
+        "en": "Burger Patties",
+        "ar": "برغر لحم"
+      }
+    },
+    {
+      "id": "tavuk-sis",
+      "category": "mangal",
+      "image": "/images/products/mangal/tavuk-sis.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Tavuk Şiş",
+        "de": "Hähnchen-Spieße",
+        "en": "Chicken Skewers",
+        "ar": "أسياخ دجاج"
+      }
+    },
+    {
+      "id": "sucuk",
+      "category": "sarkuteri",
+      "image": "/images/products/sarkuteri/sucuk.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Sucuk",
+        "de": "Sucuk",
+        "en": "Sucuk (Spicy Sausage)",
+        "ar": "سجق تركي"
+      }
+    },
+    {
+      "id": "pastirma",
+      "category": "sarkuteri",
+      "image": "/images/products/sarkuteri/pastirma.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Pastırma",
+        "de": "Pastırma",
+        "en": "Pastırma (Cured Beef)",
+        "ar": "بسطرمة"
+      }
+    },
+    {
+      "id": "kavurma",
+      "category": "sarkuteri",
+      "image": "/images/products/sarkuteri/kavurma.webp",
+      "unit": "kg",
+      "status": "active",
+      "name": {
+        "tr": "Kavurma",
+        "de": "Kavurma",
+        "en": "Kavurma (Preserved Meat)",
+        "ar": "قاورما"
+      }
+    },
+    {
+      "id": "helal-salam",
+      "category": "sarkuteri",
+      "image": "/images/products/sarkuteri/helal-salam.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Helal Salam",
+        "de": "Halal-Salami",
+        "en": "Halal Salami",
+        "ar": "سلامي حلال"
+      }
+    },
+    {
+      "id": "helal-sosis",
+      "category": "sarkuteri",
+      "image": "/images/products/sarkuteri/helal-sosis.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Helal Sosis",
+        "de": "Halal-Wurst",
+        "en": "Halal Sausage",
+        "ar": "نقانق حلال"
+      }
+    },
+    {
+      "id": "dilimlenmis-sucuk",
+      "category": "sarkuteri",
+      "image": "/images/products/sarkuteri/dilimlenmis-sucuk.webp",
+      "unit": "kg",
+      "status": "draft",
+      "name": {
+        "tr": "Dilimlenmiş Sucuk",
+        "de": "Sucuk in Scheiben",
+        "en": "Sliced Sucuk",
+        "ar": "سجق تركي شرائح"
+      }
+    },
+    {
+      "id": "aile-paketi",
+      "category": "paketler",
+      "image": "/images/products/paketler/aile-paketi.webp",
+      "unit": "package",
+      "status": "active",
+      "name": {
+        "tr": "Aile Paketi",
+        "de": "Familienpaket",
+        "en": "Family Pack",
+        "ar": "باقة العائلة"
+      }
+    },
+    {
+      "id": "mangal-paketi",
+      "category": "paketler",
+      "image": "/images/products/paketler/mangal-paketi.webp",
+      "unit": "package",
+      "status": "active",
+      "name": {
+        "tr": "Mangal Paketi",
+        "de": "Grillpaket",
+        "en": "BBQ Pack",
+        "ar": "باقة الشواء"
+      }
+    },
+    {
+      "id": "ekonomik-paket",
+      "category": "paketler",
+      "image": "/images/products/paketler/ekonomik-paket.webp",
+      "unit": "package",
+      "status": "active",
+      "name": {
+        "tr": "Ekonomik Paket",
+        "de": "Sparpaket",
+        "en": "Economy Pack",
+        "ar": "الباقة الاقتصادية"
+      }
+    }
+  ]
+}

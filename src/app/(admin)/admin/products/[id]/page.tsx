@@ -89,11 +89,17 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
             <Field label="Description (Türkçe)" htmlFor="descTr">
               <Textarea id="descTr" name="descTr" defaultValue={tr.tr?.description ?? ""} />
             </Field>
+            <Field label="Name (العربية)" htmlFor="nameAr">
+              <Input id="nameAr" name="nameAr" dir="rtl" defaultValue={tr.ar?.name ?? ""} />
+            </Field>
+            <Field label="Description (العربية)" htmlFor="descAr">
+              <Textarea id="descAr" name="descAr" dir="rtl" defaultValue={tr.ar?.description ?? ""} />
+            </Field>
           </fieldset>
           <Field label="Image (JPEG/PNG/WebP, ≤ 2 MB; replaces current)" htmlFor="image">
             <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" className="text-sm" />
           </Field>
-          <div className="flex gap-6 text-sm">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <label className="flex items-center gap-2">
               <input type="checkbox" name="isAvailable" defaultChecked={p?.isAvailable ?? true} className="size-4 accent-[#164b39]" />
               Available
@@ -101,6 +107,19 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
             <label className="flex items-center gap-2">
               <input type="checkbox" name="isFeatured" defaultChecked={p?.isFeatured ?? false} className="size-4 accent-[#164b39]" />
               Featured on homepage
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="preorderEligible"
+                defaultChecked={p?.preorderEligible ?? false}
+                className="size-4 accent-[#164b39]"
+              />
+              Preorder eligible (orderable in preorder-only zones)
+            </label>
+            <label className="flex items-center gap-2">
+              <input type="checkbox" name="isHidden" defaultChecked={p?.isHidden ?? false} className="size-4 accent-[#164b39]" />
+              Hidden from storefront
             </label>
           </div>
         </ActionForm>

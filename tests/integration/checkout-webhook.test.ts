@@ -48,7 +48,10 @@ describe("checkout session creation", () => {
     expect(order.totalCents).toBe(16000);
     expect(order.applicationFeeCents).toBe(0); // commission is settled outside the platform
     expect(order.deliveryDate.toISOString().slice(0, 10) >= ctx.date).toBe(false); // earliest slot, sooner than the +5d test date
-    expect(order.slotId).toBeTruthy();
+    expect(order.routeId).toBe(ctx.route.id);
+    expect(order).toMatchObject({ zoneName: "Berlin", deliveryMode: "REGULAR", minOrderCents: 15000 });
+    expect(order.slotStartTime).toBe("10:00");
+    expect(order.slotEndTime).toBe("14:00");
     expect(payment.stripeCheckoutSessionId).toMatch(/^cs_mock_/);
     expect(payment.amountCents).toBe(16000);
     const items = await db.orderItem.findMany({ where: { orderId: order.id } });
@@ -60,7 +63,7 @@ describe("checkout session creation", () => {
     });
   });
   it("rejects orders below the minimum (merchandise only)", async () => {
-    await db.merchantSettings.updateMany({ data: { deliveryFeeCents: 2000 } });
+    await db.deliveryZone.updateMany({ data: { deliveryFeeCents: 2000 } });
     expect(
       await code(
         createCheckout(
@@ -85,9 +88,9 @@ describe("checkout session creation", () => {
         ),
       ),
     ).toBe("POSTCODE_UNSUPPORTED");
-    await db.deliverySlot.updateMany({ data: { isActive: false } });
+    await db.routeSchedule.updateMany({ data: { isActive: false } });
     expect(await code(createCheckout(checkoutBody(ctx)))).toBe("SLOT_INVALID"); // no delivery day configured
-    await db.deliverySlot.updateMany({ data: { isActive: true } });
+    await db.routeSchedule.updateMany({ data: { isActive: true } });
     expect(
       await code(
         createCheckout(

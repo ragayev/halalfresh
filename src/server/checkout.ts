@@ -3,7 +3,9 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { log } from "@/lib/logger";
 import { siteUrl } from "@/lib/env";
-import { availableSlots, findZoneForPostcode, normalizePostcode, POSTCODE_RE } from "@/domain/delivery";
+import { normalizePostcode, POSTCODE_RE } from "@/domain/delivery";
+import { LOCALES } from "@/i18n/config";
+import { resolveDelivery } from "./delivery-service";
 import { formatWeight } from "@/domain/pricing";
 import { AppError } from "./errors";
 import { getGateway } from "./payments/gateway";
@@ -13,7 +15,7 @@ import { getMerchant } from "./settings";
 
 export const checkoutInput = z.object({
   requestId: z.string().uuid(),
-  locale: z.enum(["en", "de", "tr"]).default("en"),
+  locale: z.enum(LOCALES).default("de"),
   lines: z
     .array(
       z.object({
@@ -36,6 +38,8 @@ export const checkoutInput = z.object({
     postalCode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)),
     city: z.string().trim().min(2).max(80),
   }),
+  /** Postcode the customer saw delivery terms for. The server re-resolves; a different address postcode is rejected. */
+  checkedPostcode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)).optional(),
   deliveryInstructions: z.string().trim().max(500).optional(),
   acceptTerms: z.literal(true),
 });
@@ -64,15 +68,21 @@ export async function createCheckout(raw: unknown, now = new Date()): Promise<{ 
     throw new AppError("CHECKOUT_UNAVAILABLE", "Online payment is not available yet. Please try again later.", 503);
   }
 
-  const zones = await db.deliveryZone.findMany({
-    where: { merchantId: merchant.id, isActive: true },
-    include: { postcodes: true, slots: true },
-  });
-  const zone = findZoneForPostcode(zones, input.address.postalCode);
-  if (!zone) throw new AppError("POSTCODE_UNSUPPORTED", "We don't deliver to this postcode yet", 422);
+  // Never trust client terms: resolve zone, terms and slot from the address postcode, right now.
+  if (input.checkedPostcode && input.checkedPostcode !== input.address.postalCode)
+    throw new AppError("POSTCODE_MISMATCH", "The delivery address postcode differs from the postcode you checked", 422, {
+      checkedPostcode: input.checkedPostcode,
+      addressPostcode: input.address.postalCode,
+    });
+  const resolved = await resolveDelivery(input.address.postalCode, now);
+  const { check, slot, zoneId, routeId } = resolved;
+  if (!check.supported || !zoneId || !routeId) throw new AppError("POSTCODE_UNSUPPORTED", "We don't deliver to this postcode yet", 422);
 
   const { lines, totals } = await priceCart(input.lines, {
-    deliveryFeeOverrideCents: zone.deliveryFeeCents,
+    mode: check.mode!,
+    minOrderCents: check.minOrderCents,
+    deliveryFeeCents: check.deliveryFeeCents,
+    freeDeliveryThresholdCents: check.freeDeliveryThresholdCents,
   });
   if (!totals.meetsMinimum) {
     throw new AppError("BELOW_MINIMUM", "Minimum order value not reached", 422, {
@@ -81,11 +91,8 @@ export async function createCheckout(raw: unknown, now = new Date()): Promise<{ 
     });
   }
 
-  const s = merchant.settings;
-  // No slot picking: the customer sees an estimate, we assign the earliest available delivery window.
-  const estimate = availableSlots(zone.slots, now, s.slotLeadTimeHours, s.slotHorizonDays)[0];
-  if (!estimate) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
-  const slot = zone.slots.find((x) => x.id === estimate.slotId)!;
+  // No slot picking: the customer sees the next delivery date and we assign exactly that slot.
+  if (!slot) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
   const applicationFeeCents = 0; // commission is settled outside the platform
   const accessToken = randomBytes(24).toString("base64url");
 
@@ -108,11 +115,15 @@ export async function createCheckout(raw: unknown, now = new Date()): Promise<{ 
         merchantId: merchant.id,
         customerId: customer.id,
         addressId: address.id,
-        zoneId: zone.id,
-        slotId: slot.id,
-        deliveryDate: new Date(`${estimate.date}T00:00:00.000Z`),
-        slotStartTime: slot.startTime,
-        slotEndTime: slot.endTime,
+        zoneId,
+        routeId,
+        zoneName: check.zone!.name,
+        deliveryMode: check.mode!,
+        minOrderCents: check.minOrderCents,
+        freeDeliveryThresholdCents: check.freeDeliveryThresholdCents,
+        deliveryDate: new Date(`${slot.date}T00:00:00.000Z`),
+        slotStartTime: slot.windowStart,
+        slotEndTime: slot.windowEnd,
         deliveryInstructions: input.deliveryInstructions || null,
         locale: input.locale,
         subtotalCents: totals.subtotalCents,

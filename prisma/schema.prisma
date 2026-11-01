@@ -33,6 +33,18 @@ enum CommissionStatus {
   REVERSED
 }
 
+enum DeliveryMode {
+  REGULAR
+  PREORDER_ONLY
+}
+
+enum ScheduleKind {
+  /// Every week on `weekday`.
+  WEEKLY
+  /// The `nth` `weekday` of each month (e.g. first Saturday).
+  NTH_WEEKDAY_OF_MONTH
+}
+
 /// A partner butcher. MVP has exactly one row; every order points at its merchant
 /// so multi-merchant can be added later without reshaping orders.
 model Merchant {
@@ -52,6 +64,7 @@ model Merchant {
   settings      MerchantSettings?
   products      Product[]
   deliveryZones DeliveryZone[]
+  blackoutDates DeliveryBlackoutDate[]
   orders        Order[]
 }
 
@@ -59,15 +72,10 @@ model MerchantSettings {
   id                      String   @id @default(cuid())
   merchantId              String   @unique
   merchant                Merchant @relation(fields: [merchantId], references: [id])
-  minOrderCents           Int      @default(15000)
-  deliveryFeeCents        Int      @default(0)
-  /// Optional: delivery is free above this merchandise subtotal. null = never free.
-  freeDeliveryOverCents   Int?
   /// Platform commission in basis points (1500 = 15%). Placeholder, not a confirmed agreement.
   commissionBps           Int      @default(1500)
-  /// Minimum hours between ordering and the earliest bookable slot.
-  slotLeadTimeHours       Int      @default(24)
-  slotHorizonDays         Int      @default(14)
+  /// How far ahead (days) the next-delivery search looks. Must cover the longest cycle (monthly = 31+).
+  slotHorizonDays         Int      @default(90)
   updatedAt               DateTime @updatedAt
 }
 
@@ -105,6 +113,10 @@ model Product {
   allergenInfo   String?
   isAvailable    Boolean  @default(true)
   isFeatured     Boolean  @default(false)
+  /// Hidden products are not listed or reachable in the storefront.
+  isHidden       Boolean  @default(false)
+  /// Can be ordered from preorder-only zones (Ramadan box, Kurban/aqiqah shares).
+  preorderEligible Boolean @default(false)
   sortOrder      Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -136,38 +148,80 @@ model DeliveryZone {
   merchantId String
   merchant   Merchant @relation(fields: [merchantId], references: [id])
   name       String
+  mode       DeliveryMode @default(REGULAR)
   isActive   Boolean  @default(true)
-  /// Per-zone override of the fee; null uses the merchant default.
-  deliveryFeeCents Int?
-  postcodes  DeliveryPostcode[]
-  slots      DeliverySlot[]
+  sortOrder  Int      @default(0)
+  minOrderCents    Int @default(0)
+  deliveryFeeCents Int @default(0)
+  /// Delivery is free from this merchandise subtotal. null = never free.
+  freeDeliveryThresholdCents Int?
+  routes     DeliveryRoute[]
   orders     Order[]
 
   @@index([merchantId])
 }
 
-/// pattern is an exact postcode ("10115") or a prefix ending in * ("101*").
-model DeliveryPostcode {
-  id      String       @id @default(cuid())
-  zoneId  String
-  zone    DeliveryZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  pattern String
-
-  @@unique([zoneId, pattern])
-}
-
-model DeliverySlot {
+model DeliveryRoute {
   id        String       @id @default(cuid())
   zoneId    String
   zone      DeliveryZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  /// 0 = Sunday ... 6 = Saturday
-  weekday   Int
-  startTime String // "10:00"
-  endTime   String // "14:00"
+  name      String
   isActive  Boolean      @default(true)
+  schedules RouteSchedule[]
+  postcodes PostcodeRoute[]
   orders    Order[]
 
-  @@unique([zoneId, weekday, startTime, endTime])
+  @@index([zoneId])
+}
+
+model RouteSchedule {
+  id        String        @id @default(cuid())
+  routeId   String
+  route     DeliveryRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  kind      ScheduleKind  @default(WEEKLY)
+  /// ISO weekday: 1 = Monday ... 7 = Sunday (Sunday is never delivered).
+  weekday   Int
+  /// Only for NTH_WEEKDAY_OF_MONTH: 1..5.
+  nth       Int?
+  windowStart String // "14:00" Europe/Berlin
+  windowEnd   String // "18:00"
+  /// Order cutoff: hours before the window starts. Whole days are subtracted on the Berlin calendar (DST-stable).
+  cutoffHoursBefore Int
+  isActive  Boolean       @default(true)
+
+  @@index([routeId])
+}
+
+/// One postcode belongs to at most one route. Stored as text to keep leading zeros ("03046").
+model PostcodeRoute {
+  postcode String        @id
+  routeId  String
+  route    DeliveryRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  @@index([routeId])
+}
+
+model DeliveryBlackoutDate {
+  id         String   @id @default(cuid())
+  merchantId String
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  date       DateTime @db.Date
+  reason     String
+
+  @@unique([merchantId, date])
+}
+
+model WaitlistEntry {
+  id                String   @id @default(cuid())
+  postcode          String
+  name              String
+  /// Phone or email, as typed.
+  contact           String
+  preferredLanguage String
+  consentGivenAt    DateTime
+  createdAt         DateTime @default(now())
+
+  @@index([postcode])
 }
 
 model Customer {
@@ -210,8 +264,15 @@ model Order {
   address       Address  @relation(fields: [addressId], references: [id])
   zoneId        String
   zone          DeliveryZone @relation(fields: [zoneId], references: [id])
-  slotId        String
-  slot          DeliverySlot @relation(fields: [slotId], references: [id])
+  routeId       String?
+  route         DeliveryRoute? @relation(fields: [routeId], references: [id], onDelete: SetNull)
+  /// Snapshot of the delivery terms at order time (zone rows are editable, orders are not).
+  zoneName      String
+  deliveryMode  DeliveryMode @default(REGULAR)
+  minOrderCents Int          @default(0)
+  freeDeliveryThresholdCents Int?
+  /// Id of the pre-v2 DeliverySlot this order used (table dropped); traceability only.
+  legacySlotId  String?
 
   /// Calendar date of delivery (UTC midnight of the local date) + snapshot of slot times.
   deliveryDate     DateTime @db.Date

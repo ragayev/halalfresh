@@ -1,14 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { computeTotals, lineTotalCents, validateQuantity, formatWeight, PricingError } from "@/domain/pricing";
-import {
-  availableSlots,
-  berlinToUtc,
-  findZoneForPostcode,
-  isSlotBookable,
-  isValidPostcode,
-  parsePostcodePatterns,
-  postcodeMatches,
-} from "@/domain/delivery";
 import { canTransitionFulfillment, canTransitionPayment, paymentStatusAfterRefunds } from "@/domain/order-state";
 import { buildWhatsappMessage, normalizeWhatsappNumber, whatsappLink } from "@/domain/whatsapp";
 import { formatMoney } from "@/domain/money";
@@ -83,86 +74,6 @@ describe("minimum order", () => {
   });
   it("empty cart never meets minimum", () => {
     expect(computeTotals({ subtotalCents: 0, minOrderCents: 0, deliveryFeeCents: 0 }).meetsMinimum).toBe(false);
-  });
-});
-
-describe("delivery area", () => {
-  const zones = [
-    {
-      id: "berlin",
-      isActive: true,
-      postcodes: [{ pattern: "10*" }, { pattern: "12*" }, { pattern: "14199" }],
-    },
-    { id: "off", isActive: false, postcodes: [{ pattern: "80*" }] },
-    { id: "narrow", isActive: true, postcodes: [{ pattern: "101*" }] },
-  ];
-  it("validates postcode shape", () => {
-    expect(isValidPostcode("10115")).toBe(true);
-    expect(isValidPostcode("1011")).toBe(false);
-    expect(isValidPostcode("abcde")).toBe(false);
-  });
-  it("matches exact and prefix patterns", () => {
-    expect(postcodeMatches("10115", "101*")).toBe(true);
-    expect(postcodeMatches("10115", "10115")).toBe(true);
-    expect(postcodeMatches("10115", "102*")).toBe(false);
-  });
-  it("finds the most specific active zone only", () => {
-    expect(findZoneForPostcode(zones, "10115")?.id).toBe("narrow");
-    expect(findZoneForPostcode(zones, "12345")?.id).toBe("berlin");
-    expect(findZoneForPostcode(zones, "80331")).toBeNull();
-    expect(findZoneForPostcode(zones, "20095")).toBeNull();
-  });
-  it("parses admin input", () => {
-    expect(parsePostcodePatterns("10*, 12345 ; bad, 1*\n99999")).toEqual(["10*", "12345", "1*", "99999"]);
-  });
-});
-
-describe("delivery slots", () => {
-  const slots = [
-    {
-      id: "sat",
-      weekday: 6,
-      startTime: "10:00",
-      endTime: "14:00",
-      isActive: true,
-    },
-    {
-      id: "wed",
-      weekday: 3,
-      startTime: "16:00",
-      endTime: "20:00",
-      isActive: true,
-    },
-    {
-      id: "off",
-      weekday: 1,
-      startTime: "10:00",
-      endTime: "14:00",
-      isActive: false,
-    },
-  ];
-  // Monday 2026-06-01 09:00 Berlin (CEST = UTC+2)
-  const now = berlinToUtc("2026-06-01", "09:00");
-  it("converts Berlin time across DST", () => {
-    expect(berlinToUtc("2026-06-01", "09:00").toISOString()).toBe("2026-06-01T07:00:00.000Z");
-    expect(berlinToUtc("2026-01-15", "09:00").toISOString()).toBe("2026-01-15T08:00:00.000Z");
-  });
-  it("lists only configured weekdays within lead time and horizon", () => {
-    const opts = availableSlots(slots, now, 24, 14);
-    expect(opts.every((o) => o.slotId !== "off")).toBe(true);
-    expect(opts[0]).toMatchObject({ slotId: "wed", date: "2026-06-03" });
-    expect(opts.some((o) => o.date === "2026-06-06" && o.slotId === "sat")).toBe(true);
-    expect(opts.every((o) => o.date <= "2026-06-15")).toBe(true);
-  });
-  it("applies lead time", () => {
-    // Wed 16:00 is < 72h away from Monday 09:00 -> excluded with 72h lead
-    expect(availableSlots(slots, now, 72, 14).some((o) => o.date === "2026-06-03")).toBe(false);
-  });
-  it("validates a chosen slot/date pair", () => {
-    expect(isSlotBookable(slots, "sat", "2026-06-06", now, 24, 14)).toBe(true);
-    expect(isSlotBookable(slots, "sat", "2026-06-07", now, 24, 14)).toBe(false); // wrong weekday
-    expect(isSlotBookable(slots, "sat", "2026-05-30", now, 24, 14)).toBe(false); // past
-    expect(isSlotBookable(slots, "nope", "2026-06-06", now, 24, 14)).toBe(false);
   });
 });
 

@@ -5,7 +5,10 @@ import type { Metadata } from "next";
 import { SearchX } from "lucide-react";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { cookies } from "next/headers";
 import { listCategories, listProducts, type Sort } from "@/server/catalog";
+import { resolveDelivery } from "@/server/delivery-service";
+import { isValidPostcode } from "@/domain/delivery";
 import { ProductCard } from "@/components/product-card";
 import { ShopControls } from "@/components/shop-controls";
 import { buttonClasses, Container } from "@/components/ui";
@@ -46,6 +49,10 @@ export default async function Shop({
   if (!isLocale(locale)) notFound();
   const sp = await searchParams;
   const d = await getDictionary(locale);
+  // Preorder-only areas (and the unsupported-postcode offer) only see preorder-eligible products.
+  const pc = (await cookies()).get("hf_postcode")?.value ?? "";
+  const mode = isValidPostcode(pc) ? (await resolveDelivery(pc)).check.mode : null;
+  const preorderOnly = mode === "PREORDER_ONLY" || sp.preorder === "1";
   const sort = (SORTS.has(sp.sort ?? "") ? sp.sort : "popular") as Sort;
   const [cats, products] = await Promise.all([
     listCategories(locale),
@@ -54,6 +61,7 @@ export default async function Shop({
       q: sp.q?.slice(0, 80),
       sort,
       availableOnly: sp.available === "1",
+      preorderOnly,
     }),
   ]);
   const active = cats.find((c) => c.slug === sp.category);
