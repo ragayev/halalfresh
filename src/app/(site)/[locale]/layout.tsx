@@ -2,10 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces } from "next/font/google";
 import { notFound } from "next/navigation";
 import "../../globals.css";
-import { LOCALES, isLocale } from "@/i18n/config";
+import { LOCALES, isLocale, isRtl } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { I18nProvider } from "@/i18n/provider";
 import { CartProvider } from "@/components/cart-store";
+import { DeliveryProvider } from "@/components/delivery-provider";
+import { PostcodeGate } from "@/components/delivery-ui";
 import { Header, BottomNav, Footer } from "@/components/chrome";
 import { siteUrl } from "@/lib/env";
 
@@ -61,20 +63,28 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   if (!isLocale(locale)) notFound();
   const dictionary = await getDictionary(locale);
   return (
-    <html lang={locale} data-scroll-behavior="smooth" className={`${inter.variable} ${fraunces.variable}`}>
+    <html
+      lang={locale}
+      dir={isRtl(locale) ? "rtl" : "ltr"}
+      data-scroll-behavior="smooth"
+      className={`${inter.variable} ${fraunces.variable}`}
+    >
       <body className="min-h-dvh pb-20 lg:pb-0">
         <I18nProvider locale={locale} dictionary={dictionary}>
           <CartProvider>
-            <a
-              href="#main"
-              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-4 focus:py-2"
-            >
-              {dictionary.nav.skip}
-            </a>
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
-            <BottomNav />
+            <DeliveryProvider>
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-4 focus:py-2"
+              >
+                {dictionary.nav.skip}
+              </a>
+              <Header />
+              <main id="main">{children}</main>
+              <Footer />
+              <BottomNav />
+              <PostcodeGate />
+            </DeliveryProvider>
           </CartProvider>
         </I18nProvider>
       </body>

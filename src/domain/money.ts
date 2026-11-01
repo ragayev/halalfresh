@@ -6,7 +6,8 @@ export function assertCents(n: number, label = "amount"): asserts n is Cents {
 }
 
 export function formatMoney(cents: Cents, locale = "en"): string {
-  const tag = locale === "de" ? "de-DE" : locale === "tr" ? "tr-TR" : "en-IE";
+  // Arabic keeps Latin digits so prices, dates and times read consistently.
+  const tag = locale === "de" ? "de-DE" : locale === "tr" ? "tr-TR" : locale === "ar" ? "ar-u-nu-latn" : "en-IE";
   return new Intl.NumberFormat(tag, {
     style: "currency",
     currency: "EUR",

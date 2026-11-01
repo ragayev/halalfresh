@@ -25,7 +25,7 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
             />
           )}
           {!p.isAvailable && (
-            <Badge tone="gray" className="absolute left-2 top-2 bg-white/95">
+            <Badge tone="gray" className="absolute start-2 top-2 bg-white/95">
               {d.common.unavailable}
             </Badge>
           )}
@@ -43,10 +43,14 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
           {p.stepGrams !== p.minGrams ? ` · ${p.stepGrams >= 1000 ? formatWeight(p.stepGrams) : `${p.stepGrams} g`} +` : ""}
         </p>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <p className="text-lg font-bold leading-none text-ink">
-            {formatMoney(p.pricePerKgCents, locale)}
-            <span className="text-xs font-medium text-muted">{d.common.perKg}</span>
-          </p>
+          {p.pricePerKgCents > 0 ? (
+            <p className="text-lg font-bold leading-none text-ink">
+              {formatMoney(p.pricePerKgCents, locale)}
+              <span className="text-xs font-medium text-muted">{d.common.perKg}</span>
+            </p>
+          ) : (
+            <p className="text-sm font-semibold leading-none text-muted">{d.product.priceSoon}</p>
+          )}
           {p.isAvailable && (
             <QuickAdd
               product={{

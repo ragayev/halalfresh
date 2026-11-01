@@ -22,10 +22,10 @@ export default async function Products() {
         </Link>
       </div>
       <Card className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[860px] text-left text-sm">
           <thead className="border-b border-line text-xs uppercase text-muted">
             <tr>
-              {["Name", "Category", "€/kg", "Step", "Available", "Featured", ""].map((h) => (
+              {["Name", "Category", "€/kg", "Step", "Available", "Featured", "Preorder", "Hidden", ""].map((h) => (
                 <th key={h} className="px-4 py-3">
                   {h}
                 </th>
@@ -44,6 +44,12 @@ export default async function Products() {
                 </td>
                 <td className="px-4 py-3">
                   <ToggleButton id={p.id} field="isFeatured" value={p.isFeatured} />
+                </td>
+                <td className="px-4 py-3">
+                  <ToggleButton id={p.id} field="preorderEligible" value={p.preorderEligible} />
+                </td>
+                <td className="px-4 py-3">
+                  <ToggleButton id={p.id} field="isHidden" value={p.isHidden} />
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link href={`/admin/products/${p.id}`} className="font-medium text-forest hover:underline">

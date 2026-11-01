@@ -15,7 +15,14 @@ export interface PricedLine {
 const MAX_LINES = 50;
 
 /** Single source of truth for cart pricing. Client-supplied prices are never read. */
-export async function priceCart(lines: CartLineInput[], opts: { deliveryFeeOverrideCents?: number | null } = {}) {
+export interface DeliveryTerms {
+  mode: "REGULAR" | "PREORDER_ONLY";
+  minOrderCents: number;
+  deliveryFeeCents: number;
+  freeDeliveryThresholdCents: number | null;
+}
+
+export async function priceCart(lines: CartLineInput[], terms: DeliveryTerms) {
   if (!lines.length) throw new AppError("EMPTY_CART", "Cart is empty");
   if (lines.length > MAX_LINES) throw new AppError("VALIDATION", "Too many cart lines");
   const ids = new Set(lines.map((l) => l.productId));
@@ -29,7 +36,13 @@ export async function priceCart(lines: CartLineInput[], opts: { deliveryFeeOverr
 
   const priced: PricedLine[] = lines.map((l) => {
     const p = byId.get(l.productId);
-    if (!p) throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart no longer exists", 409, { productId: l.productId });
+    if (!p || p.isHidden)
+      throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart no longer exists", 409, { productId: l.productId });
+    if (terms.mode === "PREORDER_ONLY" && !p.preorderEligible)
+      throw new AppError("PREORDER_ONLY", "This delivery area only accepts preorder products", 422, {
+        productId: p.id,
+        productName: p.name,
+      });
     try {
       validateQuantity(p, l.grams);
     } catch (e) {
@@ -52,12 +65,11 @@ export async function priceCart(lines: CartLineInput[], opts: { deliveryFeeOverr
   });
 
   const subtotalCents = priced.reduce((s, l) => s + l.lineTotalCents, 0);
-  const s = merchant.settings;
   const totals = computeTotals({
     subtotalCents,
-    minOrderCents: s.minOrderCents,
-    deliveryFeeCents: opts.deliveryFeeOverrideCents ?? s.deliveryFeeCents,
-    freeDeliveryOverCents: s.freeDeliveryOverCents,
+    minOrderCents: terms.minOrderCents,
+    deliveryFeeCents: terms.deliveryFeeCents,
+    freeDeliveryOverCents: terms.freeDeliveryThresholdCents,
   });
   return { merchant, lines: priced, totals };
 }

@@ -1,28 +1,17 @@
-import { db } from "@/lib/db";
+import Link from "next/link";
 import { requireAdmin } from "@/server/auth";
 import { getMerchant } from "@/server/settings";
 import { getGateway } from "@/server/payments/gateway";
-import { saveDeliveryAction, saveMerchantAction } from "../actions";
+import { saveMerchantAction } from "../actions";
 import { ActionForm } from "@/components/admin/forms";
 import { StripePanel } from "@/components/admin/stripe-panel";
-import { Badge, Card, Field, Input, Textarea } from "@/components/ui";
+import { Badge, Card, Field, Input } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
-const DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 export default async function Settings() {
   await requireAdmin();
   const m = await getMerchant();
-  const zone = await db.deliveryZone.findFirst({
-    where: { merchantId: m.id },
-    include: {
-      postcodes: true,
-      slots: {
-        where: { isActive: true },
-        orderBy: [{ weekday: "asc" }, { startTime: "asc" }],
-      },
-    },
-  });
   let status = null,
     statusError = "";
   try {
@@ -30,8 +19,6 @@ export default async function Settings() {
   } catch {
     statusError = "Could not reach Stripe";
   }
-  const s = m.settings,
-    eur = (c: number) => (c / 100).toFixed(2);
   return (
     <div className="max-w-3xl space-y-6">
       <h1 className="text-2xl font-semibold">Settings</h1>
@@ -73,42 +60,14 @@ export default async function Settings() {
         </ActionForm>
       </Card>
       <Card className="p-6">
-        <h2 className="mb-4 font-semibold">Delivery</h2>
-        <ActionForm action={saveDeliveryAction}>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Minimum order (€)" htmlFor="minOrder" hint="Merchandise only, excl. delivery">
-              <Input id="minOrder" name="minOrder" inputMode="decimal" defaultValue={eur(s.minOrderCents)} required />
-            </Field>
-            <Field label="Delivery fee (€)" htmlFor="deliveryFee">
-              <Input id="deliveryFee" name="deliveryFee" inputMode="decimal" defaultValue={eur(s.deliveryFeeCents)} required />
-            </Field>
-            <Field label="Free delivery from (€)" htmlFor="freeOver" hint="Empty = never">
-              <Input
-                id="freeOver"
-                name="freeOver"
-                inputMode="decimal"
-                defaultValue={s.freeDeliveryOverCents != null ? eur(s.freeDeliveryOverCents) : ""}
-              />
-            </Field>
-            <Field label="Slot lead time (hours)" htmlFor="leadHours">
-              <Input id="leadHours" name="leadHours" inputMode="numeric" defaultValue={s.slotLeadTimeHours} required />
-            </Field>
-            <Field label="Bookable days ahead" htmlFor="horizonDays">
-              <Input id="horizonDays" name="horizonDays" inputMode="numeric" defaultValue={s.slotHorizonDays} required />
-            </Field>
-          </div>
-          <Field label="Supported postcodes" htmlFor="postcodes" hint="Comma/space separated. Exact (10115) or prefix (101*).">
-            <Textarea id="postcodes" name="postcodes" defaultValue={zone?.postcodes.map((p) => p.pattern).join(", ") ?? ""} />
-          </Field>
-          <Field label="Delivery slots (Europe/Berlin)" htmlFor="slots" hint="One per line: day hh:mm-hh:mm, e.g. sat 10:00-14:00">
-            <Textarea
-              id="slots"
-              name="slots"
-              rows={5}
-              defaultValue={zone?.slots.map((x) => `${DAYS[x.weekday]} ${x.startTime}-${x.endTime}`).join("\n") ?? ""}
-            />
-          </Field>
-        </ActionForm>
+        <h2 className="mb-1 font-semibold">Delivery</h2>
+        <p className="text-sm text-muted">
+          Zones, minimum order, fees, schedules, postcodes and blackout dates moved to{" "}
+          <Link href="/admin/delivery" className="font-medium text-forest underline">
+            Delivery
+          </Link>
+          .
+        </p>
       </Card>
       <Badge tone="amber">Legal pages are placeholders in src/content/legal.ts.</Badge>
     </div>

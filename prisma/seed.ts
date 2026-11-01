@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 const db = new PrismaClient();
 
@@ -252,7 +254,12 @@ async function main() {
   const merchant =
     (await db.merchant.findFirst()) ??
     (await db.merchant.create({
-      data: { name: "Partner Butcher (configure in Admin)" },
+      data: {
+        name: "Kevser Fleischerei",
+        addressLine: "Hermannstraße 64",
+        postalCode: "12049",
+        city: "Berlin",
+      },
     }));
   await db.merchantSettings.upsert({
     where: { merchantId: merchant.id },
@@ -312,25 +319,9 @@ async function main() {
     });
   }
 
-  if (!(await db.deliveryZone.findFirst({ where: { merchantId: merchant.id } }))) {
-    const zone = await db.deliveryZone.create({
-      data: {
-        merchantId: merchant.id,
-        name: "Berlin (demo coverage — review before launch)",
-      },
-    });
-    for (const pattern of ["10*", "12*", "13*", "141*"]) await db.deliveryPostcode.create({ data: { zoneId: zone.id, pattern } });
-    for (const [weekday, startTime, endTime] of [
-      [3, "16:00", "20:00"],
-      [5, "16:00", "20:00"],
-      [6, "10:00", "14:00"],
-      [6, "14:00", "18:00"],
-    ] as const) {
-      await db.deliverySlot.create({
-        data: { zoneId: zone.id, weekday, startTime, endTime },
-      });
-    }
-  }
+  await seedCatalog(merchant.id);
+  await seedPreorderProducts(merchant.id);
+  await seedDelivery(merchant.id);
 
   const email = (process.env.ADMIN_EMAIL ?? "").toLowerCase();
   const password = process.env.ADMIN_PASSWORD ?? "";
@@ -342,6 +333,240 @@ async function main() {
     });
     console.log("Admin user ready:", email);
   } else console.log("Skipped admin user: set ADMIN_EMAIL and ADMIN_PASSWORD (min 10 chars).");
+}
+
+// ---------------------------------------------------------------------------------------------
+// Real catalogue from the asset bundle (prisma/data/catalog.json, images in public/images/products).
+// No prices or halal claims were supplied: products start at price 0 and unavailable ("price coming soon").
+// "active" bundle items are listed (unavailable); "draft" ones are hidden. The admin sets price + availability.
+// Create-only: re-running never overwrites what the admin changed. TODO confirm with Kevser: prices, units, cuts, images.
+// ---------------------------------------------------------------------------------------------
+interface CatalogFile {
+  categories: { slug: string; tr: string; de: string; en: string; ar: string }[];
+  products: {
+    id: string;
+    category: string;
+    image: string;
+    unit: string;
+    status: "active" | "draft";
+    name: Record<"tr" | "de" | "en" | "ar", string>;
+  }[];
+}
+
+async function seedCatalog(merchantId: string) {
+  const cat = JSON.parse(readFileSync(join(__dirname, "data/catalog.json"), "utf8")) as CatalogFile;
+  const ids = new Map<string, string>();
+  for (const [i, c] of cat.categories.entries()) {
+    const row = await db.category.upsert({
+      where: { slug: c.slug },
+      update: {},
+      create: {
+        slug: c.slug,
+        name: c.en,
+        sortOrder: 20 + i,
+        translations: { tr: { name: c.tr }, de: { name: c.de }, en: { name: c.en }, ar: { name: c.ar } },
+      },
+    });
+    ids.set(c.slug, row.id);
+  }
+  const soon = {
+    tr: "Fiyat ve ayrıntılar netleşecek.",
+    de: "Preis und Details folgen.",
+    en: "Price and details to be confirmed.",
+    ar: "سيتم تأكيد السعر والتفاصيل.",
+  };
+  for (const [i, p] of cat.products.entries()) {
+    if (await db.product.findUnique({ where: { slug: p.id } })) continue;
+    const created = await db.product.create({
+      data: {
+        merchantId,
+        categoryId: ids.get(p.category)!,
+        slug: p.id,
+        name: p.name.en,
+        description: soon.en,
+        pricePerKgCents: 0, // TODO confirm with Kevser
+        stepGrams: 500, // TODO confirm with Kevser (package items: unit is "package", not kg)
+        minGrams: p.unit === "package" ? 1000 : 500,
+        maxGrams: 20000,
+        isAvailable: false,
+        isHidden: p.status === "draft",
+        sortOrder: 100 + i,
+        translations: Object.fromEntries((["tr", "de", "en", "ar"] as const).map((l) => [l, { name: p.name[l], description: soon[l] }])),
+      },
+    });
+    await db.productImage.create({ data: { productId: created.id, url: p.image, alt: p.name.en } });
+  }
+  console.log(`Catalogue ready: ${cat.products.length} products (all unavailable until priced).`);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Preorder products (hidden + unavailable until Kevser confirms; admin activates them).
+// ---------------------------------------------------------------------------------------------
+async function seedPreorderProducts(merchantId: string) {
+  const cat = await db.category.upsert({
+    where: { slug: "preorder" },
+    update: {},
+    create: {
+      slug: "preorder",
+      name: "Preorder",
+      sortOrder: 99,
+      imageUrl: "/products/cat-box.svg",
+      translations: { de: { name: "Vorbestellung" }, tr: { name: "Ön sipariş" }, ar: { name: "طلب مسبق" } },
+    },
+  });
+  // TODO confirm with Kevser: prices, units (per-kg pricing may not fit boxes/shares), contents, availability dates.
+  const items = [
+    {
+      slug: "ramazan-kutusu",
+      name: "Ramazan Kutusu",
+      en: ["Ramadan Box", "Preorder: Ramadan box. Contents and price to be confirmed."],
+      de: ["Ramadan-Box", "Vorbestellung: Ramadan-Box. Inhalt und Preis folgen."],
+      tr: ["Ramazan Kutusu", "Ön sipariş: Ramazan kutusu. İçerik ve fiyat netleşecek."],
+      ar: ["صندوق رمضان", "طلب مسبق: صندوق رمضان. سيتم تأكيد المحتوى والسعر."],
+    },
+    {
+      slug: "kurban-hissesi",
+      name: "Kurban Hissesi",
+      en: ["Kurban Share", "Preorder: Kurban share. Details and price to be confirmed."],
+      de: ["Kurban-Anteil", "Vorbestellung: Kurban-Anteil. Details und Preis folgen."],
+      tr: ["Kurban Hissesi", "Ön sipariş: Kurban hissesi. Ayrıntılar ve fiyat netleşecek."],
+      ar: ["حصة الأضحية", "طلب مسبق: حصة أضحية. سيتم تأكيد التفاصيل والسعر."],
+    },
+    {
+      slug: "akika",
+      name: "Akika",
+      en: ["Aqiqah", "Preorder: Aqiqah. Details and price to be confirmed."],
+      de: ["Aqiqa", "Vorbestellung: Aqiqa. Details und Preis folgen."],
+      tr: ["Akika", "Ön sipariş: Akika. Ayrıntılar ve fiyat netleşecek."],
+      ar: ["عقيقة", "طلب مسبق: عقيقة. سيتم تأكيد التفاصيل والسعر."],
+    },
+  ];
+  for (const [i, it] of items.entries()) {
+    const data = {
+      merchantId,
+      categoryId: cat.id,
+      name: it.name,
+      description: it.tr[1],
+      pricePerKgCents: 0, // TODO confirm with Kevser: price. Hidden + unavailable, so it cannot be bought at 0.
+      stepGrams: 1000,
+      minGrams: 1000,
+      maxGrams: 20000,
+      isAvailable: false,
+      isHidden: true,
+      preorderEligible: true,
+      sortOrder: 90 + i,
+      translations: {
+        en: { name: it.en[0], description: it.en[1] },
+        de: { name: it.de[0], description: it.de[1] },
+        tr: { name: it.tr[0], description: it.tr[1] },
+        ar: { name: it.ar[0], description: it.ar[1] },
+      },
+    };
+    // Never overwrite what the admin has since changed (price, visibility): create only.
+    const existing = await db.product.findUnique({ where: { slug: it.slug } });
+    if (existing) continue;
+    const p = await db.product.create({ data: { slug: it.slug, ...data } });
+    await db.productImage.create({ data: { productId: p.id, url: "/products/cat-box.svg", alt: it.name } });
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Delivery zones. Every value below is a PLACEHOLDER from the brief.
+// Postcodes come from prisma/data/postcodes.verified.json (scripts/verify-postcodes.ts, OpenPLZ).
+// ---------------------------------------------------------------------------------------------
+interface VerifiedPostcodes {
+  berlin: string[];
+  verified: { zone: 2 | 3; route: string; postcode: string }[];
+}
+
+async function seedDelivery(merchantId: string) {
+  // Re-running the seed must never clobber admin-managed delivery config: only (re)build when no routes exist
+  // yet (fresh DB, or right after the v2 migration), or when forced.
+  if ((await db.deliveryRoute.count()) > 0 && process.env.SEED_RESET_DELIVERY !== "1") {
+    console.log("Delivery config exists; skipping (set SEED_RESET_DELIVERY=1 to rebuild the demo zones).");
+    return;
+  }
+  // Zones referenced by existing orders are kept (their orders carry a full snapshot) but are never matched again.
+  await db.deliveryZone.updateMany({ where: { merchantId }, data: { isActive: false } });
+  await db.deliveryZone.deleteMany({ where: { merchantId, orders: { none: {} } } });
+  await db.deliveryBlackoutDate.deleteMany({ where: { merchantId } });
+
+  const data = JSON.parse(readFileSync(join(__dirname, "data/postcodes.verified.json"), "utf8")) as VerifiedPostcodes;
+  const assigned = new Set<string>();
+
+  const mkZone = (d: {
+    name: string;
+    mode: "REGULAR" | "PREORDER_ONLY";
+    minOrderCents: number;
+    deliveryFeeCents: number;
+    freeDeliveryThresholdCents: number | null;
+    sortOrder: number;
+  }) => db.deliveryZone.create({ data: { merchantId, ...d } });
+  const mkRoute = async (
+    zoneId: string,
+    name: string,
+    schedules: {
+      weekday: number;
+      kind?: "WEEKLY" | "NTH_WEEKDAY_OF_MONTH";
+      nth?: number;
+      windowStart: string;
+      windowEnd: string;
+      cutoffHoursBefore: number;
+    }[],
+  ) => db.deliveryRoute.create({ data: { zoneId, name, schedules: { create: schedules } } });
+  const assign = async (routeId: string, postcodes: string[]) => {
+    // Explicit assignments made earlier win; later (broader) lists never steal a postcode.
+    const fresh = postcodes.filter((p) => !assigned.has(p));
+    fresh.forEach((p) => assigned.add(p));
+    await db.postcodeRoute.createMany({ data: fresh.map((postcode) => ({ postcode, routeId })) });
+  };
+  const verified = (zone: 2 | 3, route: string) => data.verified.filter((v) => v.zone === zone && v.route === route).map((v) => v.postcode);
+
+  // Zone 2 + 3 first, so their explicit postcodes win any overlap with Berlin.
+  // TODO confirm with Kevser: min order €150, fee €0, Tuesday/Thursday 14:00–18:00, 48h cutoff.
+  const z2 = await mkZone({
+    name: "Berlin suburbs",
+    mode: "REGULAR",
+    minOrderCents: 15000,
+    deliveryFeeCents: 0,
+    freeDeliveryThresholdCents: null,
+    sortOrder: 2,
+  });
+  const west = await mkRoute(z2.id, "West", [{ weekday: 2, windowStart: "14:00", windowEnd: "18:00", cutoffHoursBefore: 48 }]);
+  const northEast = await mkRoute(z2.id, "North/East", [{ weekday: 4, windowStart: "14:00", windowEnd: "18:00", cutoffHoursBefore: 48 }]);
+  await assign(west.id, verified(2, "West"));
+  await assign(northEast.id, verified(2, "North/East"));
+
+  // TODO confirm with Kevser: min order €300, fee €0, first Saturday of the month 14:00–18:00, 7-day cutoff.
+  const z3 = await mkZone({
+    name: "Far Brandenburg",
+    mode: "PREORDER_ONLY",
+    minOrderCents: 30000,
+    deliveryFeeCents: 0,
+    freeDeliveryThresholdCents: null,
+    sortOrder: 3,
+  });
+  const far = await mkRoute(z3.id, "Far Brandenburg", [
+    { kind: "NTH_WEEKDAY_OF_MONTH", nth: 1, weekday: 6, windowStart: "14:00", windowEnd: "18:00", cutoffHoursBefore: 7 * 24 },
+  ]);
+  await assign(far.id, verified(3, "Far Brandenburg"));
+
+  // TODO confirm with Kevser: min €60, fee €4.90, free from €120, Mon–Sat 14:00–18:00, 24h cutoff.
+  const z1 = await mkZone({
+    name: "Berlin",
+    mode: "REGULAR",
+    minOrderCents: 6000,
+    deliveryFeeCents: 490,
+    freeDeliveryThresholdCents: 12000,
+    sortOrder: 1,
+  });
+  const berlin = await mkRoute(
+    z1.id,
+    "Berlin",
+    [1, 2, 3, 4, 5, 6].map((weekday) => ({ weekday, windowStart: "14:00", windowEnd: "18:00", cutoffHoursBefore: 24 })),
+  );
+  await assign(berlin.id, data.berlin);
+  console.log(`Delivery zones seeded: ${assigned.size} postcodes.`);
 }
 
 main().finally(() => db.$disconnect());

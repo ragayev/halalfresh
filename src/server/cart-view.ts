@@ -2,8 +2,9 @@ import { db } from "@/lib/db";
 import { computeTotals, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
 import { getProductsByIds } from "./catalog";
 import { getMerchant } from "./settings";
+import { resolveDelivery } from "./delivery-service";
 
-export type LineIssue = "UNAVAILABLE" | "NOT_FOUND" | "QUANTITY";
+export type LineIssue = "UNAVAILABLE" | "NOT_FOUND" | "QUANTITY" | "NOT_PREORDER";
 
 export interface CartViewLine {
   productId: string;
@@ -20,7 +21,8 @@ export interface CartViewLine {
 }
 
 /** Display-only pricing: tolerant of stale carts (reports issues instead of throwing). Checkout re-validates strictly. */
-export async function cartView(lines: CartLineInput[], locale: string) {
+export async function cartView(lines: CartLineInput[], locale: string, postcode?: string | null) {
+  const delivery = (await resolveDelivery(postcode ?? "")).check;
   const merchant = await getMerchant();
   const products = await getProductsByIds(
     lines.map((l) => l.productId),
@@ -50,10 +52,11 @@ export async function cartView(lines: CartLineInput[], locale: string) {
         issue: "NOT_FOUND",
       };
     let issue: LineIssue | undefined;
+    if (delivery.mode === "PREORDER_ONLY" && !r.preorderEligible) issue = "NOT_PREORDER";
     try {
       validateQuantity(r, l.grams);
     } catch (e) {
-      if (e instanceof PricingError) issue = e.code === "UNAVAILABLE" ? "UNAVAILABLE" : "QUANTITY";
+      if (e instanceof PricingError && !issue) issue = e.code === "UNAVAILABLE" ? "UNAVAILABLE" : "QUANTITY";
     }
     return {
       productId: p.id,
@@ -70,17 +73,17 @@ export async function cartView(lines: CartLineInput[], locale: string) {
     };
   });
 
-  const s = merchant.settings;
   const subtotal = out.reduce((a, l) => a + l.lineTotalCents, 0);
   const totals = computeTotals({
     subtotalCents: subtotal,
-    minOrderCents: s.minOrderCents,
-    deliveryFeeCents: s.deliveryFeeCents,
-    freeDeliveryOverCents: s.freeDeliveryOverCents,
+    minOrderCents: delivery.minOrderCents,
+    deliveryFeeCents: delivery.deliveryFeeCents,
+    freeDeliveryOverCents: delivery.freeDeliveryThresholdCents,
   });
   return {
     lines: out,
     totals,
+    delivery,
     merchant: { name: merchant.legalName ?? merchant.name },
     hasIssues: out.some((l) => l.issue),
   };
