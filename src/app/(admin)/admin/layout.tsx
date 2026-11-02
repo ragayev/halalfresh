@@ -6,7 +6,7 @@ import { getAdmin } from "@/server/auth";
 import { logoutAction } from "./actions";
 import { Leaf } from "lucide-react";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-sans-body", display: "swap" });
 export const metadata: Metadata = {
   title: "Halal Fresh Admin",
   robots: { index: false, follow: false },

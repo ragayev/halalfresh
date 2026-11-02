@@ -27,7 +27,7 @@ export function QuickAdd({
         onClick={() => add(product)}
         aria-label={`${d.common.addToCart}: ${product.name}`}
         data-testid="quick-add"
-        className="grid size-10 place-items-center rounded-lg bg-forest text-white shadow-sm transition hover:bg-forest-dark active:scale-95"
+        className="grid size-11 place-items-center rounded-[var(--radius-button)] bg-forest text-white shadow-sm transition-colors hover:bg-forest-dark active:translate-y-px"
       >
         <Plus className="size-5" aria-hidden />
       </button>
@@ -35,16 +35,16 @@ export function QuickAdd({
   }
   const dec = () => change(product.id, -product.stepGrams, product.minGrams, product.maxGrams);
   return (
-    <div className="inline-flex items-center rounded-full bg-sage p-0.5" role="group" aria-label={product.name}>
+    <div className="inline-flex items-center rounded-[var(--radius-button)] bg-sage p-0.5" role="group" aria-label={product.name}>
       <button
         type="button"
         onClick={dec}
         aria-label={d.common.decrease}
-        className="grid size-9 place-items-center rounded-full text-forest hover:bg-white"
+        className="grid size-10 place-items-center rounded-[10px] text-forest hover:bg-white"
       >
         <Minus className="size-4" aria-hidden />
       </button>
-      <span className="min-w-[2.75rem] text-center text-xs font-bold text-forest-dark" aria-live="polite">
+      <span className="min-w-[2.5rem] text-center text-xs font-bold text-forest-dark" aria-live="polite">
         {formatQuantity(grams, !!product.bundle)}
       </span>
       <button
@@ -52,7 +52,7 @@ export function QuickAdd({
         onClick={() => add(product)}
         disabled={grams + product.stepGrams > product.maxGrams}
         aria-label={d.common.increase}
-        className="grid size-9 place-items-center rounded-full bg-forest text-white hover:bg-forest-dark disabled:opacity-40"
+        className="grid size-10 place-items-center rounded-[10px] bg-forest text-white hover:bg-forest-dark disabled:opacity-40"
       >
         <Plus className="size-4" aria-hidden />
       </button>

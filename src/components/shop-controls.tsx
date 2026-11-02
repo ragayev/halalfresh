@@ -48,21 +48,21 @@ export function ShopControls({ count }: { count: number }) {
           onChange={(e) => setQ(e.target.value)}
           placeholder={d.shop.searchPlaceholder}
           aria-label={d.shop.searchPlaceholder}
-          className="h-12 w-full rounded-full border border-line/70 bg-white ps-12 pe-4 text-[15px] shadow-card focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
+          className="h-12 w-full rounded-[var(--radius-button)] border border-line bg-white ps-12 pe-4 text-base text-ink placeholder:text-muted focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/25"
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <details className="relative">
-            <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-full bg-white px-5 text-sm font-bold shadow-card ring-1 ring-line/70 hover:bg-sage-soft [&::-webkit-details-marker]:hidden">
+            <summary className="inline-flex h-11 cursor-pointer list-none items-center gap-2 rounded-[var(--radius-button)] bg-white px-4 text-sm font-semibold ring-1 ring-line hover:bg-sage-soft [&::-webkit-details-marker]:hidden">
               <SlidersHorizontal className="size-4" aria-hidden />
               {d.shop.filters}
             </summary>
-            <div className="absolute start-0 z-20 mt-2 w-64 rounded-2xl bg-white p-4 shadow-card ring-1 ring-line">
+            <div className="absolute start-0 z-20 mt-2 w-64 rounded-[var(--radius-card)] bg-white p-4 shadow-card ring-1 ring-line">
               <label className="flex cursor-pointer items-center gap-3 text-sm">
                 <input
                   type="checkbox"
-                  className="size-5 accent-[#164b39]"
+                  className="size-5 accent-forest"
                   checked={sp.get("available") === "1"}
                   onChange={(e) => push({ available: e.target.checked ? "1" : null })}
                 />
@@ -83,7 +83,7 @@ export function ShopControls({ count }: { count: number }) {
                 sort: e.target.value === "popular" ? null : e.target.value,
               })
             }
-            className="h-10 cursor-pointer appearance-none rounded-full bg-white py-0 ps-5 pe-10 text-sm font-bold shadow-card ring-1 ring-line/70 focus:outline-none focus:ring-2 focus:ring-forest"
+            className="h-11 cursor-pointer appearance-none rounded-[var(--radius-button)] bg-white py-0 ps-4 pe-10 text-sm font-semibold ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-forest"
           >
             <option value="popular">
               {d.shop.sort}: {d.shop.sortPopular}

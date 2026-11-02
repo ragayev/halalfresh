@@ -132,17 +132,17 @@ export function CartPage() {
                       <button
                         onClick={() => remove(l.productId)}
                         aria-label={`${d.common.remove}: ${l.name}`}
-                        className="grid size-9 shrink-0 place-items-center rounded-full text-muted hover:bg-red-50 hover:text-danger"
+                        className="grid size-10 shrink-0 place-items-center rounded-[10px] text-muted hover:bg-red-50 hover:text-danger"
                       >
                         <Trash2 className="size-5" aria-hidden />
                       </button>
                     </div>
                     <div className="mt-auto flex items-center justify-between pt-2">
-                      <div className="inline-flex items-center rounded-full bg-sage p-0.5">
+                      <div className="inline-flex items-center rounded-[var(--radius-button)] bg-sage p-0.5">
                         <button
                           onClick={() => change(l.productId, -l.stepGrams, l.minGrams, l.maxGrams)}
                           aria-label={d.common.decrease}
-                          className="grid size-9 place-items-center rounded-full text-forest hover:bg-white"
+                          className="grid size-10 place-items-center rounded-[10px] text-forest hover:bg-white"
                         >
                           <Minus className="size-4" aria-hidden />
                         </button>
@@ -153,7 +153,7 @@ export function CartPage() {
                           onClick={() => change(l.productId, l.stepGrams, l.minGrams, l.maxGrams)}
                           disabled={l.grams + l.stepGrams > l.maxGrams}
                           aria-label={d.common.increase}
-                          className="grid size-9 place-items-center rounded-full bg-forest text-white hover:bg-forest-dark disabled:opacity-40"
+                          className="grid size-10 place-items-center rounded-[10px] bg-forest text-white hover:bg-forest-dark disabled:opacity-40"
                         >
                           <Plus className="size-4" aria-hidden />
                         </button>

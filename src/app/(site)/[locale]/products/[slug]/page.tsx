@@ -94,12 +94,12 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
         <div className="space-y-6">
           <div>
             <p className="text-sm font-medium text-forest">{p.categoryName}</p>
-            <h1 className="mt-1 font-display text-3xl font-normal leading-tight sm:text-4xl">{p.name}</h1>
-            <p className="mt-2 font-display text-3xl font-normal text-forest" data-testid="price">
+            <h1 className="mt-1 text-3xl font-semibold leading-tight text-heading sm:text-[2rem]">{p.name}</h1>
+            <p className="mt-2 text-[1.625rem] font-bold text-forest" data-testid="price">
               {p.pricePerKgCents > 0 ? (
                 <>
                   {formatMoney(p.pricePerKgCents, locale)}
-                  <span className="text-lg">{p.bundle ? ` ${d.product.bundlePer}` : d.common.perKg}</span>
+                  <span className="text-base font-medium text-muted">{p.bundle ? ` ${d.product.bundlePer}` : d.common.perKg}</span>
                 </>
               ) : (
                 <span className="text-xl text-muted">{d.product.priceSoon}</span>

@@ -39,9 +39,9 @@ export function StandardsPostcode() {
           }}
           placeholder={d.home.stdPostcodePh}
           aria-invalid={invalid || undefined}
-          className="h-12 min-w-0 flex-1 rounded-xl bg-white px-4 text-base text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-[#f0c866]"
+          className="h-12 min-w-0 flex-1 rounded-[var(--radius-button)] bg-white px-4 text-base text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-[#f0c866]"
         />
-        <button type="submit" className="h-12 rounded-xl bg-[#f0c866] px-5 font-semibold text-ink transition hover:brightness-95">
+        <button type="submit" className="h-12 rounded-[var(--radius-button)] bg-[#f0c866] px-5 font-semibold text-ink transition hover:brightness-95">
           {d.home.stdPostcodeCta}
         </button>
       </div>

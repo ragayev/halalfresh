@@ -30,12 +30,12 @@ export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale:
       <div className="flex flex-1 flex-col gap-2 p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <Link href={href} className="font-display text-xl font-normal leading-tight text-ink hover:underline">
+            <Link href={href} className="text-lg font-semibold leading-snug text-heading hover:underline">
               {p.name}
             </Link>
             {p.bundle && <p className="mt-0.5 text-sm text-muted">{formatWeight(p.bundle.totalGrams)}</p>}
           </div>
-          <p className="shrink-0 text-xl font-bold leading-none text-ink">{formatMoney(p.pricePerKgCents, locale)}</p>
+          <p className="shrink-0 text-xl font-bold leading-none text-forest">{formatMoney(p.pricePerKgCents, locale)}</p>
         </div>
         <p className="line-clamp-3 text-sm text-muted">{p.description}</p>
         <div className="mt-auto pt-3">
@@ -44,7 +44,7 @@ export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale:
               product={{ id: p.id, name: p.name, stepGrams: p.stepGrams, minGrams: p.minGrams, maxGrams: p.maxGrams, bundle: true }}
             />
           ) : (
-            <p className="grid h-10 place-items-center rounded-md bg-sage-soft text-xs text-muted">{d.common.unavailable}</p>
+            <p className="grid h-10 place-items-center rounded-[var(--radius-button)] bg-sage-soft text-sm font-medium text-muted">{d.common.unavailable}</p>
           )}
         </div>
       </div>

@@ -139,7 +139,7 @@ export function WaitlistForm({ postcode }: { postcode: string }) {
           name="consent"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 size-5 shrink-0 accent-[#164b39]"
+          className="mt-0.5 size-5 shrink-0 accent-forest"
         />
         <span>
           {before}

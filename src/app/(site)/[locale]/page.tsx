@@ -83,55 +83,41 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </Container>
       </section>
 
-      <section aria-labelledby="feat" className="bg-white/60 py-10 sm:py-12">
-        <div className="mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <div>
-              <h2 id="feat" className="font-display text-3xl font-normal sm:text-4xl">
-                {d.home.bestSellers}
-              </h2>
-              <p className="mt-1 text-muted">{d.home.bestSellersSub}</p>
-            </div>
-            <Link
-              href={`/${locale}/shop`}
-              className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-forest-dark underline underline-offset-4"
-            >
-              {d.home.viewAllProducts}
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-          <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-4 2xl:grid-cols-8">
-            {featured.map((p) => (
-              <BestSellerCard key={p.id} p={p} locale={locale} d={d} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {bundles.length > 0 && (
-        <section aria-labelledby="bundles" className="py-12 sm:py-16">
-          <Container>
-            <div className="mb-6 flex items-end justify-between gap-4 sm:mb-8">
+      {(bundles.length > 0 || featured.length > 0) && (
+        <section aria-labelledby="feat" className="bg-white/60 py-10 sm:py-12">
+          <div className="mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-8">
+            <div className="mb-6 flex items-end justify-between gap-4">
               <div>
-                <h2 id="bundles" className="font-display text-3xl font-normal sm:text-4xl">
-                  {d.home.bundlesTitle}
+                <h2 id="feat" className="font-display text-3xl font-normal sm:text-4xl">
+                  {d.home.bestSellers}
                 </h2>
-                <p className="mt-1 max-w-2xl text-muted">{d.home.bundlesSub}</p>
+                <p className="mt-1 text-muted">{d.home.bestSellersSub}</p>
               </div>
               <Link
-                href={`/${locale}/shop?category=${BUNDLE_CATEGORY}`}
-                className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-forest-dark underline underline-offset-4 sm:inline-flex"
+                href={`/${locale}/shop`}
+                className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-forest-dark underline underline-offset-4"
               >
-                {d.common.viewAll}
+                {d.home.viewAllProducts}
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
-              {bundles.map((p) => (
-                <BundleCard key={p.id} p={p} locale={locale} d={d} />
-              ))}
-            </div>
-          </Container>
+            {bundles.length > 0 && (
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+                {bundles.map((p) => (
+                  <BundleCard key={p.id} p={p} locale={locale} d={d} />
+                ))}
+              </div>
+            )}
+            {featured.length > 0 && (
+              <div
+                className={`-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-4 2xl:grid-cols-8 ${bundles.length > 0 ? "mt-6" : ""}`}
+              >
+                {featured.map((p) => (
+                  <BestSellerCard key={p.id} p={p} locale={locale} d={d} />
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
@@ -161,7 +147,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <span className="absolute -end-2 -top-6 font-display text-[7rem] font-normal leading-none text-sage transition group-hover:text-emerald-100">
                   {i + 1}
                 </span>
-                <span className="relative grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-forest to-emerald-700 text-white shadow-lg shadow-forest/30">
+                <span className="relative grid size-14 place-items-center rounded-2xl bg-forest text-white shadow-sm">
                   <Icon className="size-7" aria-hidden />
                 </span>
                 <p className="relative mt-5 text-xl font-semibold">{d.home[a]}</p>

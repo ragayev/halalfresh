@@ -7,16 +7,16 @@ type Size = "sm" | "md" | "lg" | "icon";
 
 export function buttonClasses({ variant = "primary", size = "md", full }: { variant?: Variant; size?: Size; full?: boolean } = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-150 select-none",
-    "disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]",
-    size === "sm" && "h-9 px-4 text-sm",
+    "inline-flex items-center justify-center gap-2 rounded-[var(--radius-button)] font-semibold transition-colors duration-150 select-none",
+    "disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-px",
+    size === "sm" && "h-10 px-4 text-sm",
     size === "md" && "h-11 px-5 text-[15px]",
     size === "lg" && "h-14 px-7 text-base",
     size === "icon" && "h-10 w-10",
     full && "w-full",
     variant === "primary" &&
-      "bg-gradient-to-b from-[#1d5e47] to-forest text-white shadow-md shadow-forest/25 hover:from-forest hover:to-forest-dark hover:shadow-lg",
-    variant === "secondary" && "bg-white text-forest ring-1 ring-line hover:bg-sage-soft",
+      "bg-forest text-white shadow-sm hover:bg-forest-dark",
+    variant === "secondary" && "bg-white text-forest ring-1 ring-line hover:bg-sage-soft hover:ring-forest/30",
     variant === "ghost" && "text-ink hover:bg-sage",
     variant === "warn" && "bg-warn text-warn-ink hover:brightness-95",
     variant === "danger" && "bg-danger text-white hover:brightness-110",
@@ -60,7 +60,7 @@ export function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-heading">
         {label}
       </label>
       {children}
@@ -79,7 +79,7 @@ export function Field({
 }
 
 const inputBase =
-  "w-full rounded-xl border bg-white px-4 text-[15px] text-ink placeholder:text-muted/70 transition-colors focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20";
+  "w-full rounded-[var(--radius-button)] border bg-white px-4 text-[15px] text-ink placeholder:text-muted/70 transition-colors focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/25";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }>(
   ({ className, invalid, ...p }, ref) => (
@@ -107,7 +107,7 @@ export function Card({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-line/70", className)} {...p}>
+    <div className={cn("rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-line", className)} {...p}>
       {children}
     </div>
   );

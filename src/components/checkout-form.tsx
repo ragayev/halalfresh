@@ -361,7 +361,7 @@ export function CheckoutForm() {
                   type="checkbox"
                   checked={terms}
                   onChange={(e) => setTerms(e.target.checked)}
-                  className="mt-0.5 size-5 shrink-0 accent-[#164b39]"
+                  className="mt-0.5 size-5 shrink-0 accent-forest"
                   aria-describedby={err("terms") ? "terms-err" : undefined}
                 />
                 <TermsLabel />

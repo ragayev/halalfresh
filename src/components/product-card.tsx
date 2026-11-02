@@ -6,22 +6,25 @@ import { formatWeight } from "@/domain/pricing";
 import { ProductImage } from "./product-image";
 import { QuickAdd } from "./quick-add";
 import { Badge } from "./ui";
+import { cn } from "@/lib/utils";
 
 export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale: string; d: Dictionary; priority?: boolean }) {
+  const href = `/${locale}/products/${p.slug}`;
+  const unit = p.bundle ? d.common.perPackage : d.common.perKg;
   return (
     <article
-      className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line/60 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(22_75_57/0.35)]"
+      className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-line transition-shadow duration-200 hover:shadow-[0_10px_28px_-14px_rgb(16_45_34/0.3)]"
       data-testid="product-card"
     >
-      <Link href={`/${locale}/products/${p.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-[#f4f1ec]">
+      <Link href={href} className="block" tabIndex={-1} aria-hidden>
+        <div className="relative aspect-[4/3] overflow-hidden bg-sage-soft">
           {p.images[0] && (
             <ProductImage
               src={p.images[0].src}
-              alt={p.images[0].alt}
+              alt=""
               priority={priority}
-              sizes="(min-width:1024px) 22vw, (min-width:640px) 33vw, 50vw"
-              className="transition duration-500 group-hover:scale-105"
+              sizes="(min-width:1280px) 22vw, (min-width:768px) 33vw, 50vw"
+              className={cn("transition-transform duration-500 group-hover:scale-[1.03]", !p.isAvailable && "opacity-60 grayscale-[40%]")}
             />
           )}
           {!p.isAvailable && (
@@ -32,13 +35,10 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
         </div>
       </Link>
       <div className="flex flex-1 flex-col gap-1 p-3 sm:p-4">
-        <Link
-          href={`/${locale}/products/${p.slug}`}
-          className="line-clamp-2 min-h-[2.5rem] text-[15px] font-semibold leading-tight text-ink hover:underline"
-        >
+        <Link href={href} className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-heading hover:underline sm:text-[17px]">
           {p.name}
         </Link>
-        <p className="text-xs text-muted">
+        <p className="text-sm text-muted">
           {p.bundle ? (
             formatWeight(p.bundle.totalGrams)
           ) : (
@@ -48,16 +48,18 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
             </>
           )}
         </p>
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           {p.pricePerKgCents > 0 ? (
-            <p className="text-base font-bold leading-none text-forest sm:text-lg">
-              {formatMoney(p.pricePerKgCents, locale)}
-              <span className="text-xs font-medium text-ink/70">{p.bundle ? d.common.perPackage : d.common.perKg}</span>
+            <p className="leading-none">
+              <span className={cn("text-lg font-bold sm:text-xl", p.isAvailable ? "text-forest" : "text-muted")}>
+                {formatMoney(p.pricePerKgCents, locale)}
+              </span>
+              <span className="ms-0.5 text-xs font-medium text-muted">{unit}</span>
             </p>
           ) : (
             <p className="text-sm font-semibold leading-none text-muted">{d.product.priceSoon}</p>
           )}
-          {p.isAvailable && (
+          {p.isAvailable ? (
             <QuickAdd
               product={{
                 id: p.id,
@@ -68,6 +70,8 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
                 bundle: !!p.bundle,
               }}
             />
+          ) : (
+            <span className="rounded-[var(--radius-button)] bg-sage-soft px-3 py-2 text-xs font-semibold text-muted">{d.common.unavailable}</span>
           )}
         </div>
       </div>

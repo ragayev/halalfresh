@@ -1,8 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ChevronRight, SearchX, ShieldCheck, Snowflake, Truck } from "lucide-react";
+import { SearchX } from "lucide-react";
 import { Barn, Bird, Cow, Fire, Heart, Knife, Package, SquaresFour } from "@phosphor-icons/react/dist/ssr";
 import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 import { isLocale } from "@/i18n/config";
@@ -80,44 +79,14 @@ export default async function Shop({
   const active = cats.find((c) => c.slug === sp.category);
 
   return (
-    <Container className="space-y-6 py-6 sm:py-10">
-      <header className="relative isolate overflow-hidden rounded-[2rem] bg-[#0d3427] text-white shadow-card">
-        <Image
-          src="/hero-spread.jpg"
-          alt=""
-          fill
-          priority
-          sizes="(min-width:1280px) 1200px, 100vw"
-          className="-z-10 object-cover object-[75%_50%] sm:object-right"
-        />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#0d3427] from-30% via-[#0d3427]/70 via-55% to-transparent max-sm:from-[#0d3427]/90 max-sm:via-[#0d3427]/80 max-sm:to-[#0d3427]/60" />
-        <div className="max-w-xl p-6 sm:p-10 lg:p-12">
-          <span className="inline-block rounded-2xl bg-white px-4 py-2 shadow-card">
-            <Image src="/logo-crest.png" alt={d.brand.name} width={720} height={240} priority className="h-10 w-auto sm:h-12" />
-          </span>
-          <h1 className="mt-3 font-display text-4xl font-normal sm:text-6xl">{active?.name ?? d.shop.title}</h1>
-          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-white/85 sm:text-base">{d.home.heroText}</p>
-          <ul className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-semibold">
-            {[
-              [ShieldCheck, d.shop.trustHalal],
-              [Snowflake, d.shop.trustCold],
-              [Truck, d.shop.trustFast],
-            ].map(([Icon, label], i) => {
-              const I = Icon as typeof Truck;
-              return (
-                <li key={i} className="flex items-center gap-2 sm:[&:not(:first-child)]:border-s sm:[&:not(:first-child)]:border-white/25 sm:[&:not(:first-child)]:ps-6">
-                  <I className="size-6 text-[#e7c873]" aria-hidden />
-                  {label as string}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+    <Container className="space-y-5 py-6 sm:space-y-6 sm:py-10">
+      <header className="max-w-2xl">
+        <h1 className="text-balance font-display text-[2.125rem] font-normal leading-tight sm:text-[2.5rem]">{active?.name ?? d.shop.title}</h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-muted sm:text-base">{d.home.heroText}</p>
       </header>
-      <nav aria-label={d.nav.categories} className="-mx-4 flex gap-2.5 overflow-x-auto px-4 py-2 sm:-mx-2 sm:px-2">
-        {[{ slug: "", name: d.shop.all, imageUrl: null as string | null }, ...[...cats].sort((x, y) => Number(y.slug === BUNDLE_CATEGORY) - Number(x.slug === BUNDLE_CATEGORY))].map((c) => {
+      <nav aria-label={d.nav.categories} className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+        {[{ slug: "", name: d.shop.all }, ...[...cats].sort((x, y) => Number(y.slug === BUNDLE_CATEGORY) - Number(x.slug === BUNDLE_CATEGORY))].map((c) => {
           const on = (sp.category ?? "") === c.slug;
-          const bundle = c.slug === BUNDLE_CATEGORY;
           const Icon = c.slug ? (CATEGORY_ICONS[c.slug] ?? Cow) : SquaresFour;
           return (
             <Link
@@ -125,36 +94,12 @@ export default async function Shop({
               href={`/${locale}/shop${c.slug ? `?category=${c.slug}` : ""}`}
               aria-current={on ? "page" : undefined}
               className={cn(
-                "group relative flex shrink-0 flex-col overflow-hidden rounded-xl bg-white p-2.5 shadow-card ring-1 transition hover:-translate-y-0.5",
-                bundle ? "w-44 sm:w-52" : "w-28 sm:w-36",
-                on ? "bg-sage-soft ring-2 ring-forest shadow-none" : bundle ? "bg-gradient-to-br from-[#fff7e0] to-white ring-[#e7c873]" : "ring-line/70 hover:ring-forest/40",
+                "inline-flex h-11 shrink-0 items-center gap-2 rounded-[var(--radius-button)] px-4 text-sm font-semibold transition-colors",
+                on ? "bg-forest text-white" : "bg-white text-heading ring-1 ring-line hover:bg-sage-soft hover:ring-forest/30",
               )}
             >
-              <span className={cn("flex items-center gap-1.5 text-[13px] font-bold", on || bundle ? "text-forest" : "text-ink")}>
-                <Icon weight="duotone" className="size-5 shrink-0 text-forest" aria-hidden />
-                {c.name}
-              </span>
-              {!c.slug ? (
-                <span className="mt-2 grid h-11 grid-cols-4 gap-1 sm:h-14">
-                  {cats
-                    .filter((x) => x.imageUrl)
-                    .slice(0, 4)
-                    .map((x) => (
-                      <span key={x.slug} className="relative overflow-hidden rounded-lg">
-                        <Image src={x.imageUrl!} alt="" fill sizes="48px" className="object-cover" />
-                      </span>
-                    ))}
-                </span>
-              ) : c.imageUrl && (
-                <span className="relative mt-2 block h-11 sm:h-14">
-                  <Image src={c.imageUrl} alt="" fill sizes="256px" className="rounded-xl object-cover" />
-                </span>
-              )}
-              {bundle && (
-                <span className="absolute bottom-2 end-2 grid size-6 place-items-center rounded-full bg-white text-forest shadow ring-1 ring-line">
-                  <ChevronRight className="size-4 rtl:rotate-180" aria-hidden />
-                </span>
-              )}
+              <Icon weight={on ? "fill" : "duotone"} className={cn("size-5 shrink-0", on ? "text-white" : "text-forest")} aria-hidden />
+              {c.name}
             </Link>
           );
         })}

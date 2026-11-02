@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Hanken_Grotesk, Young_Serif } from "next/font/google";
+import { DM_Serif_Display, Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import "../../globals.css";
 import { LOCALES, isLocale } from "@/i18n/config";
@@ -11,19 +11,19 @@ import { PostcodeGate } from "@/components/delivery-ui";
 import { Header, BottomNav, Footer } from "@/components/chrome";
 import { siteUrl } from "@/lib/env";
 
-const sans = Hanken_Grotesk({
+const sans = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-sans-body",
   display: "swap",
 });
-const display = Young_Serif({
+const display = DM_Serif_Display({
   subsets: ["latin", "latin-ext"],
   weight: "400",
   variable: "--font-display-head",
   display: "swap",
 });
 export const viewport: Viewport = {
-  themeColor: "#164B39",
+  themeColor: "#124734",
   width: "device-width",
   initialScale: 1,
 };

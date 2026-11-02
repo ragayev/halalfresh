@@ -1,21 +1,36 @@
 @import "tailwindcss";
 
+/* Brand tokens (semantic; --color-heading and --color-muted live in @theme below). Tailwind utility names below (forest, cream, ink...) alias these. */
+:root {
+  --color-primary: #124734;
+  --color-primary-hover: #0b3425;
+  --color-text: #26332c;
+  --color-background: #faf9f5;
+  --color-surface: #ffffff;
+  --color-accent: #c49a42;
+  --color-border: #e1e6dc;
+  --spacing-unit: 8px;
+}
+
 @theme {
-  --color-forest: #164b39;
-  --color-forest-dark: #103a2b;
-  --color-sage: #e2ebdf;
-  --color-sage-soft: #eef3ec;
-  --color-cream: #f6f7f2;
-  --color-ink: #18251e;
-  --color-muted: #66776d;
-  --color-line: #dfe5da;
+  --color-forest: var(--color-primary);
+  --color-forest-dark: var(--color-primary-hover);
+  --color-heading: #102d22;
+  --color-sage: #e4ece1;
+  --color-sage-soft: #f0f4ed;
+  --color-cream: var(--color-background);
+  --color-ink: var(--color-text);
+  --color-muted: #596a61;
+  --color-line: var(--color-border);
+  --color-gold: var(--color-accent);
   --color-warn: #fff0cc;
   --color-warn-ink: #6b4a00;
   --color-danger: #a4291f;
-  --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display-head), ui-serif, Georgia, serif;
-  --radius-card: 1.25rem;
-  --shadow-card: 0 1px 2px rgb(24 37 30 / 0.05), 0 8px 24px -12px rgb(24 37 30 / 0.12);
+  --font-sans: var(--font-sans-body), "Inter", Arial, sans-serif;
+  --font-display: var(--font-display-head), "DM Serif Display", Georgia, serif;
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --shadow-card: 0 1px 2px rgb(16 45 34 / 0.05), 0 6px 18px -10px rgb(16 45 34 / 0.14);
 }
 
 html {
@@ -27,9 +42,15 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "kern", "liga";
+  font-size: 16px;
+}
+h1,
+h2,
+h3 {
+  color: var(--color-heading);
 }
 :focus-visible {
-  outline: 2px solid var(--color-forest);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 6px;
 }
