@@ -10,11 +10,11 @@ import { Badge } from "./ui";
 export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale: string; d: Dictionary; priority?: boolean }) {
   return (
     <article
-      className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-line/60 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(22_75_57/0.35)]"
+      className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line/60 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(22_75_57/0.35)]"
       data-testid="product-card"
     >
       <Link href={`/${locale}/products/${p.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-sage after:absolute after:inset-0 after:bg-gradient-to-t after:from-black/10 after:to-transparent">
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#f4f1ec]">
           {p.images[0] && (
             <ProductImage
               src={p.images[0].src}
@@ -39,14 +39,20 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
           {p.name}
         </Link>
         <p className="text-xs text-muted">
-          {formatWeight(p.minGrams)}
-          {p.stepGrams !== p.minGrams ? ` · ${p.stepGrams >= 1000 ? formatWeight(p.stepGrams) : `${p.stepGrams} g`} +` : ""}
+          {p.bundle ? (
+            formatWeight(p.bundle.totalGrams)
+          ) : (
+            <>
+              {formatWeight(p.minGrams)}
+              {p.stepGrams !== p.minGrams ? ` · ${p.stepGrams >= 1000 ? formatWeight(p.stepGrams) : `${p.stepGrams} g`} +` : ""}
+            </>
+          )}
         </p>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           {p.pricePerKgCents > 0 ? (
-            <p className="text-lg font-bold leading-none text-ink">
+            <p className="text-base font-bold leading-none text-forest sm:text-lg">
               {formatMoney(p.pricePerKgCents, locale)}
-              <span className="text-xs font-medium text-muted">{d.common.perKg}</span>
+              <span className="text-xs font-medium text-ink/70">{p.bundle ? d.common.perPackage : d.common.perKg}</span>
             </p>
           ) : (
             <p className="text-sm font-semibold leading-none text-muted">{d.product.priceSoon}</p>
@@ -59,6 +65,7 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
                 stepGrams: p.stepGrams,
                 minGrams: p.minGrams,
                 maxGrams: p.maxGrams,
+                bundle: !!p.bundle,
               }}
             />
           )}

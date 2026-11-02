@@ -1,5 +1,5 @@
 import { formatMoney } from "./money";
-import { formatWeight } from "./pricing";
+import { orderItemLines } from "./bundles";
 
 export interface WhatsappOrder {
   number: number;
@@ -8,9 +8,11 @@ export interface WhatsappOrder {
   street: string;
   postalCode: string;
   city: string;
-  items: { productName: string; quantityGrams: number }[];
+  items: { productName: string; quantityGrams: number; bundleSnapshot?: unknown }[];
   totalCents: number;
   paymentStatus: string;
+  /** SEPA debit still processing, but the admin accepted the collection risk. */
+  sepaPendingAuthorized?: boolean;
   deliveryDate: string; // YYYY-MM-DD
   slotStartTime: string;
   slotEndTime: string;
@@ -43,10 +45,16 @@ export function buildWhatsappMessage(o: WhatsappOrder): string {
     `${o.postalCode} ${o.city}`,
     "",
     "Products:",
-    ...o.items.map((i) => `- ${i.productName} — ${formatWeight(i.quantityGrams)}`),
+    ...o.items.flatMap((i) => orderItemLines(i, "de")),
     "",
     `Total: ${formatMoney(o.totalCents, "de")}`,
-    `Payment: ${o.paymentStatus === "PAID" ? "PAID (confirmed via Stripe)" : o.paymentStatus}`,
+    `Payment: ${
+      o.paymentStatus === "PAID"
+        ? "PAID (confirmed via Stripe)"
+        : o.sepaPendingAuthorized
+          ? "SEPA DIRECT DEBIT PENDING (not yet collected, seller accepted the risk)"
+          : o.paymentStatus
+    }`,
     "",
     `Delivery: ${deliveryLabel(o.deliveryDate, o.slotStartTime, o.slotEndTime)}`,
   ];

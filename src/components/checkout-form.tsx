@@ -9,7 +9,7 @@ import { useCartView } from "./use-cart-view";
 import { MinOrderBanner } from "./cart-progress";
 import { Button, Card, Container, Field, Input, Textarea, buttonClasses } from "./ui";
 import { formatMoney } from "@/domain/money";
-import { formatWeight } from "@/domain/pricing";
+import { formatQuantity } from "@/domain/bundles";
 import { isValidPostcode, normalizePostcode } from "@/domain/delivery";
 import { formatCutoff, formatSlotDay } from "@/lib/format-delivery";
 import { useDelivery } from "./delivery-provider";
@@ -322,7 +322,7 @@ export function CheckoutForm() {
                   </span>
                   <span className="min-w-0 flex-1 text-sm">
                     <span className="block truncate font-medium">{l.name}</span>
-                    <span className="text-muted">{formatWeight(l.grams)}</span>
+                    <span className="text-muted">{formatQuantity(l.grams, l.isBundle)}</span>
                   </span>
                   <span className="text-sm font-semibold tabular-nums">{formatMoney(l.lineTotalCents, locale)}</span>
                 </li>

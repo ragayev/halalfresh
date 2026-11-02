@@ -2,7 +2,7 @@
 import { Minus, Plus } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
-import { formatWeight } from "@/domain/pricing";
+import { formatQuantity } from "@/domain/bundles";
 
 export function QuickAdd({
   product,
@@ -13,6 +13,7 @@ export function QuickAdd({
     stepGrams: number;
     minGrams: number;
     maxGrams: number;
+    bundle?: boolean;
   };
 }) {
   const { d } = useI18n();
@@ -26,7 +27,7 @@ export function QuickAdd({
         onClick={() => add(product)}
         aria-label={`${d.common.addToCart}: ${product.name}`}
         data-testid="quick-add"
-        className="grid size-10 place-items-center rounded-full bg-forest text-white shadow-sm transition hover:bg-forest-dark active:scale-95"
+        className="grid size-10 place-items-center rounded-lg bg-forest text-white shadow-sm transition hover:bg-forest-dark active:scale-95"
       >
         <Plus className="size-5" aria-hidden />
       </button>
@@ -44,7 +45,7 @@ export function QuickAdd({
         <Minus className="size-4" aria-hidden />
       </button>
       <span className="min-w-[2.75rem] text-center text-xs font-bold text-forest-dark" aria-live="polite">
-        {formatWeight(grams)}
+        {formatQuantity(grams, !!product.bundle)}
       </span>
       <button
         type="button"

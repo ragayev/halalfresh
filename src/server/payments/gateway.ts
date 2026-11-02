@@ -31,6 +31,8 @@ export interface AccountStatus {
   connected: boolean;
   chargesEnabled: boolean;
   payoutsEnabled: boolean;
+  /** Connected account has the sepa_debit_payments capability active. */
+  sepaDebitEnabled: boolean;
   detailsSubmitted: boolean;
   requirementsDue: string[];
   mode: "live" | "test" | "mock";

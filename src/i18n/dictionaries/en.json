@@ -16,7 +16,7 @@
     "berlinBrandenburg": "Berlin & Brandenburg",
     "skip": "Skip to content",
     "back": "Back",
-    "standards": "Our Standards",
+    "standards": "حلال",
     "delivery": "Delivery",
     "searchPlaceholder": "Search for meat, cuts or recipes…",
     "searchLabel": "Search products"
@@ -42,7 +42,10 @@
     "increase": "Increase quantity",
     "decrease": "Decrease quantity",
     "networkError": "Network problem. Please check your connection and try again.",
-    "genericError": "Something went wrong. Please try again."
+    "genericError": "Something went wrong. Please try again.",
+    "perPackage": "/bundle",
+    "package": "bundle",
+    "packages": "bundles"
   },
   "home": {
     "heroTitle": "Fresh Halal Meat, Delivered.",
@@ -116,7 +119,9 @@
     "stdPostcodeTitle": "Enter your postcode, see your delivery day",
     "stdPostcodePh": "e.g. 12049",
     "stdPostcodeCta": "See delivery day",
-    "stdFoot": "Secure card payment via Stripe · Support in Türkçe, Deutsch and العربية"
+    "stdFoot": "Secure card payment via Stripe · Support in Türkçe, Deutsch and العربية",
+    "bundlesTitle": "Our Meat Bundles",
+    "bundlesSub": "More choice, less effort – discover our curated meat bundles."
   },
   "shop": {
     "title": "Shop",
@@ -127,6 +132,9 @@
     "sortPriceAsc": "Price: low to high",
     "sortPriceDesc": "Price: high to low",
     "sortName": "Name A–Z",
+    "trustHalal": "Halal & trusted",
+    "trustCold": "Cold chain",
+    "trustFast": "Fast delivery",
     "filters": "Filters",
     "inStockOnly": "Available only",
     "results": "{count} products",
@@ -149,7 +157,14 @@
     "notFound": "Product not found",
     "freshNote": "Prepared fresh for your order",
     "fixedWeightNote": "You are charged for the exact weight you select. Weights are fixed; there are no post-payment adjustments.",
-    "priceSoon": "Price coming soon"
+    "priceSoon": "Price coming soon",
+    "bundleContents": "What's inside",
+    "bundleTotal": "Total",
+    "bundleWeight": "{weight} total weight",
+    "bundleQuantity": "Number of bundles",
+    "bundleNote": "Fixed bundle: contents and amounts are set and cannot be changed.",
+    "bundlePer": "per bundle",
+    "bundleDetails": "Show contents"
   },
   "cart": {
     "title": "Your cart",
@@ -229,7 +244,60 @@
     "cancelledText": "No payment was taken. Your cart is still saved.",
     "backToCart": "Back to cart",
     "contactUs": "Questions about your order? Contact the seller:",
-    "refunded": "Refunded: {amount}"
+    "refunded": "Refunded: {amount}",
+    "receivedTitle": "Order received",
+    "receivedText": "Your SEPA direct debit is authorised. Your bank has not paid us yet: collection takes a few business days and you will see the charge on your statement.",
+    "progress": "Order progress",
+    "stepDone": "completed",
+    "stepCurrent": "current step",
+    "stepTodo": "upcoming",
+    "steps": {
+      "RECEIVED": "Order received",
+      "CONFIRMED": "Confirmed by butcher",
+      "PREPARING": "Preparing",
+      "OUT_FOR_DELIVERY": "Out for delivery",
+      "DELIVERED": "Delivered"
+    },
+    "stepHints": {
+      "RECEIVED": "We have your order.",
+      "CONFIRMED": "The butcher accepted your order.",
+      "PREPARING": "Your meat is being cut and packed.",
+      "OUT_FOR_DELIVERY": "The driver is on the way.",
+      "DELIVERED": "Enjoy your meal!"
+    },
+    "cancelledTitle2": "Order cancelled",
+    "cancelledBanner": "This order was cancelled. If you paid, the amount is refunded to your account.",
+    "paymentTitle": "Payment",
+    "pay": {
+      "UNPAID": {
+        "label": "Payment not completed",
+        "text": "Complete the payment on the secure checkout page to place your order."
+      },
+      "PROCESSING": {
+        "label": "SEPA debit authorised, collecting",
+        "text": "Your bank is processing the direct debit. This can take a few business days. Delivery progress is shown separately above."
+      },
+      "PAID": {
+        "label": "Paid",
+        "text": "We received your payment. Thank you!"
+      },
+      "FAILED": {
+        "label": "Payment failed",
+        "text": "Your bank did not complete the direct debit. Please contact the seller below to settle your order."
+      },
+      "CANCELLED": {
+        "label": "Payment cancelled",
+        "text": "No payment was taken."
+      },
+      "REFUNDED": {
+        "label": "Refunded",
+        "text": "The full amount was refunded to your account."
+      },
+      "PARTIALLY_REFUNDED": {
+        "label": "Partially refunded",
+        "text": "Part of the amount was refunded to your account."
+      }
+    }
   },
   "payment": {
     "PENDING_PAYMENT": "Awaiting payment",
@@ -282,7 +350,9 @@
     "total": "Total",
     "delivery": "Delivery",
     "seller": "Seller",
-    "viewOrder": "View your order"
+    "viewOrder": "View your order",
+    "sepaAckSubject": "We received your Halal Fresh order",
+    "sepaAckIntro": "Thank you! Your order is received and your SEPA direct debit is authorised. The money has not been collected yet; your bank usually takes a few business days. We will keep you posted."
   },
   "delivery": {
     "gateTitle": "Where should we deliver?",

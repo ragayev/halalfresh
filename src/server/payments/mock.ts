@@ -30,6 +30,7 @@ export const mockGateway: PaymentGateway = {
       connected: true,
       chargesEnabled: true,
       payoutsEnabled: true,
+      sepaDebitEnabled: true,
       detailsSubmitted: true,
       requirementsDue: [],
       mode: "mock",

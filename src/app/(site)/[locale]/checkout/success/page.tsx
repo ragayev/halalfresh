@@ -22,5 +22,5 @@ export default async function Success({
   const d = await getDictionary(locale);
   const order = token ? await getOrderByToken(token) : null;
   if (!order) return <NotFoundBlock title={d.order.notFound} text={d.order.notFoundText} href={`/${locale}`} cta={d.errors.goHome} />;
-  return <OrderView order={order} d={d} locale={locale} justPaid />;
+  return <OrderView order={order} token={token!} d={d} locale={locale} justPaid />;
 }

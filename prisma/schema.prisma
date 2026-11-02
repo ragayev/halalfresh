@@ -117,6 +117,11 @@ model Product {
   isHidden       Boolean  @default(false)
   /// Can be ordered from preorder-only zones (Ramadan box, Kurban/aqiqah shares).
   preorderEligible Boolean @default(false)
+  /// Fleischpaket: [{ grams, names: { de, tr, en }, productSlug? }]. Non-null = bundle sold per package;
+  /// quantity unit is 1000 "grams" per package and pricePerKgCents is the price of ONE package (see domain/bundles.ts).
+  bundleItems    Json?
+  /// false = price is a placeholder; a bundle cannot be made visible until the operator confirms it.
+  priceConfirmed Boolean  @default(true)
   sortOrder      Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -298,12 +303,18 @@ model Order {
   whatsappOpenCount Int       @default(0)
   lastWhatsappOpenAt DateTime?
   paidAt            DateTime?
+  /// Set from the verified Stripe webhook once the customer accepted the SEPA mandate and the debit was initiated. NOT money received.
+  sepaInitiatedAt   DateTime?
+  /// Admin's explicit, audited acceptance of the collection risk so fulfillment may proceed while SEPA is still processing.
+  earlyFulfillmentAuthorizedAt DateTime?
+  earlyFulfillmentAuthorizedBy String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
   items      OrderItem[]
   payments   Payment[]
   events     OrderEvent[]
+  notifications NotificationLog[]
   commission CommissionRecord?
 
   @@index([paymentStatus, fulfillmentStatus])
@@ -324,6 +335,8 @@ model OrderItem {
   unitPricePerKgCents Int
   quantityGrams    Int
   lineTotalCents   Int
+  /// Bundle contents frozen at checkout ({ totalGrams, items }); null for regular products.
+  bundleSnapshot   Json?
 
   @@index([orderId])
 }
@@ -417,6 +430,17 @@ model AuditLog {
 
   @@index([createdAt])
   @@index([entity, entityId])
+}
+
+/// Durable de-duplication of outgoing notifications: one row per (order, kind), claimed before sending.
+model NotificationLog {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  kind      String
+  createdAt DateTime @default(now())
+
+  @@unique([orderId, kind])
 }
 
 /// Idempotency ledger for Stripe webhooks.

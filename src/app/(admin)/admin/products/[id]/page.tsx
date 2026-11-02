@@ -3,7 +3,9 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/server/auth";
 import { saveProductAction } from "../../actions";
 import { ActionForm } from "@/components/admin/forms";
-import { Card, Field, Input, Textarea } from "@/components/ui";
+import { Badge, Card, Field, Input, Textarea } from "@/components/ui";
+import { parseBundleItems, bundleTotalGrams } from "@/domain/bundles";
+import { formatWeight } from "@/domain/pricing";
 
 export const dynamic = "force-dynamic";
 type Tr = Record<string, { name?: string; description?: string }>;
@@ -17,6 +19,16 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
   ]);
   if (id !== "new" && !p) notFound();
   const tr = (p?.translations ?? {}) as Tr;
+  const bundle = p?.bundleItems != null ? (parseBundleItems(p.bundleItems) ?? []) : null;
+  // Component availability: bundles must not go live while a component cut is missing at the butcher.
+  const comps = bundle?.length
+    ? await db.product.findMany({
+        where: { slug: { in: bundle.flatMap((b) => (b.productSlug ? [b.productSlug] : [])) } },
+        select: { slug: true, isAvailable: true, isHidden: true },
+      })
+    : [];
+  const compBySlug = new Map(comps.map((c) => [c.slug, c]));
+  const unavailable = (bundle ?? []).filter((b) => !b.productSlug || !compBySlug.get(b.productSlug)?.isAvailable);
   const action = saveProductAction.bind(null, id);
   return (
     <div className="max-w-3xl space-y-4">
@@ -49,7 +61,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                 ))}
               </select>
             </Field>
-            <Field label="Price per kg (€)" htmlFor="price">
+            <Field label={bundle ? "Price per bundle (€)" : "Price per kg (€)"} htmlFor="price" hint={bundle ? "Placeholder until the butcher confirms it" : undefined}>
               <Input id="price" name="price" inputMode="decimal" defaultValue={p ? (p.pricePerKgCents / 100).toFixed(2) : ""} required />
             </Field>
             <Field label="Step (g)" htmlFor="stepGrams" hint="500 or 1000">
@@ -65,6 +77,34 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
               <Input id="origin" name="origin" defaultValue={p?.origin ?? ""} />
             </Field>
           </div>
+          {bundle && (
+            <fieldset className="space-y-3 rounded-xl bg-sage-soft p-4">
+              <legend className="px-1 text-sm font-semibold">Fleischpaket · {formatWeight(bundleTotalGrams(bundle))} total</legend>
+              <Field
+                label="Contents (one per line)"
+                htmlFor="bundleItems"
+                hint="grams | Deutsch | Türkçe | English | catalogue slug (optional). Orders keep a frozen copy of the contents."
+              >
+                <Textarea
+                  id="bundleItems"
+                  name="bundleItems"
+                  rows={8}
+                  className="font-mono text-xs"
+                  defaultValue={bundle.map((b) => [b.grams, b.names.de, b.names.tr, b.names.en, b.productSlug ?? ""].join(" | ")).join("\n")}
+                />
+              </Field>
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <input type="checkbox" name="priceConfirmed" defaultChecked={p?.priceConfirmed} className="size-4 accent-[#164b39]" />
+                Price confirmed by the butcher (required before the bundle can be made visible / available)
+              </label>
+              {unavailable.length > 0 && (
+                <p className="text-sm">
+                  <Badge tone="amber">Check availability</Badge> Components not available or not linked in the catalogue:{" "}
+                  {unavailable.map((b) => b.names.de).join(", ")}
+                </p>
+              )}
+            </fieldset>
+          )}
           <Field
             label="Halal certification (only if verified)"
             htmlFor="halalCertification"

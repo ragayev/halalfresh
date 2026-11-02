@@ -3,252 +3,9 @@ import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { BUNDLES, BUNDLE_CATEGORY, BUNDLE_MAX_PACKAGES, BUNDLE_UNIT_GRAMS } from "../src/domain/bundles";
 
 const db = new PrismaClient();
-
-// All prices are FICTIONAL demo values. Real pricing is set in Admin → Products.
-const categories = [
-  {
-    slug: "beef",
-    name: "Beef",
-    de: "Rind",
-    tr: "Dana",
-    img: "/products/cat-beef.svg",
-  },
-  {
-    slug: "chicken",
-    name: "Chicken",
-    de: "Hähnchen",
-    tr: "Tavuk",
-    img: "/products/cat-chicken.svg",
-  },
-  {
-    slug: "lamb",
-    name: "Lamb",
-    de: "Lamm",
-    tr: "Kuzu",
-    img: "/products/cat-lamb.svg",
-  },
-  {
-    slug: "minced-meat",
-    name: "Minced Meat",
-    de: "Hackfleisch",
-    tr: "Kıyma",
-    img: "/products/cat-mince.svg",
-  },
-  {
-    slug: "family-boxes",
-    name: "Family Boxes",
-    de: "Familienboxen",
-    tr: "Aile Kutuları",
-    img: "/products/cat-box.svg",
-  },
-];
-
-type P = {
-  slug: string;
-  cat: string;
-  name: string;
-  de: [string, string];
-  tr: [string, string];
-  desc: string;
-  price: number;
-  step: number;
-  min: number;
-  img: string;
-  featured?: boolean;
-};
-// Photo (webp) where we have one, illustrated SVG fallback otherwise.
-const photos: Record<string, string> = {
-  "beef-cubes": "diced-beef",
-  "ribeye-steak": "ribeye-steak",
-  "beef-roast": "beef-roast",
-  "osso-buco": "beef-bone-cuts",
-  "beef-mince": "minced-beef",
-  "chicken-drumsticks": "chicken-drumsticks",
-  "chicken-breast": "chicken-breast",
-  "lamb-chops": "lamb-chops",
-};
-const productImageUrl = (img: string) => (photos[img] ? `/products/${photos[img]}.webp` : `/products/${img}.svg`);
-
-const products: P[] = [
-  {
-    slug: "premium-beef-cubes",
-    cat: "beef",
-    name: "Premium Beef Cubes",
-    de: ["Premium Rindfleischwürfel", "Zartes Rindfleisch, ideal für Currys, Eintöpfe und Familiengerichte."],
-    tr: ["Premium Dana Kuşbaşı", "Köri, güveç ve aile yemekleri için ideal, yumuşak dana eti."],
-    desc: "Tender, juicy beef cubes, ideal for curries, stews and family meals.",
-    price: 1499,
-    step: 500,
-    min: 500,
-    img: "beef-cubes",
-    featured: true,
-  },
-  {
-    slug: "ribeye-steak",
-    cat: "beef",
-    name: "Ribeye Steak",
-    de: ["Ribeye-Steak", "Gut marmoriertes Ribeye für Pfanne und Grill."],
-    tr: ["Antrikot (Ribeye)", "Tava ve ızgara için iyi mermerli antrikot."],
-    desc: "Well-marbled ribeye for the pan or grill.",
-    price: 2499,
-    step: 500,
-    min: 500,
-    img: "ribeye-steak",
-    featured: true,
-  },
-  {
-    slug: "sirloin-steak",
-    cat: "beef",
-    name: "Sirloin Steak",
-    de: ["Sirloin-Steak", "Mageres, aromatisches Steak mit feinem Fettrand."],
-    tr: ["Bonfile (Sirloin)", "İnce yağ kenarlı, aromalı biftek."],
-    desc: "Lean, flavourful steak with a fine fat cap.",
-    price: 2299,
-    step: 500,
-    min: 500,
-    img: "sirloin-steak",
-  },
-  {
-    slug: "beef-roast",
-    cat: "beef",
-    name: "Beef Roast",
-    de: ["Rinderbraten", "Klassischer Braten für langsames Schmoren oder den Ofen."],
-    tr: ["Dana Rosto", "Yavaş pişirme veya fırın için klasik rosto."],
-    desc: "Classic roasting joint for slow cooking or the oven.",
-    price: 1699,
-    step: 500,
-    min: 500,
-    img: "beef-roast",
-    featured: true,
-  },
-  {
-    slug: "osso-buco-shank",
-    cat: "beef",
-    name: "Osso Buco (Shank)",
-    de: ["Osso Buco (Beinscheibe)", "Beinscheiben mit Mark, perfekt zum Schmoren."],
-    tr: ["Osso Buco (Incik)", "İliği ile birlikte, uzun pişirme için ideal incik."],
-    desc: "Shank slices with marrow, perfect for braising.",
-    price: 1399,
-    step: 500,
-    min: 500,
-    img: "osso-buco",
-    featured: true,
-  },
-  {
-    slug: "beef-minced-lean",
-    cat: "minced-meat",
-    name: "Beef Minced (Lean)",
-    de: ["Rinderhackfleisch (mager)", "Mageres Hackfleisch für Bolognese, Köfte und mehr."],
-    tr: ["Dana Kıyma (Yağsız)", "Bolonez, köfte ve daha fazlası için yağsız kıyma."],
-    desc: "Lean minced beef for bolognese, köfte and more.",
-    price: 1299,
-    step: 500,
-    min: 500,
-    img: "beef-mince",
-    featured: true,
-  },
-  {
-    slug: "lamb-minced",
-    cat: "minced-meat",
-    name: "Lamb Minced",
-    de: ["Lammhackfleisch", "Aromatisches Lammhack für Kebab und Füllungen."],
-    tr: ["Kuzu Kıyma", "Kebap ve iç harçlar için aromalı kuzu kıyma."],
-    desc: "Flavourful minced lamb for kebabs and fillings.",
-    price: 1899,
-    step: 500,
-    min: 500,
-    img: "lamb-mince",
-  },
-  {
-    slug: "chicken-drumsticks",
-    cat: "chicken",
-    name: "Chicken Drumsticks",
-    de: ["Hähnchenkeulen", "Saftige Unterkeulen, perfekt für Ofen und Grill."],
-    tr: ["Tavuk Baget", "Fırın ve ızgara için ideal sulu but."],
-    desc: "Juicy drumsticks, perfect for the oven or grill.",
-    price: 699,
-    step: 500,
-    min: 500,
-    img: "chicken-drumsticks",
-    featured: true,
-  },
-  {
-    slug: "chicken-breast",
-    cat: "chicken",
-    name: "Chicken Breast",
-    de: ["Hähnchenbrust", "Mageres Brustfilet, vielseitig einsetzbar."],
-    tr: ["Tavuk Göğüs", "Çok yönlü kullanılan yağsız göğüs fileto."],
-    desc: "Lean breast fillet, endlessly versatile.",
-    price: 1099,
-    step: 500,
-    min: 500,
-    img: "chicken-breast",
-    featured: true,
-  },
-  {
-    slug: "whole-chicken",
-    cat: "chicken",
-    name: "Whole Chicken",
-    de: ["Ganzes Hähnchen", "Ganzes Hähnchen, küchenfertig vorbereitet."],
-    tr: ["Bütün Tavuk", "Mutfağa hazır, bütün tavuk."],
-    desc: "Whole chicken, ready for the kitchen.",
-    price: 749,
-    step: 500,
-    min: 500,
-    img: "whole-chicken",
-  },
-  {
-    slug: "lamb-chops",
-    cat: "lamb",
-    name: "Lamb Chops",
-    de: ["Lammkoteletts", "Zarte Lammkoteletts für Pfanne oder Grill."],
-    tr: ["Kuzu Pirzola", "Tava veya ızgara için yumuşak kuzu pirzola."],
-    desc: "Tender lamb chops for the pan or grill.",
-    price: 2799,
-    step: 500,
-    min: 500,
-    img: "lamb-chops",
-    featured: true,
-  },
-  {
-    slug: "lamb-shoulder",
-    cat: "lamb",
-    name: "Lamb Shoulder",
-    de: ["Lammschulter", "Saftige Schulter, ideal zum langsamen Garen."],
-    tr: ["Kuzu Kol", "Yavaş pişirme için ideal sulu kuzu kol."],
-    desc: "Succulent shoulder, ideal for slow cooking.",
-    price: 1999,
-    step: 500,
-    min: 500,
-    img: "lamb-shoulder",
-  },
-  {
-    slug: "lamb-cubes",
-    cat: "lamb",
-    name: "Lamb Cubes",
-    de: ["Lammwürfel", "Würfel für Spieße, Eintöpfe und Reisgerichte."],
-    tr: ["Kuzu Kuşbaşı", "Şiş, güveç ve pilav için kuşbaşı."],
-    desc: "Cubes for skewers, stews and rice dishes.",
-    price: 2199,
-    step: 500,
-    min: 500,
-    img: "lamb-cubes",
-  },
-  {
-    slug: "family-box-classic",
-    cat: "family-boxes",
-    name: "Family Box — Classic",
-    de: ["Familienbox – Klassik", "Gemischte Auswahl aus Rind, Hähnchen und Hack, verkauft ab 5 kg. Genaue Zusammenstellung variiert."],
-    tr: ["Aile Kutusu – Klasik", "Dana, tavuk ve kıyma karışık seçki, en az 5 kg’dan başlayarak satılır. Tam içerik değişebilir."],
-    desc: "A mixed selection of beef, chicken and mince, sold from 5 kg. Exact contents may vary.",
-    price: 1650,
-    step: 1000,
-    min: 5000,
-    img: "family-box",
-  },
-];
 
 async function main() {
   const merchant =
@@ -267,59 +24,9 @@ async function main() {
     create: { merchantId: merchant.id },
   });
 
-  for (const [i, c] of categories.entries()) {
-    await db.category.upsert({
-      where: { slug: c.slug },
-      update: {
-        name: c.name,
-        imageUrl: c.img,
-        sortOrder: i,
-        translations: { de: { name: c.de }, tr: { name: c.tr } },
-      },
-      create: {
-        slug: c.slug,
-        name: c.name,
-        imageUrl: c.img,
-        sortOrder: i,
-        translations: { de: { name: c.de }, tr: { name: c.tr } },
-      },
-    });
-  }
-
-  for (const [i, p] of products.entries()) {
-    const category = await db.category.findUniqueOrThrow({
-      where: { slug: p.cat },
-    });
-    const data = {
-      merchantId: merchant.id,
-      categoryId: category.id,
-      name: p.name,
-      description: p.desc,
-      pricePerKgCents: p.price,
-      stepGrams: p.step,
-      minGrams: p.min,
-      maxGrams: 20000,
-      isFeatured: !!p.featured,
-      sortOrder: i,
-      translations: {
-        de: { name: p.de[0], description: p.de[1] },
-        tr: { name: p.tr[0], description: p.tr[1] },
-      },
-    };
-    const prod = await db.product.upsert({
-      where: { slug: p.slug },
-      update: data,
-      create: { slug: p.slug, ...data },
-    });
-    await db.productImage.deleteMany({
-      where: { productId: prod.id, data: null },
-    });
-    await db.productImage.create({
-      data: { productId: prod.id, url: productImageUrl(p.img), alt: p.name },
-    });
-  }
-
+  await hideDemoCatalogue();
   await seedCatalog(merchant.id);
+  await seedBundles(merchant.id);
   await seedPreorderProducts(merchant.id);
   await seedDelivery(merchant.id);
 
@@ -351,6 +58,14 @@ interface CatalogFile {
     status: "active" | "draft";
     name: Record<"tr" | "de" | "en", string>;
   }[];
+}
+
+// The early demo catalogue (illustrated placeholders, fictional prices) is not real stock: hide it. Rows stay because
+// old orders reference them.
+async function hideDemoCatalogue() {
+  const slugs = ["beef", "chicken", "lamb", "minced-meat", "family-boxes"];
+  const r = await db.product.updateMany({ where: { category: { slug: { in: slugs } } }, data: { isHidden: true, isAvailable: false } });
+  console.log(`Demo catalogue hidden: ${r.count} products.`);
 }
 
 async function seedCatalog(merchantId: string) {
@@ -399,6 +114,51 @@ async function seedCatalog(merchantId: string) {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Fleischpakete: four fixed bundles in the existing "paketler" category (src/domain/bundles.ts).
+// PRICES ARE PLACEHOLDERS until the butcher confirms them, so bundles are seeded as DRAFTS: hidden, unavailable,
+// priceConfirmed=false. The admin confirms the price, then un-hides them (Admin → Products).
+// Re-running refreshes contents/texts/images only; price, visibility and availability of an already
+// confirmed bundle are never touched.
+// ---------------------------------------------------------------------------------------------
+async function seedBundles(merchantId: string) {
+  const category = await db.category.upsert({
+    where: { slug: BUNDLE_CATEGORY },
+    update: { translations: { tr: { name: "Et Paketleri" }, de: { name: "Fleischpakete" }, en: { name: "Meat Bundles" } } },
+    create: {
+      slug: BUNDLE_CATEGORY,
+      name: "Meat Bundles",
+      sortOrder: 26,
+      translations: { tr: { name: "Et Paketleri" }, de: { name: "Fleischpakete" }, en: { name: "Meat Bundles" } },
+    },
+  });
+  for (const [i, b] of BUNDLES.entries()) {
+    const existing = await db.product.findUnique({ where: { slug: b.slug } });
+    const content = {
+      merchantId,
+      categoryId: category.id,
+      name: b.name.en,
+      description: b.description.en,
+      bundleItems: b.items as unknown as object,
+      stepGrams: BUNDLE_UNIT_GRAMS,
+      minGrams: BUNDLE_UNIT_GRAMS,
+      maxGrams: BUNDLE_UNIT_GRAMS * BUNDLE_MAX_PACKAGES,
+      sortOrder: i,
+      translations: Object.fromEntries((["de", "tr", "en"] as const).map((l) => [l, { name: b.name[l], description: b.description[l] }])),
+    };
+    // TODO confirm with Kevser: price, availability of every component, final contents.
+    const draft = { pricePerKgCents: b.priceCents, isAvailable: false, isHidden: true, priceConfirmed: false };
+    const prod = existing
+      ? await db.product.update({ where: { id: existing.id }, data: existing.priceConfirmed && existing.bundleItems ? content : { ...content, ...draft } })
+      : await db.product.create({ data: { slug: b.slug, ...content, ...draft } });
+    await db.productImage.deleteMany({ where: { productId: prod.id, data: null } });
+    await db.productImage.create({ data: { productId: prod.id, url: b.image, alt: "" } });
+  }
+  // Legacy placeholder "Sparpaket": never part of the four launch bundles, no price. Keep it out of the storefront.
+  await db.product.updateMany({ where: { slug: "ekonomik-paket", pricePerKgCents: 0 }, data: { isHidden: true } });
+  console.log(`Bundles ready: ${BUNDLES.length} Fleischpakete (drafts until prices are confirmed).`);
+}
+
+// ---------------------------------------------------------------------------------------------
 // Preorder products (hidden + unavailable until Kevser confirms; admin activates them).
 // ---------------------------------------------------------------------------------------------
 async function seedPreorderProducts(merchantId: string) {
@@ -409,7 +169,6 @@ async function seedPreorderProducts(merchantId: string) {
       slug: "preorder",
       name: "Preorder",
       sortOrder: 99,
-      imageUrl: "/products/cat-box.svg",
       translations: { de: { name: "Vorbestellung" }, tr: { name: "Ön sipariş" } },
     },
   });
@@ -460,8 +219,7 @@ async function seedPreorderProducts(merchantId: string) {
     // Never overwrite what the admin has since changed (price, visibility): create only.
     const existing = await db.product.findUnique({ where: { slug: it.slug } });
     if (existing) continue;
-    const p = await db.product.create({ data: { slug: it.slug, ...data } });
-    await db.productImage.create({ data: { productId: p.id, url: "/products/cat-box.svg", alt: it.name } });
+    await db.product.create({ data: { slug: it.slug, ...data } });
   }
 }
 

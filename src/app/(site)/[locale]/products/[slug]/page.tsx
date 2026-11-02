@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BadgeCheck, ChevronLeft, Leaf, Info } from "lucide-react";
 import { isLocale, LOCALES } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
+import { getDictionary, t } from "@/i18n/get-dictionary";
 import { getProductBySlug, listProducts } from "@/server/catalog";
 import { formatMoney } from "@/domain/money";
+import { formatWeight } from "@/domain/pricing";
+import { BundleContents } from "@/components/bundle-contents";
 import { ProductImage } from "@/components/product-image";
 import { ProductBuyBox } from "@/components/product-buy-box";
 import { ProductCard } from "@/components/product-card";
@@ -85,7 +87,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
       </Link>
       <div className="grid gap-8 pb-28 lg:grid-cols-2 lg:gap-14 lg:pb-0">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] bg-sage ring-1 ring-line">
+          <div className={`relative overflow-hidden rounded-[var(--radius-card)] ${p.bundle ? "aspect-square" : "aspect-[4/3]"} bg-sage ring-1 ring-line`}>
             {p.images[0] && <ProductImage src={p.images[0].src} alt={p.images[0].alt} priority sizes="(min-width:1024px) 50vw, 100vw" />}
           </div>
         </div>
@@ -97,14 +99,28 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
               {p.pricePerKgCents > 0 ? (
                 <>
                   {formatMoney(p.pricePerKgCents, locale)}
-                  <span className="text-lg">{d.common.perKg}</span>
+                  <span className="text-lg">{p.bundle ? ` ${d.product.bundlePer}` : d.common.perKg}</span>
                 </>
               ) : (
                 <span className="text-xl text-muted">{d.product.priceSoon}</span>
               )}
             </p>
           </div>
+          {p.bundle && (
+            <p className="-mt-3 text-sm font-semibold text-forest-dark">
+              {t(d.product.bundleWeight, { weight: formatWeight(p.bundle.totalGrams) })}
+            </p>
+          )}
           <p className="text-lg leading-relaxed text-muted">{p.description}</p>
+
+          {p.bundle && (
+            <section aria-labelledby="contents" className="rounded-2xl bg-white p-4 ring-1 ring-line sm:p-5">
+              <h2 id="contents" className="mb-1 font-display text-xl font-normal">
+                {d.product.bundleContents}
+              </h2>
+              <BundleContents items={p.bundle.items} totalGrams={p.bundle.totalGrams} totalLabel={d.product.bundleTotal} />
+            </section>
+          )}
 
           <div className="rounded-2xl bg-sage p-4">
             <div className="flex gap-3">

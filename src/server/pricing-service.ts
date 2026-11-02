@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { BUNDLE_UNIT_GRAMS, parseBundleItems, snapshotBundle, type BundleSnapshot } from "@/domain/bundles";
 import { computeTotals, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
 import { AppError } from "./errors";
 import { getMerchant } from "./settings";
@@ -10,6 +11,8 @@ export interface PricedLine {
   grams: number;
   pricePerKgCents: number;
   lineTotalCents: number;
+  /** Contents frozen from the catalogue at pricing time (bundles only). */
+  bundleSnapshot: BundleSnapshot | null;
 }
 
 const MAX_LINES = 50;
@@ -54,7 +57,14 @@ export async function priceCart(lines: CartLineInput[], terms: DeliveryTerms) {
       }
       throw e;
     }
+    const items = parseBundleItems(p.bundleItems);
+    // A bundle that is still awaiting price approval can never be sold, whatever the flags say.
+    if (p.bundleItems != null && (!items || !p.priceConfirmed))
+      throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart is not available yet", 409, { productId: p.id, productName: p.name });
+    if (items && l.grams % BUNDLE_UNIT_GRAMS !== 0)
+      throw new AppError("INVALID_QUANTITY", "Invalid bundle quantity", 409, { productId: p.id, productName: p.name });
     return {
+      bundleSnapshot: items ? snapshotBundle(items) : null,
       productId: p.id,
       name: p.name,
       slug: p.slug,

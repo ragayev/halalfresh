@@ -3,12 +3,17 @@ import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { log } from "@/lib/logger";
 import { canTransitionPayment, paymentStatusAfterRefunds } from "@/domain/order-state";
-import { sendOrderEmail } from "../email";
+import { sendOrderEmail, sendPaymentFailureAlert } from "../email";
 import { stripeClient } from "./stripe";
 
 export type WebhookResult = "processed" | "duplicate" | "ignored";
 
 type Tx = Prisma.TransactionClient;
+
+type Effect =
+  | { type: "ack"; orderId: string }
+  | { type: "payment_received"; orderId: string }
+  | { type: "payment_failed_alert"; orderId: string; reason: string };
 
 interface PaidDetails {
   chargeId?: string;
@@ -25,14 +30,14 @@ interface PaidDetails {
 export async function processStripeEvent(event: Stripe.Event): Promise<WebhookResult> {
   // Network lookups happen before the transaction to keep it short.
   const extra = await prefetch(event);
-  let emailFor: { orderId: string; kind: "confirmation" } | null = null;
+  let effects: Effect[] = [];
 
   try {
     await db.$transaction(async (tx) => {
       await tx.processedWebhookEvent.create({
         data: { id: event.id, type: event.type },
       });
-      emailFor = await handle(tx, event, extra);
+      effects = await handle(tx, event, extra);
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
@@ -44,8 +49,12 @@ export async function processStripeEvent(event: Stripe.Event): Promise<WebhookRe
     }
     throw e;
   }
-  const mail = emailFor as { orderId: string; kind: "confirmation" } | null;
-  if (mail) await sendOrderEmail(mail.orderId, mail.kind);
+  // Side effects run after commit; each is individually de-duplicated (NotificationLog) and never throws.
+  for (const fx of effects) {
+    if (fx.type === "ack") await sendOrderEmail(fx.orderId, { kind: "ack" });
+    else if (fx.type === "payment_received") await sendOrderEmail(fx.orderId, { kind: "payment_received" });
+    else await sendPaymentFailureAlert(fx.orderId, fx.reason);
+  }
   return "processed";
 }
 
@@ -77,33 +86,33 @@ async function prefetch(event: Stripe.Event): Promise<PaidDetails> {
   return out;
 }
 
-async function handle(tx: Tx, event: Stripe.Event, extra: PaidDetails): Promise<{ orderId: string; kind: "confirmation" } | null> {
+async function handle(tx: Tx, event: Stripe.Event, extra: PaidDetails): Promise<Effect[]> {
   switch (event.type) {
     case "checkout.session.completed": {
       const s = event.data.object as Stripe.Checkout.Session;
+      // Settled immediately (cards, mock) vs. SEPA: the session completes when the mandate is accepted and the
+      // debit is initiated, with payment_status "unpaid". That is authorization, NOT collected money.
       if (s.payment_status === "paid" || s.payment_status === "no_payment_required") return markPaid(tx, event, s, extra);
-      return null; // async method (e.g. SEPA): wait for async_payment_succeeded
+      return markInitiated(tx, event, s, extra);
     }
     case "checkout.session.async_payment_succeeded":
       return markPaid(tx, event, event.data.object as Stripe.Checkout.Session, extra);
     case "checkout.session.async_payment_failed":
-      await markFailed(tx, (event.data.object as Stripe.Checkout.Session).id, "async_payment_failed");
-      return null;
+      return markFailed(tx, (event.data.object as Stripe.Checkout.Session).id, "async_payment_failed");
     case "checkout.session.expired":
       await markExpired(tx, (event.data.object as Stripe.Checkout.Session).id);
-      return null;
+      return [];
     case "payment_intent.payment_failed": {
       const pi = event.data.object as Stripe.PaymentIntent;
-      await markFailedByIntent(tx, pi.metadata?.orderId, pi.last_payment_error?.code ?? "payment_failed");
-      return null;
+      return markFailedByIntent(tx, pi.metadata?.orderId, pi.last_payment_error?.code ?? "payment_failed");
     }
     case "refund.created":
     case "refund.updated":
     case "refund.failed":
       await applyRefund(tx, event.data.object as Stripe.Refund);
-      return null;
+      return [];
     default:
-      return null;
+      return [];
   }
 }
 
@@ -114,13 +123,13 @@ async function findPayment(tx: Tx, sessionId: string) {
   });
 }
 
-async function markPaid(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session, x: PaidDetails) {
+/** The event must come from our connected account and match the stored order/amount, or it needs manual review. */
+async function verifiedPayment(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session) {
   const payment = await findPayment(tx, s.id);
   if (!payment) {
     log.warn("webhook.unknown_session", { eventId: event.id, sessionId: s.id });
     return null;
   }
-  // Ownership checks: event must come from our connected account and match the stored order/amount.
   const accountOk = (payment.connectedAccountId ?? null) === (event.account ?? null); // platform charges carry no account
   const metaOk = !s.metadata?.orderId || s.metadata.orderId === payment.orderId;
   const amountOk = s.amount_total === payment.amountCents && (s.currency ?? "eur").toLowerCase() === "eur";
@@ -142,7 +151,41 @@ async function markPaid(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session,
     });
     return null;
   }
-  if (payment.status === "PAID" || payment.status === "PARTIALLY_REFUNDED" || payment.status === "REFUNDED") return null; // already applied
+  return payment;
+}
+
+/**
+ * SEPA: mandate accepted, debit initiated. Makes the order visible and actionable to the admin and lets us
+ * acknowledge it to the customer, but the order is NOT paid until async_payment_succeeded.
+ */
+async function markInitiated(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session, x: PaidDetails): Promise<Effect[]> {
+  const payment = await verifiedPayment(tx, event, s);
+  if (!payment) return [];
+  const order = payment.order;
+  // Out-of-order safety: never regress a settled/failed/cancelled order, never repeat the initiation.
+  if (order.paymentStatus !== "PENDING_PAYMENT" || order.sepaInitiatedAt) return [];
+  await tx.payment.update({
+    where: { id: payment.id },
+    data: { stripePaymentIntentId: x.paymentIntentId ?? payment.stripePaymentIntentId },
+  });
+  await tx.order.update({ where: { id: order.id }, data: { sepaInitiatedAt: new Date() } });
+  await tx.orderEvent.create({
+    data: {
+      orderId: order.id,
+      type: "PAYMENT_PROCESSING",
+      fromStatus: "PENDING_PAYMENT",
+      toStatus: "PENDING_PAYMENT",
+      actor: "stripe",
+      note: "SEPA mandate accepted, debit initiated. Money not yet collected.",
+    },
+  });
+  return [{ type: "ack", orderId: order.id }];
+}
+
+async function markPaid(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session, x: PaidDetails): Promise<Effect[]> {
+  const payment = await verifiedPayment(tx, event, s);
+  if (!payment) return [];
+  if (payment.status === "PAID" || payment.status === "PARTIALLY_REFUNDED" || payment.status === "REFUNDED") return []; // already applied
 
   const now = new Date();
   await tx.payment.update({
@@ -157,7 +200,7 @@ async function markPaid(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session,
       stripeFeeCents: x.stripeFeeCents ?? payment.stripeFeeCents,
     },
   });
-  if (!canTransitionPayment(payment.order.paymentStatus, "PAID")) return null;
+  if (!canTransitionPayment(payment.order.paymentStatus, "PAID")) return [];
   const wasCancelled = payment.order.fulfillmentStatus === "CANCELLED";
   await tx.order.update({
     where: { id: payment.orderId },
@@ -177,28 +220,28 @@ async function markPaid(tx: Tx, event: Stripe.Event, s: Stripe.Checkout.Session,
       actor: "stripe",
     },
   });
-  return { orderId: payment.orderId, kind: "confirmation" as const };
+  return [{ type: "payment_received", orderId: payment.orderId }];
 }
 
-async function markFailed(tx: Tx, sessionId: string, reason: string) {
+async function markFailed(tx: Tx, sessionId: string, reason: string): Promise<Effect[]> {
   const payment = await findPayment(tx, sessionId);
-  if (!payment) return;
-  await setFailed(tx, payment, reason);
+  if (!payment) return [];
+  return setFailed(tx, payment, reason);
 }
 
-async function markFailedByIntent(tx: Tx, orderId: string | undefined, reason: string) {
+async function markFailedByIntent(tx: Tx, orderId: string | undefined, reason: string): Promise<Effect[]> {
   // The intent id is only stored once the session completes, so failures are matched via our order metadata.
-  if (!orderId) return;
+  if (!orderId) return [];
   const payment = await tx.payment.findFirst({
     where: { orderId },
     include: { order: true },
   });
-  if (payment) await setFailed(tx, payment, reason);
+  return payment ? setFailed(tx, payment, reason) : [];
 }
 
-async function setFailed(tx: Tx, payment: NonNullable<Awaited<ReturnType<typeof findPayment>>>, reason: string) {
+async function setFailed(tx: Tx, payment: NonNullable<Awaited<ReturnType<typeof findPayment>>>, reason: string): Promise<Effect[]> {
   if (!canTransitionPayment(payment.order.paymentStatus, "PAYMENT_FAILED") || payment.order.paymentStatus === "PAYMENT_FAILED") {
-    return; // e.g. already PAID: late failure events never downgrade
+    return []; // e.g. already PAID: late failure events never downgrade
   }
   await tx.payment.update({
     where: { id: payment.id },
@@ -215,9 +258,12 @@ async function setFailed(tx: Tx, payment: NonNullable<Awaited<ReturnType<typeof 
       fromStatus: payment.order.paymentStatus,
       toStatus: "PAYMENT_FAILED",
       actor: "stripe",
-      note: reason,
+      note: payment.order.fulfillmentStatus === "AWAITING_FORWARDING" ? reason : `${reason} (fulfillment was ${payment.order.fulfillmentStatus})`,
     },
   });
+  // Only a failure of an already-authorized SEPA debit needs an alert: before the mandate the customer is still
+  // on the Stripe page and may retry. Alerts are deduplicated per order.
+  return payment.order.sepaInitiatedAt ? [{ type: "payment_failed_alert", orderId: payment.orderId, reason }] : [];
 }
 
 async function markExpired(tx: Tx, sessionId: string) {

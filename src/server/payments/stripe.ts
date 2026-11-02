@@ -14,19 +14,23 @@ export class GatewayConfigError extends Error {}
 const CHECKOUT_LOCALES = new Set(["en", "de", "tr"]);
 
 /**
- * Payments are created on the platform's own Stripe account (no commission split).
- * If a connected account id is configured they become direct charges on that account instead.
- * Payment methods (card, PayPal, Apple/Google Pay, …) are managed in the Stripe Dashboard.
+ * V1 pilot: SEPA Direct Debit only. Checkout collects the IBAN and the mandate itself (Halal Fresh never sees or
+ * stores bank details). Charges are DIRECT charges on the butcher's connected account, so the money settles with the
+ * butcher, not with Halal Fresh. A missing connected account is refused rather than silently charging the platform.
  */
 export const stripeGateway: PaymentGateway = {
   name: "stripe",
 
   async createCheckout(a) {
     const stripe = stripeClient();
+    if (!a.connectedAccountId) throw new GatewayConfigError("No connected Stripe account configured for the seller");
     const expiresAt = new Date(Date.now() + 31 * 60_000); // Stripe minimum is 30 min
     const session = await stripe.checkout.sessions.create(
       {
         mode: "payment",
+        // On this API version the static `payment_method_types` list is gone: this is a filter on the methods Stripe deems
+        // eligible, so SEPA must also be enabled for the seller in Stripe (see README).
+        allowed_payment_method_types: ["sepa_debit"],
         client_reference_id: a.orderId,
         customer_email: a.customerEmail,
         locale: CHECKOUT_LOCALES.has(a.locale) ? (a.locale as "en" | "de") : "auto",
@@ -47,9 +51,14 @@ export const stripeGateway: PaymentGateway = {
         success_url: a.successUrl,
         cancel_url: a.cancelUrl,
       },
-      { ...(a.connectedAccountId ? { stripeAccount: a.connectedAccountId } : {}), idempotencyKey: a.idempotencyKey },
+      { stripeAccount: a.connectedAccountId, idempotencyKey: a.idempotencyKey },
     );
     if (!session.url) throw new Error("Stripe returned no checkout URL");
+    // Belt and braces for "SEPA only": never hand the customer a session that would also offer cards, wallets, etc.
+    if (session.payment_method_types?.some((m) => m !== "sepa_debit")) {
+      await stripe.checkout.sessions.expire(session.id, {}, { stripeAccount: a.connectedAccountId }).catch(() => undefined);
+      throw new GatewayConfigError("Checkout session offers payment methods other than SEPA Direct Debit");
+    }
     return { sessionId: session.id, url: session.url, expiresAt };
   },
 
@@ -80,6 +89,7 @@ export const stripeGateway: PaymentGateway = {
         connected: false,
         chargesEnabled: false,
         payoutsEnabled: false,
+        sepaDebitEnabled: false,
         detailsSubmitted: false,
         requirementsDue: [],
         mode,
@@ -92,6 +102,7 @@ export const stripeGateway: PaymentGateway = {
       connected: true,
       chargesEnabled: !!acct.charges_enabled,
       payoutsEnabled: !!acct.payouts_enabled,
+      sepaDebitEnabled: acct.capabilities?.sepa_debit_payments === "active",
       detailsSubmitted: !!acct.details_submitted,
       requirementsDue: acct.requirements?.currently_due ?? [],
       mode,

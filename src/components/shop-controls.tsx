@@ -48,13 +48,13 @@ export function ShopControls({ count }: { count: number }) {
           onChange={(e) => setQ(e.target.value)}
           placeholder={d.shop.searchPlaceholder}
           aria-label={d.shop.searchPlaceholder}
-          className="h-12 w-full rounded-full border border-line bg-white ps-12 pe-4 text-[15px] focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
+          className="h-12 w-full rounded-full border border-line/70 bg-white ps-12 pe-4 text-[15px] shadow-card focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <details className="relative">
-            <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-full bg-white px-4 text-sm font-medium ring-1 ring-line hover:bg-sage-soft [&::-webkit-details-marker]:hidden">
+            <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-full bg-white px-5 text-sm font-bold shadow-card ring-1 ring-line/70 hover:bg-sage-soft [&::-webkit-details-marker]:hidden">
               <SlidersHorizontal className="size-4" aria-hidden />
               {d.shop.filters}
             </summary>
@@ -83,7 +83,7 @@ export function ShopControls({ count }: { count: number }) {
                 sort: e.target.value === "popular" ? null : e.target.value,
               })
             }
-            className="h-10 cursor-pointer appearance-none rounded-full bg-white py-0 ps-4 pe-10 text-sm font-medium ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-forest"
+            className="h-10 cursor-pointer appearance-none rounded-full bg-white py-0 ps-5 pe-10 text-sm font-bold shadow-card ring-1 ring-line/70 focus:outline-none focus:ring-2 focus:ring-forest"
           >
             <option value="popular">
               {d.shop.sort}: {d.shop.sortPopular}

@@ -30,6 +30,11 @@ export default async function MockPay({
     await simulateMockPayment(session, "paid");
     redirect(success!);
   }
+  async function sepa() {
+    "use server";
+    await simulateMockPayment(session, "sepa_initiated");
+    redirect(success!);
+  }
   async function abort() {
     "use server";
     redirect(cancel!);
@@ -43,6 +48,11 @@ export default async function MockPay({
         <form action={pay}>
           <Button size="lg" full type="submit" data-testid="mock-pay">
             Pay (simulated)
+          </Button>
+        </form>
+        <form action={sepa}>
+          <Button size="lg" full variant="secondary" type="submit" data-testid="mock-sepa">
+            Authorize SEPA debit (simulated, not yet collected)
           </Button>
         </form>
         <form action={abort}>

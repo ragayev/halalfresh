@@ -190,7 +190,12 @@ test.describe("admin", () => {
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 
     await page.goto("/admin/orders");
-    const row = page.getByTestId("orders-table").getByRole("row").filter({ hasText: "Aylin Test" }).first();
+    // Desktop shows a table, phones show cards (md breakpoint): take whichever is visible.
+    const row = page
+      .locator('[data-testid="orders-table"] tr, [data-testid="orders-cards"] li')
+      .filter({ hasText: "Aylin Test" })
+      .filter({ visible: true })
+      .first();
     await expect(row).toContainText("paid");
     await expect(row).toContainText("€167.94");
     await row.getByRole("link").click();

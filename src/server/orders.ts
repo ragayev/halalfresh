@@ -1,23 +1,46 @@
 import type { FulfillmentStatus, Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
-import { canTransitionFulfillment } from "@/domain/order-state";
+import { canAuthorizeEarlyFulfillment, fulfillmentGate, fulfillmentMoveAllowed } from "@/domain/order-state";
 import { buildWhatsappMessage, normalizeWhatsappNumber, whatsappLink } from "@/domain/whatsapp";
 import { AppError } from "./errors";
 import { getGateway } from "./payments/gateway";
 import { applyRefund } from "./payments/webhook";
 import { sendOrderEmail } from "./email";
 
-export async function audit(actor: string, action: string, entity?: string, entityId?: string, detail?: Prisma.InputJsonValue) {
-  await db.auditLog.create({
+export async function audit(
+  actor: string,
+  action: string,
+  entity?: string,
+  entityId?: string,
+  detail?: Prisma.InputJsonValue,
+  client: Prisma.TransactionClient = db,
+) {
+  await client.auditLog.create({
     data: { actor, action, entity, entityId, detail },
   });
 }
 
 export async function getOrderByToken(token: string) {
   if (!token || token.length < 20) return null;
+  // Guest tracking link: expose only what the order page renders. Internal notes, staff identities, Stripe ids,
+  // the customer's phone and the access token itself never leave the server through this query.
   return db.order.findUnique({
     where: { accessToken: token },
-    include: { items: true, address: true, customer: true, merchant: true },
+    omit: {
+      accessToken: true,
+      adminNotes: true,
+      forwardedBy: true,
+      earlyFulfillmentAuthorizedBy: true,
+      requestId: true,
+      commissionBps: true,
+      applicationFeeCents: true,
+    },
+    include: {
+      items: true,
+      address: { select: { street: true, postalCode: true, city: true } },
+      customer: { select: { name: true, email: true } },
+      merchant: { select: { name: true, legalName: true, contactEmail: true, contactPhone: true } },
+    },
   });
 }
 
@@ -35,47 +58,88 @@ export async function getOrderForAdmin(id: string) {
   });
 }
 
+/**
+ * Moves the fulfillment status. The status change, its history event and the audit row commit together or not at all.
+ * Payment is checked via the fulfillment policy (see domain/order-state.ts), never assumed to be "paid".
+ */
 export async function transitionFulfillment(orderId: string, to: FulfillmentStatus, actor: string) {
+  // Cancellation also settles money (refund / expiring the checkout), so it has exactly one code path.
+  if (to === "CANCELLED") return cancelOrder(orderId, actor);
   const order = await db.order.findUnique({ where: { id: orderId } });
   if (!order) throw new AppError("NOT_FOUND", "Order not found", 404);
-  if (order.paymentStatus === "PENDING_PAYMENT" || order.paymentStatus === "PAYMENT_FAILED") {
-    throw new AppError("CONFLICT", "Order is not paid yet", 409);
-  }
-  if (!canTransitionFulfillment(order.fulfillmentStatus, to)) {
-    throw new AppError("CONFLICT", `Cannot move from ${order.fulfillmentStatus} to ${to}`, 409);
-  }
-  // Compare-and-set protects against two admins clicking at once.
-  const res = await db.order.updateMany({
-    where: { id: orderId, fulfillmentStatus: order.fulfillmentStatus },
-    data: {
-      fulfillmentStatus: to,
-      ...(to === "FORWARDED" ? { forwardedAt: new Date(), forwardedBy: actor } : {}),
-      ...(to === "AWAITING_FORWARDING" ? { forwardedAt: null, forwardedBy: null } : {}),
-    },
+  const allowed = fulfillmentMoveAllowed(order, to);
+  if (!allowed.ok) throw new AppError("CONFLICT", allowed.reason, 409);
+  await db.$transaction(async (tx) => {
+    // Compare-and-set on BOTH statuses protects against two admins clicking at once and against a payment webhook
+    // changing the payment state between our check and the write.
+    const res = await tx.order.updateMany({
+      where: { id: orderId, fulfillmentStatus: order.fulfillmentStatus, paymentStatus: order.paymentStatus },
+      data: {
+        fulfillmentStatus: to,
+        ...(to === "FORWARDED" ? { forwardedAt: new Date(), forwardedBy: actor } : {}),
+        ...(to === "AWAITING_FORWARDING" ? { forwardedAt: null, forwardedBy: null } : {}),
+      },
+    });
+    if (res.count !== 1) throw new AppError("CONFLICT", "Order was changed by someone else. Reload and retry.", 409);
+    await tx.orderEvent.create({
+      data: {
+        orderId,
+        type: "FULFILLMENT",
+        fromStatus: order.fulfillmentStatus,
+        toStatus: to,
+        actor,
+        note:
+          fulfillmentGate(order) === "EARLY_AUTHORIZED" ? "Fulfilled on SEPA collection risk (early authorization)" : undefined,
+      },
+    });
+    await audit(actor, "order.fulfillment", "Order", orderId, { from: order.fulfillmentStatus, to }, tx);
   });
-  if (res.count !== 1) throw new AppError("CONFLICT", "Order was changed by someone else. Reload and retry.", 409);
-  await db.orderEvent.create({
-    data: {
-      orderId,
-      type: "FULFILLMENT",
-      fromStatus: order.fulfillmentStatus,
-      toStatus: to,
-      actor,
-    },
+  await sendOrderEmail(orderId, { kind: "status", status: to });
+}
+
+/**
+ * Explicit, audited acceptance of the SEPA collection risk. Does not mark anything paid and does not move the order;
+ * it only lifts the payment block so the admin can forward and fulfil. `acknowledged` must be literally true.
+ */
+export async function authorizeEarlyFulfillment(orderId: string, actor: string, acknowledged: boolean) {
+  if (acknowledged !== true) throw new AppError("VALIDATION", "You must acknowledge the collection risk", 422);
+  const order = await db.order.findUnique({ where: { id: orderId } });
+  if (!order) throw new AppError("NOT_FOUND", "Order not found", 404);
+  const can = canAuthorizeEarlyFulfillment(order);
+  if (!can.ok) throw new AppError("CONFLICT", can.reason, 409);
+  await db.$transaction(async (tx) => {
+    const res = await tx.order.updateMany({
+      // paymentStatus guard: if the debit settled or failed in the meantime, this authorization no longer applies.
+      where: { id: orderId, paymentStatus: "PENDING_PAYMENT", earlyFulfillmentAuthorizedAt: null, sepaInitiatedAt: { not: null } },
+      data: { earlyFulfillmentAuthorizedAt: new Date(), earlyFulfillmentAuthorizedBy: actor },
+    });
+    if (res.count !== 1) throw new AppError("CONFLICT", "Payment status changed. Reload and review.", 409);
+    await tx.orderEvent.create({
+      data: {
+        orderId,
+        type: "EARLY_FULFILLMENT_AUTHORIZED",
+        actor,
+        note: `Risk acknowledged: fulfilment may proceed before SEPA settlement (${order.totalCents} cents). Halal Fresh bears no collection risk; the seller accepts it.`,
+      },
+    });
+    await audit(actor, "order.early_fulfillment_authorized", "Order", orderId, { totalCents: order.totalCents }, tx);
   });
-  await audit(actor, "order.fulfillment", "Order", orderId, {
-    from: order.fulfillmentStatus,
-    to,
-  });
-  await sendOrderEmail(orderId, "status");
 }
 
 /** Builds the click-to-chat link; records that the admin opened it (NOT that it was sent). */
 export async function prepareWhatsapp(orderId: string, actor: string) {
   const o = await getOrderForAdmin(orderId);
   if (!o) throw new AppError("NOT_FOUND", "Order not found", 404);
-  if (o.paymentStatus !== "PAID" && o.paymentStatus !== "PARTIALLY_REFUNDED")
-    throw new AppError("CONFLICT", "Only paid orders can be forwarded", 409);
+  if (o.fulfillmentStatus === "CANCELLED") throw new AppError("CONFLICT", "Cancelled orders cannot be forwarded", 409);
+  const gate = fulfillmentGate(o);
+  if (gate !== "OPEN" && gate !== "EARLY_AUTHORIZED")
+    throw new AppError(
+      "CONFLICT",
+      gate === "NEEDS_AUTHORIZATION"
+        ? "SEPA payment is still processing. Authorize early fulfillment first or wait for settlement."
+        : "Only paid or authorized orders can be forwarded",
+      409,
+    );
   const number = o.merchant.whatsappNumber ? normalizeWhatsappNumber(o.merchant.whatsappNumber) : null;
   if (!number) throw new AppError("VALIDATION", "Butcher WhatsApp number is not configured (Admin → Merchant)", 422);
   const message = buildWhatsappMessage({
@@ -88,6 +152,7 @@ export async function prepareWhatsapp(orderId: string, actor: string) {
     items: o.items,
     totalCents: o.totalCents,
     paymentStatus: o.paymentStatus,
+    sepaPendingAuthorized: gate === "EARLY_AUTHORIZED",
     deliveryDate: o.deliveryDate.toISOString().slice(0, 10),
     slotStartTime: o.slotStartTime,
     slotEndTime: o.slotEndTime,
@@ -166,7 +231,11 @@ export async function refundOrder(orderId: string, amountCents: number, opts: { 
   });
 }
 
-/** Cancels an unpaid order (and its open checkout), or a paid one with a full refund. */
+/**
+ * Cancels an unpaid order (and its open checkout), or a paid one with a full refund.
+ * A SEPA debit that is already processing cannot be stopped, so cancelling then would leave the customer charged on a
+ * cancelled order; it has to wait for settlement (then it is refunded) or failure.
+ */
 export async function cancelOrder(orderId: string, actor: string) {
   const order = await db.order.findUnique({
     where: { id: orderId },
@@ -174,6 +243,13 @@ export async function cancelOrder(orderId: string, actor: string) {
   });
   if (!order) throw new AppError("NOT_FOUND", "Order not found", 404);
   if (order.fulfillmentStatus === "DELIVERED") throw new AppError("CONFLICT", "Delivered orders cannot be cancelled", 409);
+  if (order.fulfillmentStatus === "CANCELLED") throw new AppError("CONFLICT", "Order is already cancelled", 409);
+  if (order.paymentStatus === "PENDING_PAYMENT" && order.sepaInitiatedAt)
+    throw new AppError(
+      "CONFLICT",
+      "A SEPA debit is processing and cannot be stopped. Wait for it to settle (then cancel to refund) or fail.",
+      409,
+    );
   if (order.paymentStatus === "PAID" || order.paymentStatus === "PARTIALLY_REFUNDED") {
     const remaining = order.totalCents - order.refundedCents;
     if (remaining > 0)
@@ -190,28 +266,24 @@ export async function cancelOrder(orderId: string, actor: string) {
         /* already expired/completed: webhook will reconcile */
       }
     }
-    await db.order.update({
-      where: { id: orderId },
-      data: { paymentStatus: "CANCELLED" },
-    });
-    await db.payment.updateMany({
-      where: { orderId },
-      data: { status: "CANCELLED" },
-    });
   }
-  await db.order.update({
-    where: { id: orderId },
-    data: { fulfillmentStatus: "CANCELLED" },
+  const unpaid = order.paymentStatus === "PENDING_PAYMENT" || order.paymentStatus === "PAYMENT_FAILED";
+  await db.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id: orderId },
+      data: { fulfillmentStatus: "CANCELLED", ...(unpaid ? { paymentStatus: "CANCELLED" } : {}) },
+    });
+    if (unpaid) await tx.payment.updateMany({ where: { orderId }, data: { status: "CANCELLED" } });
+    await tx.orderEvent.create({
+      data: {
+        orderId,
+        type: "FULFILLMENT",
+        fromStatus: order.fulfillmentStatus,
+        toStatus: "CANCELLED",
+        actor,
+      },
+    });
+    await audit(actor, "order.cancel", "Order", orderId, undefined, tx);
   });
-  await db.orderEvent.create({
-    data: {
-      orderId,
-      type: "FULFILLMENT",
-      fromStatus: order.fulfillmentStatus,
-      toStatus: "CANCELLED",
-      actor,
-    },
-  });
-  await audit(actor, "order.cancel", "Order", orderId);
-  await sendOrderEmail(orderId, "status");
+  await sendOrderEmail(orderId, { kind: "status", status: "CANCELLED" });
 }

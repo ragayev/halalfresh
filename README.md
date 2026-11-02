@@ -40,18 +40,26 @@ E2E and integration tests mock only the payment boundary (mock gateway / locally
 
 1. `STRIPE_SECRET_KEY=sk_test_...`, `PAYMENT_GATEWAY=stripe`.
 2. `stripe listen --forward-to localhost:3000/api/webhooks/stripe` → copy the `whsec_...` into `STRIPE_WEBHOOK_SECRET`.
-3. In the Stripe Dashboard → Settings → Payment methods, enable PayPal / Apple Pay / Google Pay / Klarna as desired (Checkout offers them automatically).
-4. Order with card `4242 4242 4242 4242`; the order flips to PAID only when the webhook arrives.
+3. Enable SEPA Direct Debit on the connected test account. Pay with test IBAN `DE89370400440532013000`; the order shows _SEPA processing_ until `async_payment_succeeded` arrives (`stripe trigger`/Dashboard) and `PAID` only then. IBAN `DE62888888880012345678` simulates a failed debit.
 5. Refund from the admin order page and confirm `refund.created` is received.
 
-## Payments
+## Payments, SEPA and fulfillment (V1 pilot)
 
-- Checkout Session is created on the platform's own Stripe account. **No commission, no Connect**: settling with the butcher happens outside the app.
-  (If `Merchant.stripeAccountId` is ever set, charges become direct charges on that account; the schema still carries unused commission columns.)
-- Orders are marked paid only by verified webhooks (`/api/webhooks/stripe`): `checkout.session.completed|async_payment_succeeded|async_payment_failed|expired`, `payment_intent.payment_failed`, `refund.created|updated|failed`.
-- Idempotency: event-id ledger written in the same DB transaction as the state change; Stripe idempotency keys; client `requestId` prevents duplicate orders on double submit.
-- Out-of-order safety: a paid order is never downgraded by late failure/expiry; a late success revives an order cancelled on expiry; refunds before the payment is recorded return 500 so Stripe retries.
+- **SEPA Direct Debit only.** Stripe Checkout (`allowed_payment_method_types: ["sepa_debit"]`) collects the IBAN and the mandate; Halal Fresh never sees bank details. Sessions are **direct charges on the seller's connected account** (`Merchant.stripeAccountId`); with `PAYMENT_GATEWAY=stripe` checkout is refused (503) if that account is missing or lacks the `sepa_debit_payments` capability, so the platform account is never charged by accident. No commission is taken.
+- **Authorization is not payment.** `checkout.session.completed` with `payment_status: unpaid` (mandate accepted, debit initiated) sets `Order.sepaInitiatedAt`, logs `PAYMENT_PROCESSING`, and sends the customer an acknowledgement that says the money is **not yet collected**. `paymentStatus` stays `PENDING_PAYMENT`. Only `checkout.session.async_payment_succeeded` (verified webhook) sets `PAID`. `async_payment_failed` / `payment_intent.payment_failed` set `PAYMENT_FAILED` and alert the admin.
+- **Fulfillment policy** (`src/domain/order-state.ts`, `fulfillmentGate`): a created checkout can never be prepared. Once SEPA is initiated the order appears under **Needs action** in the admin; forwarding/preparing needs either settlement or the admin's explicit, audited **Authorize fulfilment now** (risk checkbox; stores who and when, `EARLY_FULFILLMENT_AUTHORIZED` event + audit row). Authorization never marks anything paid and is void if the debit fails. After a failure, only recording an already dispatched delivery is still allowed. A processing SEPA debit cannot be cancelled (it cannot be stopped); cancel after settlement (full refund) or failure.
+- Failures after delivery are **critical** in the admin list/detail/dashboard and e-mail the admin (`ADMIN_ALERT_EMAIL`, else all admin users).
+- Orders are marked paid only by verified webhooks (`/api/webhooks/stripe`, Connect endpoint): `checkout.session.completed|async_payment_succeeded|async_payment_failed|expired`, `payment_intent.payment_failed`, `refund.created|updated|failed`.
+- Idempotency: event-id ledger written in the same DB transaction as the state change; Stripe idempotency keys; client `requestId` prevents duplicate orders on double submit. Notifications are de-duplicated by the unique `NotificationLog(orderId, kind)` claim.
+- Out-of-order safety: a paid order is never downgraded by late failure/expiry; late initiation never regresses a paid/failed order; a late success revives an order cancelled on expiry; refunds before the payment is recorded return 500 so Stripe retries.
+- Customer tracking (`/[locale]/order/[token]`): 5-step timeline (received → confirmed → preparing → out for delivery → delivered), cancellation shown separately, and a separate payment indicator. It polls `GET /api/order/[token]/status` (statuses only, `no-store`, rate limited) every 3 s right after checkout, 20 s while fulfilling, 60 s while only SEPA settles, paused in background tabs, and stops in terminal states.
 - Delivery: customers do **not** pick a slot. See _Delivery zones_ below.
+
+### Required Stripe settings
+
+1. Connect: Kevser's account connected (`Merchant.stripeAccountId`), `sepa_debit_payments` capability **active**, SEPA Direct Debit enabled under Settings → Payment methods **for that account** (the code filters to SEPA but Stripe must consider it eligible).
+2. Webhook endpoint `/api/webhooks/stripe` listening to **events on Connected accounts**: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, `payment_intent.payment_failed`, `refund.created`, `refund.updated`, `refund.failed`. Secret in `STRIPE_WEBHOOK_SECRET`.
+3. Statement descriptor / mandate text on Kevser's account should name the seller. SEPA debits settle in ~2-5 business days and can be returned for up to 8 weeks (13 months for unauthorized debits).
 
 ## Delivery zones
 
@@ -83,7 +91,7 @@ Customers never see a zone map. On first open they enter a postcode (PLZ); it is
 ## Deploying to Vercel
 
 1. Create a Postgres database (Neon/Vercel Postgres/Supabase) and set `DATABASE_URL`.
-2. Set env vars from `.env.example` (never set `PAYMENT_GATEWAY=mock`). `NEXT_PUBLIC_SITE_URL=https://halalfresh.app`. `AUTH_SECRET` ≥ 32 chars.
+2. Set env vars from `.env.example` (never set `PAYMENT_GATEWAY=mock`; set `ADMIN_ALERT_EMAIL`). `NEXT_PUBLIC_SITE_URL=https://halalfresh.app`. `AUTH_SECRET` ≥ 32 chars.
 3. Build command `prisma migrate deploy && next build`. Run `npm run db:seed` once from a trusted machine (set `ADMIN_EMAIL`/`ADMIN_PASSWORD`), then delete the seeded demo products or replace them.
 4. Stripe Dashboard → Developers → Webhooks: add endpoint `https://halalfresh.app/api/webhooks/stripe` (events on your account) with the events above; put the secret in `STRIPE_WEBHOOK_SECRET`.
 5. Configure SMTP (`SMTP_URL`) for order emails — without it emails are skipped (a log line is written, no personal data).

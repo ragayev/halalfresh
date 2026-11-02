@@ -6,8 +6,10 @@ import { isLocale } from "@/i18n/config";
 import { getDictionary, t } from "@/i18n/get-dictionary";
 import { cookies } from "next/headers";
 import { listProducts } from "@/server/catalog";
+import { BUNDLE_CATEGORY } from "@/domain/bundles";
 import { resolveDelivery } from "@/server/delivery-service";
 import { isValidPostcode } from "@/domain/delivery";
+import { BundleCard } from "@/components/bundle-card";
 import { BestSellerCard } from "@/components/best-seller-card";
 import { PostcodeChecker } from "@/components/postcode-checker";
 import { Container } from "@/components/ui";
@@ -28,6 +30,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const pc = (await cookies()).get("hf_postcode")?.value ?? "";
   const preorderOnly = isValidPostcode(pc) && (await resolveDelivery(pc)).check.mode === "PREORDER_ONLY";
   const featured = await listProducts(locale, { featured: true, availableOnly: true, limit: 8, preorderOnly });
+
+  const bundles = (await listProducts(locale, { category: BUNDLE_CATEGORY, availableOnly: true, preorderOnly })).filter((p) => p.bundle);
 
   const heroTrust = [
     [Store, d.home.hb1, d.home.hb1t],
@@ -50,9 +54,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="absolute inset-0 hidden bg-gradient-to-r from-cream via-cream/25 via-35% to-transparent lg:block" />
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-cream to-transparent lg:hidden" />
         </div>
-        <Container className="relative pb-8 pt-2 lg:pb-10 lg:pt-14">
-          <div className="rise max-w-xl space-y-5 lg:min-h-[330px] lg:max-w-[46rem]">
-            <Image src="/halal-logo.svg" alt="Halal" width={112} height={112} priority className="size-24 drop-shadow-lg sm:size-28" />
+        <Container className="relative pb-8 pt-6 lg:pb-14 lg:pt-20">
+          <div className="rise max-w-xl space-y-6 lg:max-w-[46rem]">
             <h1 className="text-balance font-display text-[2.6rem] font-normal leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
               {d.home.heroTitle}
             </h1>
@@ -104,6 +107,33 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
         </div>
       </section>
+
+      {bundles.length > 0 && (
+        <section aria-labelledby="bundles" className="py-12 sm:py-16">
+          <Container>
+            <div className="mb-6 flex items-end justify-between gap-4 sm:mb-8">
+              <div>
+                <h2 id="bundles" className="font-display text-3xl font-normal sm:text-4xl">
+                  {d.home.bundlesTitle}
+                </h2>
+                <p className="mt-1 max-w-2xl text-muted">{d.home.bundlesSub}</p>
+              </div>
+              <Link
+                href={`/${locale}/shop?category=${BUNDLE_CATEGORY}`}
+                className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-forest-dark underline underline-offset-4 sm:inline-flex"
+              >
+                {d.common.viewAll}
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+              {bundles.map((p) => (
+                <BundleCard key={p.id} p={p} locale={locale} d={d} />
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
 
       <Container className="pt-12">
         <div className="rise [animation-delay:.15s]">

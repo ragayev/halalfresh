@@ -10,7 +10,8 @@ import { DeliveryInfo } from "./delivery-ui";
 import { useDelivery } from "./delivery-provider";
 import { buttonClasses, Button, Card, Container } from "./ui";
 import { formatMoney } from "@/domain/money";
-import { formatWeight } from "@/domain/pricing";
+import { formatQuantity } from "@/domain/bundles";
+import { BundleContents } from "./bundle-contents";
 
 export function CartPage() {
   const { d, locale, t } = useI18n();
@@ -105,9 +106,23 @@ export function CartPage() {
                       <div className="min-w-0">
                         <p className="truncate font-semibold">{l.name}</p>
                         <p className="text-sm text-muted">
-                          {formatWeight(l.grams)} · {formatMoney(l.pricePerKgCents, locale)}
-                          {d.common.perKg}
+                          {formatQuantity(l.grams, l.isBundle)} · {formatMoney(l.pricePerKgCents, locale)}
+                          {l.isBundle ? d.common.perPackage : d.common.perKg}
                         </p>
+                        {l.bundle && (
+                          <details className="mt-1 text-sm">
+                            <summary className="cursor-pointer font-medium text-forest-dark underline-offset-4 hover:underline">
+                              {d.product.bundleDetails}
+                            </summary>
+                            <BundleContents
+                              items={l.bundle.items}
+                              totalGrams={l.bundle.totalGrams}
+                              packages={l.grams / 1000}
+                              totalLabel={d.product.bundleTotal}
+                              className="mt-1"
+                            />
+                          </details>
+                        )}
                         {l.issue && (
                           <p className="mt-1 text-xs font-semibold text-danger">
                             {l.issue === "NOT_PREORDER" ? d.delivery.lineNotPreorder : d.common.unavailable}
@@ -132,7 +147,7 @@ export function CartPage() {
                           <Minus className="size-4" aria-hidden />
                         </button>
                         <span className="min-w-14 text-center text-sm font-bold" data-testid="line-weight">
-                          {formatWeight(l.grams)}
+                          {formatQuantity(l.grams, l.isBundle)}
                         </span>
                         <button
                           onClick={() => change(l.productId, l.stepGrams, l.minGrams, l.maxGrams)}

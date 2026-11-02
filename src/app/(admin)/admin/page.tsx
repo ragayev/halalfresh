@@ -14,7 +14,7 @@ export default async function Dashboard() {
   const start = berlinToUtc(today, "00:00"),
     end = berlinToUtc(addDays(today, 1), "00:00");
   const paidWhere = { paymentStatus: { in: [...PAID] } };
-  const [todayN, awaiting, revenue, inFlight, done, cancelled, refunded] = await Promise.all([
+  const [todayN, awaiting, revenue, inFlight, done, cancelled, refunded, sepaPending, payFailed] = await Promise.all([
     db.order.count({
       where: { createdAt: { gte: start, lt: end }, ...paidWhere },
     }),
@@ -43,9 +43,17 @@ export default async function Dashboard() {
     db.order.count({
       where: { paymentStatus: { in: ["REFUNDED", "PARTIALLY_REFUNDED"] } },
     }),
+    db.order.count({
+      where: { paymentStatus: "PENDING_PAYMENT", sepaInitiatedAt: { not: null }, fulfillmentStatus: { not: "CANCELLED" } },
+    }),
+    db.order.count({
+      where: { paymentStatus: "PAYMENT_FAILED", sepaInitiatedAt: { not: null }, fulfillmentStatus: { not: "CANCELLED" } },
+    }),
   ]);
   const rev = (revenue._sum.totalCents ?? 0) - (revenue._sum.refundedCents ?? 0);
   const tiles: [string, string | number, string?][] = [
+    ["SEPA failed (action needed)", payFailed, "/admin/orders?payment=PAYMENT_FAILED"],
+    ["SEPA collecting (not yet paid)", sepaPending, "/admin/orders?payment=PENDING_PAYMENT"],
     ["Today's paid orders", todayN],
     ["Awaiting forwarding", awaiting, "/admin/orders?fulfillment=AWAITING_FORWARDING"],
     ["Paid revenue (net of refunds)", formatMoney(rev)],

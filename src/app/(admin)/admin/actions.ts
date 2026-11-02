@@ -6,9 +6,10 @@ import { FulfillmentStatus } from "@prisma/client";
 import { db } from "@/lib/db";
 import { login, logout, requireAdmin } from "@/server/auth";
 import { AppError } from "@/server/errors";
-import { addNote, audit, cancelOrder, prepareWhatsapp, refundOrder, transitionFulfillment } from "@/server/orders";
+import { addNote, audit, authorizeEarlyFulfillment, cancelOrder, prepareWhatsapp, refundOrder, transitionFulfillment } from "@/server/orders";
 import { getMerchant } from "@/server/settings";
 import { normalizeWhatsappNumber } from "@/domain/whatsapp";
+import type { BundleItem } from "@/domain/bundles";
 
 export type ActionResult = { ok: boolean; message?: string; url?: string };
 const fail = (e: unknown): ActionResult => ({
@@ -37,7 +38,20 @@ export async function setFulfillmentAction(orderId: string, to: string): Promise
   try {
     await transitionFulfillment(orderId, z.nativeEnum(FulfillmentStatus).parse(to), a.email);
     revalidatePath(`/admin/orders/${orderId}`);
+    revalidatePath("/admin/orders");
     return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function authorizeEarlyFulfillmentAction(orderId: string, acknowledged: boolean): Promise<ActionResult> {
+  const a = await requireAdmin();
+  try {
+    await authorizeEarlyFulfillment(orderId, a.email, acknowledged);
+    revalidatePath(`/admin/orders/${orderId}`);
+    revalidatePath("/admin/orders");
+    return { ok: true, message: "Fulfilment authorized on SEPA collection risk" };
   } catch (e) {
     return fail(e);
   }
@@ -114,7 +128,22 @@ const productSchema = z.object({
   descDe: z.string().trim().max(2000).optional(),
   nameTr: z.string().trim().max(120).optional(),
   descTr: z.string().trim().max(2000).optional(),
+  /** Bundles only: one component per line, "grams | Deutsch | Türkçe | English | catalogue-slug (optional)". */
+  bundleItems: z.string().max(4000).optional(),
 });
+
+const BUNDLE_NOT_CONFIRMED = "Confirm the butcher-approved price first (tick “Price confirmed”) before making a bundle visible or available.";
+
+function parseBundleLines(text: string): BundleItem[] | string {
+  const out: BundleItem[] = [];
+  for (const [n, line] of text.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
+    const [g, de, tr, en, slug] = line.split("|").map((s) => s.trim());
+    const grams = Number(g);
+    if (!Number.isInteger(grams) || grams < 50 || grams > 50000 || !de) return `Contents line ${n + 1}: use "grams | Deutsch | Türkçe | English | slug"`;
+    out.push({ grams, names: { de, tr: tr || de, en: en || de }, productSlug: slug || undefined });
+  }
+  return out.length ? out : "A bundle needs at least one component";
+}
 
 export async function saveProductAction(id: string, _: ActionResult | null, fd: FormData): Promise<ActionResult> {
   const a = await requireAdmin();
@@ -130,9 +159,18 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
       ok: false,
       message: "Min must be a multiple of the step, and max ≥ min",
     };
+  let bundleData: { bundleItems: object; priceConfirmed: boolean } | null = null;
+  if (v.bundleItems !== undefined) {
+    const items = parseBundleLines(v.bundleItems);
+    if (typeof items === "string") return { ok: false, message: items };
+    bundleData = { bundleItems: items as unknown as object, priceConfirmed: fd.get("priceConfirmed") === "on" };
+    if (!bundleData.priceConfirmed && (fd.get("isHidden") !== "on" || fd.get("isAvailable") === "on"))
+      return { ok: false, message: BUNDLE_NOT_CONFIRMED };
+  }
   try {
     const merchant = await getMerchant();
     const data = {
+      ...(bundleData ?? {}),
       name: v.name,
       slug: v.slug,
       description: v.description,
@@ -188,11 +226,17 @@ export async function toggleProductAction(
   id: string,
   field: "isAvailable" | "isFeatured" | "isHidden" | "preorderEligible",
   value: boolean,
-) {
+): Promise<ActionResult> {
   const a = await requireAdmin();
+  // A bundle with a placeholder price must not go live (visible = isHidden off; or purchasable = available on).
+  if ((field === "isHidden" && !value) || (field === "isAvailable" && value)) {
+    const cur = await db.product.findUnique({ where: { id }, select: { bundleItems: true, priceConfirmed: true } });
+    if (cur?.bundleItems != null && !cur.priceConfirmed) return { ok: false, message: BUNDLE_NOT_CONFIRMED };
+  }
   await db.product.update({ where: { id }, data: { [field]: value } });
   await audit(a.email, `product.${field}`, "Product", id, { value });
   revalidatePath("/admin/products");
+  return { ok: true };
 }
 
 // ---- Settings ----

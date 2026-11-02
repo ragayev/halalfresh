@@ -2,13 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/server/auth";
 import { getOrderForAdmin } from "@/server/orders";
-import { nextFulfillmentOptions } from "@/domain/order-state";
+import { adminAttention, fulfillmentGate, fulfillmentMoveAllowed, nextFulfillmentOptions } from "@/domain/order-state";
 import { formatMoney } from "@/domain/money";
-import { formatWeight } from "@/domain/pricing";
+import { orderItemLines } from "@/domain/bundles";
 import { buildWhatsappMessage, deliveryLabel } from "@/domain/whatsapp";
 import { Card } from "@/components/ui";
 import { PaymentBadge, FulfillmentBadge } from "@/components/admin/badges";
-import { NoteForm, RefundForm, StatusButtons, WhatsappPanel } from "@/components/admin/order-actions";
+import { EarlyAuthorizePanel, NoteForm, RefundForm, StatusButtons, WhatsappPanel } from "@/components/admin/order-actions";
 
 export const dynamic = "force-dynamic";
 const LABEL: Record<string, string> = {
@@ -27,6 +27,9 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
   const o = await getOrderForAdmin(id);
   if (!o) notFound();
   const paid = o.paymentStatus === "PAID" || o.paymentStatus === "PARTIALLY_REFUNDED";
+  const gate = fulfillmentGate(o);
+  const attention = adminAttention(o);
+  const sepaPending = o.paymentStatus === "PENDING_PAYMENT" && !!o.sepaInitiatedAt;
   const payment = o.payments[0];
   const message = buildWhatsappMessage({
     number: o.number,
@@ -38,17 +41,17 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
     items: o.items,
     totalCents: o.totalCents,
     paymentStatus: o.paymentStatus,
+    sepaPendingAuthorized: gate === "EARLY_AUTHORIZED",
     deliveryDate: o.deliveryDate.toISOString().slice(0, 10),
     slotStartTime: o.slotStartTime,
     slotEndTime: o.slotEndTime,
     deliveryInstructions: o.deliveryInstructions,
   });
-  const options =
-    paid || o.paymentStatus === "REFUNDED"
-      ? nextFulfillmentOptions(o.fulfillmentStatus)
-          .filter((s) => s !== "FORWARDED")
-          .map((s) => ({ value: s, label: LABEL[s] }))
-      : [];
+  // Offer only moves the server would accept right now (the server re-checks every one of them).
+  const options = nextFulfillmentOptions(o.fulfillmentStatus)
+    .filter((s) => s !== "FORWARDED" && (s === "CANCELLED" ? !sepaPending : true))
+    .filter((s) => fulfillmentMoveAllowed(o, s).ok)
+    .map((s) => ({ value: s, label: LABEL[s] }));
   const fmt = (d: Date) =>
     d.toLocaleString("de-DE", {
       timeZone: "Europe/Berlin",
@@ -64,9 +67,30 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
         <h1 className="text-2xl font-semibold" data-testid="order-title">
           Order #HF-{o.number}
         </h1>
-        <PaymentBadge s={o.paymentStatus} />
+        <PaymentBadge s={o.paymentStatus} sepa={!!o.sepaInitiatedAt} />
         <FulfillmentBadge s={o.fulfillmentStatus} />
       </div>
+      {attention && (
+        <p
+          role="alert"
+          data-testid="attention-banner"
+          className={`rounded-xl p-4 text-sm font-semibold ${attention.level === "critical" ? "bg-danger text-white" : "bg-warn text-warn-ink"}`}
+        >
+          {attention.reason}
+          {o.paymentStatus === "PAYMENT_FAILED" && payment?.failureReason ? ` (${payment.failureReason})` : ""}
+        </p>
+      )}
+      {gate === "NEEDS_AUTHORIZATION" && o.fulfillmentStatus !== "CANCELLED" && (
+        <Card className="p-5">
+          <EarlyAuthorizePanel orderId={o.id} amountLabel={formatMoney(o.totalCents)} />
+        </Card>
+      )}
+      {gate === "EARLY_AUTHORIZED" && (
+        <p className="rounded-xl bg-warn p-3 text-sm font-medium text-warn-ink" data-testid="early-authorized-note">
+          Fulfilling on SEPA collection risk, authorized by {o.earlyFulfillmentAuthorizedBy}
+          {o.earlyFulfillmentAuthorizedAt ? ` on ${fmt(o.earlyFulfillmentAuthorizedAt)}` : ""}. Payment is not confirmed yet.
+        </p>
+      )}
       <Card className="space-y-3 p-5">
         <h2 className="font-semibold">Forward to butcher</h2>
         {!o.merchant.whatsappNumber && (
@@ -82,7 +106,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
           orderId={o.id}
           openCount={o.whatsappOpenCount}
           forwardedAt={o.forwardedAt ? fmt(o.forwardedAt) : null}
-          canForward={paid && !!o.merchant.whatsappNumber && o.fulfillmentStatus !== "CANCELLED"}
+          canForward={(gate === "OPEN" || gate === "EARLY_AUTHORIZED") && !!o.merchant.whatsappNumber && o.fulfillmentStatus !== "CANCELLED"}
           message={message}
         />
       </Card>
@@ -111,11 +135,18 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
           <h2 className="font-semibold">Items & totals</h2>
           <ul className="space-y-1">
             {o.items.map((i) => (
-              <li key={i.id} className="flex justify-between">
-                <span>
-                  {i.productName} — {formatWeight(i.quantityGrams)}
-                </span>
-                <span className="tabular-nums">{formatMoney(i.lineTotalCents)}</span>
+              <li key={i.id}>
+                <div className="flex justify-between">
+                  <span>{orderItemLines(i, "de")[0].slice(2)}</span>
+                  <span className="tabular-nums">{formatMoney(i.lineTotalCents)}</span>
+                </div>
+                {orderItemLines(i, "de")
+                  .slice(1)
+                  .map((l) => (
+                    <p key={l} className="ps-3 text-xs text-muted">
+                      {l.trim()}
+                    </p>
+                  ))}
               </li>
             ))}
           </ul>
@@ -145,7 +176,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
           {payment ? (
             <>
               <p>
-                Status: <PaymentBadge s={payment.status} />
+                Status: <PaymentBadge s={payment.status} sepa={!!o.sepaInitiatedAt} />
                 {payment.paidAt ? ` · ${fmt(payment.paidAt)}` : ""}
               </p>
               <p className="break-all text-muted">

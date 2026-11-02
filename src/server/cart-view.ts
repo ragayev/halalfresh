@@ -17,6 +17,8 @@ export interface CartViewLine {
   stepGrams: number;
   minGrams: number;
   maxGrams: number;
+  isBundle: boolean;
+  bundle: { totalGrams: number; items: { name: string; grams: number }[] } | null;
   issue?: LineIssue;
 }
 
@@ -49,10 +51,13 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
         stepGrams: 1000,
         minGrams: 1000,
         maxGrams: 1000,
+        isBundle: false,
+        bundle: null,
         issue: "NOT_FOUND",
       };
     let issue: LineIssue | undefined;
     if (delivery.mode === "PREORDER_ONLY" && !r.preorderEligible) issue = "NOT_PREORDER";
+    if (r.bundleItems != null && !r.priceConfirmed && !issue) issue = "UNAVAILABLE";
     try {
       validateQuantity(r, l.grams);
     } catch (e) {
@@ -69,6 +74,8 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
       stepGrams: p.stepGrams,
       minGrams: p.minGrams,
       maxGrams: p.maxGrams,
+      isBundle: !!p.bundle,
+      bundle: p.bundle,
       issue,
     };
   });

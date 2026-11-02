@@ -5,6 +5,7 @@ import { MessageCircle, AlertTriangle } from "lucide-react";
 import { Button, Textarea } from "@/components/ui";
 import { RunButton, Msg } from "./forms";
 import {
+  authorizeEarlyFulfillmentAction,
   cancelAction,
   refundAction,
   saveNoteAction,
@@ -82,12 +83,14 @@ export function WhatsappPanel({
 export function StatusButtons({ orderId, options }: { orderId: string; options: { value: string; label: string }[] }) {
   const router = useRouter();
   if (!options.length) return <p className="text-sm text-muted">No further status changes.</p>;
+  // Large, full-width tap targets on phones: the butcher updates delivery from the van.
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid gap-2 sm:flex sm:flex-wrap [&>span]:w-full sm:[&>span]:w-auto [&_button]:w-full sm:[&_button]:w-auto">
       {options.map((o) => (
         <RunButton
           key={o.value}
           variant={o.value === "CANCELLED" ? "danger" : "secondary"}
+          size="lg"
           data-testid={`status-${o.value}`}
           confirm={o.value === "CANCELLED" ? "Cancel this order? Paid orders are refunded in full." : undefined}
           run={() => (o.value === "CANCELLED" ? cancelAction(orderId) : setFulfillmentAction(orderId, o.value))}
@@ -96,6 +99,45 @@ export function StatusButtons({ orderId, options }: { orderId: string; options: 
           {o.label}
         </RunButton>
       ))}
+    </div>
+  );
+}
+
+/** Explicit, audited acceptance of the SEPA collection risk. Nothing is marked paid by this. */
+export function EarlyAuthorizePanel({ orderId, amountLabel }: { orderId: string; amountLabel: string }) {
+  const router = useRouter();
+  const [ack, setAck] = useState(false);
+  return (
+    <div className="space-y-3 rounded-xl bg-warn p-4 text-sm text-warn-ink" data-testid="early-authorize">
+      <p className="flex items-start gap-2 font-semibold">
+        <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+        <span>SEPA payment is still processing: {amountLabel} has NOT been collected.</span>
+      </p>
+      <p>
+        You can wait until Stripe confirms the payment, or authorize preparation and delivery now. A SEPA debit can still fail or be returned
+        for several days (insufficient funds, closed account, customer dispute). If it does, the goods are already delivered and the seller
+        bears the loss. Your name and the time are recorded.
+      </p>
+      <label className="flex items-start gap-3 font-medium">
+        <input
+          type="checkbox"
+          checked={ack}
+          onChange={(e) => setAck(e.target.checked)}
+          className="mt-0.5 size-5 shrink-0"
+          data-testid="early-ack"
+        />
+        <span>I understand the collection risk and authorize fulfilment before payment is confirmed.</span>
+      </label>
+      <RunButton
+        variant="primary"
+        size="lg"
+        disabled={!ack}
+        data-testid="early-authorize-btn"
+        run={() => authorizeEarlyFulfillmentAction(orderId, ack)}
+        onDone={(r) => r.ok && router.refresh()}
+      >
+        Authorize fulfilment now
+      </RunButton>
     </div>
   );
 }

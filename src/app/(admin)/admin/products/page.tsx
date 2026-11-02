@@ -35,9 +35,16 @@ export default async function Products() {
           <tbody className="divide-y divide-line">
             {products.map((p) => (
               <tr key={p.id}>
-                <td className="px-4 py-3 font-medium">{p.name}</td>
+                <td className="px-4 py-3 font-medium">
+                  {p.name}
+                  {p.bundleItems != null && (
+                    <Badge tone={p.priceConfirmed ? "green" : "amber"} className="ms-2">
+                      {p.priceConfirmed ? "Bundle" : "Bundle · draft price"}
+                    </Badge>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-muted">{p.category.name}</td>
-                <td className="px-4 py-3 tabular-nums">{formatMoney(p.pricePerKgCents)}</td>
+                <td className="px-4 py-3 tabular-nums">{formatMoney(p.pricePerKgCents)}{p.bundleItems != null && <span className="text-xs text-muted"> /pkg</span>}</td>
                 <td className="px-4 py-3">{p.stepGrams} g</td>
                 <td className="px-4 py-3">
                   <ToggleButton id={p.id} field="isAvailable" value={p.isAvailable} />

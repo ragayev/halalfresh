@@ -2,9 +2,9 @@
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
-import { formatWeight } from "@/domain/pricing";
+import { formatQuantity } from "@/domain/bundles";
 
-export function AddToCart({ product }: { product: { id: string; name: string; stepGrams: number; minGrams: number; maxGrams: number } }) {
+export function AddToCart({ product }: { product: { id: string; name: string; stepGrams: number; minGrams: number; maxGrams: number; bundle?: boolean } }) {
   const { d } = useI18n();
   const { gramsOf, add, change, ready } = useCart();
   const grams = ready ? gramsOf(product.id) : 0;
@@ -34,7 +34,7 @@ export function AddToCart({ product }: { product: { id: string; name: string; st
         <Minus className="size-4" aria-hidden />
       </button>
       <span className="text-sm font-bold text-forest-dark" aria-live="polite">
-        {formatWeight(grams)}
+        {formatQuantity(grams, !!product.bundle)}
       </span>
       <button
         type="button"

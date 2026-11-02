@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: d.home.heroText,
       locale,
     },
-    icons: { icon: "/icon.svg" },
+    icons: { icon: "/icon-crest.png" },
   };
 }
 

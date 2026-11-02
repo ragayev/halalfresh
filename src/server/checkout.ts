@@ -1,12 +1,13 @@
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { log } from "@/lib/logger";
 import { siteUrl } from "@/lib/env";
 import { normalizePostcode, POSTCODE_RE } from "@/domain/delivery";
 import { LOCALES } from "@/i18n/config";
 import { resolveDelivery } from "./delivery-service";
-import { formatWeight } from "@/domain/pricing";
+import { formatQuantity } from "@/domain/bundles";
 import { AppError } from "./errors";
 import { getGateway } from "./payments/gateway";
 import { GatewayConfigError } from "./payments/stripe";
@@ -57,14 +58,16 @@ export async function createCheckout(raw: unknown, now = new Date()): Promise<{ 
   });
   if (existing) {
     const pay = existing.payments[0];
-    if (pay?.checkoutUrl && existing.paymentStatus === "PENDING_PAYMENT") return { url: pay.checkoutUrl, orderToken: existing.accessToken };
+    if (pay?.checkoutUrl && existing.paymentStatus === "PENDING_PAYMENT" && !existing.sepaInitiatedAt) return { url: pay.checkoutUrl, orderToken: existing.accessToken };
     throw new AppError("CONFLICT", "This order was already submitted", 409);
   }
 
   const gateway = await getGateway();
   const merchant = await getMerchant();
   const status = await gateway.getAccountStatus(merchant.stripeAccountId);
-  if (!status.connected || !status.chargesEnabled) {
+  // Stripe: the seller's own connected account must take the money, and it must be able to accept SEPA debits.
+  const stripeNotReady = gateway.name === "stripe" && (!merchant.stripeAccountId || !status.sepaDebitEnabled);
+  if (!status.connected || !status.chargesEnabled || stripeNotReady) {
     throw new AppError("CHECKOUT_UNAVAILABLE", "Online payment is not available yet. Please try again later.", 503);
   }
 
@@ -139,6 +142,7 @@ export async function createCheckout(raw: unknown, now = new Date()): Promise<{ 
             unitPricePerKgCents: l.pricePerKgCents,
             quantityGrams: l.grams,
             lineTotalCents: l.lineTotalCents,
+            ...(l.bundleSnapshot ? { bundleSnapshot: l.bundleSnapshot as unknown as Prisma.InputJsonValue } : {}),
           })),
         },
         events: {
@@ -170,7 +174,7 @@ export async function createCheckout(raw: unknown, now = new Date()): Promise<{ 
       orderNumber: order.number,
       lines: [
         ...lines.map((l) => ({
-          name: `${l.name} — ${formatWeight(l.grams)}`,
+          name: `${l.name} — ${formatQuantity(l.grams, !!l.bundleSnapshot)}`,
           amountCents: l.lineTotalCents,
         })),
         ...(totals.deliveryFeeCents > 0 ? [{ name: "Delivery", amountCents: totals.deliveryFeeCents }] : []),

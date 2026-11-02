@@ -5,6 +5,7 @@ import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
 import { formatMoney } from "@/domain/money";
 import { formatWeight, lineTotalCents } from "@/domain/pricing";
+import { formatQuantity } from "@/domain/bundles";
 import { Button } from "./ui";
 import { useDelivery } from "./delivery-provider";
 
@@ -19,13 +20,15 @@ export function ProductBuyBox({
     maxGrams: number;
     isAvailable: boolean;
     preorderEligible: boolean;
+    bundle?: unknown;
   };
 }) {
   const { d, locale, t } = useI18n();
   const { add, gramsOf } = useCart();
   const { check } = useDelivery();
   // Kg-sold cuts: customer picks half a kilo or a full kilo.
-  const halfOrFull = p.minGrams === 500 && p.stepGrams === 500;
+  const isBundle = !!p.bundle;
+  const halfOrFull = !isBundle && p.minGrams === 500 && p.stepGrams === 500;
   const [grams, setGrams] = useState(halfOrFull ? 1000 : p.minGrams);
   const inCart = gramsOf(p.id);
   const total = formatMoney(lineTotalCents(p.pricePerKgCents, grams), locale);
@@ -61,7 +64,7 @@ export function ProductBuyBox({
         <Minus className="size-5" aria-hidden />
       </button>
       <output aria-live="polite" className="text-lg font-semibold">
-        {formatWeight(grams)}
+        {formatQuantity(grams, isBundle)}
       </output>
       <button
         type="button"
@@ -82,11 +85,15 @@ export function ProductBuyBox({
   return (
     <div className="space-y-4">
       <div className="flex items-baseline justify-between">
-        <p className="font-semibold">{d.product.quantity}</p>
+        <p className="font-semibold">{isBundle ? d.product.bundleQuantity : d.product.quantity}</p>
         <p className="text-lg font-bold">{t(d.product.lineTotal, { amount: total })}</p>
       </div>
       {halfOrFull ? choice : stepper}
       <p className="text-xs text-muted">
+        {isBundle ? (
+          d.product.bundleNote
+        ) : (
+          <>
         {!halfOrFull && (
           <>
             {t(d.product.step, {
@@ -96,6 +103,8 @@ export function ProductBuyBox({
           </>
         )}
         {d.product.fixedWeightNote}
+          </>
+        )}
       </p>
       {/* sticky on mobile, inline on desktop */}
       <div className="fixed inset-x-0 bottom-16 z-30 border-t border-line bg-cream/95 p-3 backdrop-blur lg:static lg:border-0 lg:bg-transparent lg:p-0">

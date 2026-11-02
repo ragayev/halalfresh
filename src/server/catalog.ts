@@ -1,5 +1,6 @@
 import type { Category, Product, ProductImage } from "@prisma/client";
 import { db } from "@/lib/db";
+import { bundleItemName, bundleTotalGrams, parseBundleItems } from "@/domain/bundles";
 
 type Tr = Record<string, { name?: string; description?: string }>;
 
@@ -20,6 +21,8 @@ export interface ProductView {
   preorderEligible: boolean;
   categorySlug: string;
   categoryName: string;
+  /** Fleischpaket: localized contents; null for regular products. */
+  bundle: { totalGrams: number; items: { name: string; grams: number }[] } | null;
   images: { src: string; alt: string }[];
 }
 
@@ -42,6 +45,7 @@ type ProductRow = Product & {
 export function toProductView(p: ProductRow, locale: string): ProductView {
   const tr = (p.translations as Tr)[locale] ?? {};
   const ctr = (p.category.translations as Tr)[locale] ?? {};
+  const bundleItems = parseBundleItems(p.bundleItems);
   return {
     id: p.id,
     slug: p.slug,
@@ -59,9 +63,15 @@ export function toProductView(p: ProductRow, locale: string): ProductView {
     preorderEligible: p.preorderEligible,
     categorySlug: p.category.slug,
     categoryName: ctr.name || p.category.name,
+    bundle: bundleItems
+      ? {
+          totalGrams: bundleTotalGrams(bundleItems),
+          items: bundleItems.map((i) => ({ name: bundleItemName(i, locale), grams: i.grams })),
+        }
+      : null,
     images: p.images.map((i) => ({
       src: imageSrc(i),
-      alt: i.alt || tr.name || p.name,
+      alt: i.alt || (bundleItems ? `${tr.name || p.name}: ${bundleItems.map((b) => bundleItemName(b, locale)).join(", ")}` : tr.name || p.name),
     })),
   };
 }
@@ -78,11 +88,20 @@ export async function listCategories(locale: string): Promise<CategoryView[]> {
   const cats = await db.category.findMany({
     where: { products: { some: { isHidden: false } } },
     orderBy: { sortOrder: "asc" },
+    include: {
+      products: {
+        where: { isHidden: false, images: { some: {} } },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { images: { orderBy: { position: "asc" }, take: 1, select: { id: true, url: true } } },
+      },
+    },
   });
   return cats.map((c) => ({
     id: c.id,
     slug: c.slug,
-    imageUrl: c.imageUrl,
+    // Category tiles fall back to the first product photo when no dedicated image is set.
+    imageUrl: c.imageUrl ?? (c.products[0]?.images[0] ? imageSrc(c.products[0].images[0]) : null),
     name: (c.translations as Tr)[locale]?.name || c.name,
   }));
 }

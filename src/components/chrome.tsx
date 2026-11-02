@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Home, LayoutGrid, Search, ShoppingBag, Globe, Leaf, Check } from "lucide-react";
+import { Home, LayoutGrid, Search, ShoppingBag, Globe, Check } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { LOCALES, LOCALE_LABELS } from "@/i18n/config";
 import { useCart } from "./cart-store";
@@ -15,9 +15,7 @@ export function Logo({ className }: { className?: string }) {
   const { locale, d } = useI18n();
   return (
     <Link href={`/${locale}`} className={cn("inline-flex items-center gap-2", className)} aria-label={d.brand.name}>
-      <Leaf className="size-8 fill-forest/15 text-forest" strokeWidth={2.2} aria-hidden />
-      <span className="font-display text-[1.65rem] font-normal tracking-tight text-forest-dark">{d.brand.name}</span>
-      <Image src="/halal-logo.svg" alt="Halal" width={44} height={44} className="size-10 sm:size-11" />
+      <Image src="/logo-crest.png" alt={d.brand.name} width={720} height={240} priority className="h-14 w-auto sm:h-16" />
     </Link>
   );
 }
@@ -81,14 +79,16 @@ export function Header() {
   const { locale, d } = useI18n();
   return (
     <header className="sticky top-0 z-40 border-b border-line/60 bg-white/95 backdrop-blur">
-      <Container className="flex h-[72px] items-center gap-2 sm:gap-4 lg:gap-8">
+      <Container className="flex h-[80px] items-center gap-2 sm:gap-4 lg:gap-8">
         <Logo />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
           <Link href={`/${locale}/shop`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
             {d.nav.shop}
           </Link>
           <Link href={`/${locale}#standards`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
-            {d.nav.standards}
+            <span lang="ar" dir="rtl" className="text-[18px] font-semibold leading-none">
+              {d.nav.standards}
+            </span>
           </Link>
           <Link href={`/${locale}#how`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
             {d.nav.delivery}

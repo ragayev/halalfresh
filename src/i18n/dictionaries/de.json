@@ -16,7 +16,7 @@
     "berlinBrandenburg": "Berlin & Brandenburg",
     "skip": "Zum Inhalt springen",
     "back": "Zurück",
-    "standards": "Unser Anspruch",
+    "standards": "حلال",
     "delivery": "Lieferung",
     "searchPlaceholder": "Fleisch, Stücke oder Rezepte suchen…",
     "searchLabel": "Produkte suchen"
@@ -42,7 +42,10 @@
     "increase": "Menge erhöhen",
     "decrease": "Menge verringern",
     "networkError": "Netzwerkproblem. Bitte Verbindung prüfen und erneut versuchen.",
-    "genericError": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+    "genericError": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "perPackage": "/Paket",
+    "package": "Paket",
+    "packages": "Pakete"
   },
   "home": {
     "heroTitle": "Frisches Halal-Fleisch, geliefert.",
@@ -116,7 +119,9 @@
     "stdPostcodeTitle": "PLZ eingeben, Liefertag sehen",
     "stdPostcodePh": "z. B. 12049",
     "stdPostcodeCta": "Liefertag ansehen",
-    "stdFoot": "Sichere Kartenzahlung über Stripe · Support auf Türkisch, Deutsch und العربية"
+    "stdFoot": "Sichere Kartenzahlung über Stripe · Support auf Türkisch, Deutsch und العربية",
+    "bundlesTitle": "Unsere Fleischpakete",
+    "bundlesSub": "Mehr Auswahl, weniger Aufwand – entdecken Sie unsere zusammengestellten Fleischpakete."
   },
   "shop": {
     "title": "Shop",
@@ -127,6 +132,9 @@
     "sortPriceAsc": "Preis: aufsteigend",
     "sortPriceDesc": "Preis: absteigend",
     "sortName": "Name A–Z",
+    "trustHalal": "Halal & vertrauenswürdig",
+    "trustCold": "Lückenlose Kühlkette",
+    "trustFast": "Schnelle Lieferung",
     "filters": "Filter",
     "inStockOnly": "Nur verfügbare",
     "results": "{count} Produkte",
@@ -149,7 +157,14 @@
     "notFound": "Produkt nicht gefunden",
     "freshNote": "Frisch für Ihre Bestellung zubereitet",
     "fixedWeightNote": "Sie zahlen für das gewählte Gewicht. Gewichte sind fest; es gibt keine nachträglichen Anpassungen.",
-    "priceSoon": "Preis folgt"
+    "priceSoon": "Preis folgt",
+    "bundleContents": "Das ist drin",
+    "bundleTotal": "Gesamt",
+    "bundleWeight": "{weight} Gesamtgewicht",
+    "bundleQuantity": "Anzahl Pakete",
+    "bundleNote": "Festes Paket: Inhalt und Mengen sind vorgegeben und können nicht angepasst werden.",
+    "bundlePer": "pro Paket",
+    "bundleDetails": "Inhalt anzeigen"
   },
   "cart": {
     "title": "Ihr Warenkorb",
@@ -229,7 +244,60 @@
     "cancelledText": "Es wurde nichts abgebucht. Ihr Warenkorb bleibt gespeichert.",
     "backToCart": "Zurück zum Warenkorb",
     "contactUs": "Fragen zur Bestellung? Kontaktieren Sie den Verkäufer:",
-    "refunded": "Erstattet: {amount}"
+    "refunded": "Erstattet: {amount}",
+    "receivedTitle": "Bestellung eingegangen",
+    "receivedText": "Ihr SEPA-Lastschriftmandat ist erteilt. Der Betrag wurde noch nicht eingezogen: Das dauert einige Bankarbeitstage und erscheint dann auf Ihrem Kontoauszug.",
+    "progress": "Bestellfortschritt",
+    "stepDone": "abgeschlossen",
+    "stepCurrent": "aktueller Schritt",
+    "stepTodo": "folgt noch",
+    "steps": {
+      "RECEIVED": "Bestellung eingegangen",
+      "CONFIRMED": "Vom Metzger bestätigt",
+      "PREPARING": "In Vorbereitung",
+      "OUT_FOR_DELIVERY": "Unterwegs zu Ihnen",
+      "DELIVERED": "Zugestellt"
+    },
+    "stepHints": {
+      "RECEIVED": "Wir haben Ihre Bestellung.",
+      "CONFIRMED": "Der Metzger hat Ihre Bestellung angenommen.",
+      "PREPARING": "Ihr Fleisch wird zugeschnitten und verpackt.",
+      "OUT_FOR_DELIVERY": "Der Fahrer ist unterwegs.",
+      "DELIVERED": "Guten Appetit!"
+    },
+    "cancelledTitle2": "Bestellung storniert",
+    "cancelledBanner": "Diese Bestellung wurde storniert. Falls Sie bezahlt haben, wird der Betrag erstattet.",
+    "paymentTitle": "Zahlung",
+    "pay": {
+      "UNPAID": {
+        "label": "Zahlung nicht abgeschlossen",
+        "text": "Schließen Sie die Zahlung auf der sicheren Bezahlseite ab, um Ihre Bestellung aufzugeben."
+      },
+      "PROCESSING": {
+        "label": "SEPA-Lastschrift erteilt, Einzug läuft",
+        "text": "Ihre Bank bearbeitet die Lastschrift. Das kann einige Bankarbeitstage dauern. Den Lieferstatus sehen Sie getrennt oben."
+      },
+      "PAID": {
+        "label": "Bezahlt",
+        "text": "Wir haben Ihre Zahlung erhalten. Vielen Dank!"
+      },
+      "FAILED": {
+        "label": "Zahlung fehlgeschlagen",
+        "text": "Ihre Bank hat die Lastschrift nicht ausgeführt. Bitte wenden Sie sich an den Verkäufer (unten), um die Bestellung zu klären."
+      },
+      "CANCELLED": {
+        "label": "Zahlung abgebrochen",
+        "text": "Es wurde nichts abgebucht."
+      },
+      "REFUNDED": {
+        "label": "Erstattet",
+        "text": "Der volle Betrag wurde Ihnen erstattet."
+      },
+      "PARTIALLY_REFUNDED": {
+        "label": "Teilweise erstattet",
+        "text": "Ein Teil des Betrags wurde Ihnen erstattet."
+      }
+    }
   },
   "payment": {
     "PENDING_PAYMENT": "Zahlung ausstehend",
@@ -282,7 +350,9 @@
     "total": "Gesamt",
     "delivery": "Lieferung",
     "seller": "Verkäufer",
-    "viewOrder": "Bestellung ansehen"
+    "viewOrder": "Bestellung ansehen",
+    "sepaAckSubject": "Ihre Halal-Fresh-Bestellung ist eingegangen",
+    "sepaAckIntro": "Vielen Dank! Ihre Bestellung ist eingegangen und Ihr SEPA-Lastschriftmandat ist erteilt. Der Betrag wurde noch nicht eingezogen; Ihre Bank braucht dafür meist einige Bankarbeitstage. Wir halten Sie auf dem Laufenden."
   },
   "delivery": {
     "gateTitle": "Wohin sollen wir liefern?",

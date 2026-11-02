@@ -9,7 +9,7 @@ import { NotFoundBlock } from "@/components/not-found-block";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  referrer: "no-referrer",
+  referrer: "no-referrer", // the token lives in the URL: never leak it via Referer
 };
 
 export default async function OrderPage({ params }: { params: Promise<{ locale: string; token: string }> }) {
@@ -18,5 +18,5 @@ export default async function OrderPage({ params }: { params: Promise<{ locale: 
   const d = await getDictionary(locale);
   const order = await getOrderByToken(token);
   if (!order) return <NotFoundBlock title={d.order.notFound} text={d.order.notFoundText} href={`/${locale}`} cta={d.errors.goHome} />;
-  return <OrderView order={order} d={d} locale={locale} />;
+  return <OrderView order={order} token={token} d={d} locale={locale} />;
 }
