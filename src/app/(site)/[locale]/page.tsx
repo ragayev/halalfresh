@@ -132,10 +132,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             {(
               [
-                ["step1Title", "step1Text", MapPin, "/how-it-works/how-step-1.webp"],
-                ["step2Title", "step2Text", ShoppingBasket, "/how-it-works/how-step-2.webp"],
-                ["step3Title", "step3Text", CreditCard, "/how-it-works/how-step-3.webp"],
-                ["step4Title", "step4Text", Truck, "/how-it-works/how-step-4.webp"],
+                ["step1Title", "step1Text", MapPin, "/how-it-works/how-step-1.svg"],
+                ["step2Title", "step2Text", ShoppingBasket, "/how-it-works/how-step-2.svg"],
+                ["step3Title", "step3Text", CreditCard, "/how-it-works/how-step-3.svg"],
+                ["step4Title", "step4Text", Truck, "/how-it-works/how-step-4.svg"],
               ] as const
             ).map(([a, b, Icon, imagePath], i) => (
               <li key={a} className="group relative overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-line/60 transition hover:-translate-y-1 hover:shadow-xl">
