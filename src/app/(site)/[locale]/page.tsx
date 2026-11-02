@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CalendarClock, CreditCard, MapPin, ShoppingBasket, ShieldCheck, Leaf, Snowflake, Store, Truck } from "lucide-react";
+import { ArrowRight, CalendarClock, CreditCard, MapPin, ShoppingBasket, ShieldCheck, Snowflake, Store, Truck } from "lucide-react";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -14,6 +14,7 @@ import { BestSellerCard } from "@/components/best-seller-card";
 import { PostcodeChecker } from "@/components/postcode-checker";
 import { Container } from "@/components/ui";
 import { StandardsPostcode } from "@/components/standards-postcode";
+import { PartnerBadge } from "@/components/partner-badge";
 
 // Google share link of the shop (reviews, hours, directions).
 const PARTNER_URL = "https://share.google/VmenJVKEgN1HV3exG";
@@ -63,6 +64,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               {d.home.shopNow}
               <ArrowRight className="size-5" aria-hidden />
             </Link>
+            <div>
+              <PartnerBadge label={d.home.partnerBadge} />
+            </div>
           </div>
           <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-4 rounded-2xl bg-white/80 p-4 shadow-card ring-1 ring-line/60 backdrop-blur lg:mt-6 lg:max-w-[42rem] lg:grid-cols-3">
             {heroTrust.map(([Icon, title, text]) => (
@@ -171,31 +175,30 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="lg:flex lg:items-end lg:justify-between lg:gap-10">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wider text-white/70">{d.home.trustTitle}</p>
-              <h2 id="trust" className="mt-3 max-w-xl font-display text-4xl font-normal leading-tight sm:text-5xl">
+              <h2 id="trust" className="mt-3 max-w-xl font-display !text-white text-4xl font-normal leading-tight sm:text-5xl">
                 {d.home.stdTitle}
               </h2>
             </div>
             <p className="mt-4 max-w-md text-lg text-white/85 lg:mt-0 lg:text-base">{d.home.stdText}</p>
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
-            <div className="flex min-h-72 flex-col justify-between rounded-3xl bg-white/10 ring-1 ring-white/15 p-4 sm:p-5 lg:min-h-[28rem]">
-              <div className="grid flex-1 place-items-center gap-3 py-6 text-center">
-                <Image src="/halal-logo.svg" alt="Halal" width={160} height={160} className="size-28 sm:size-36" />
-                <span className="inline-flex items-center gap-2 font-display text-2xl font-normal">
-                  <Leaf className="size-6 text-emerald-300" aria-hidden />
-                  {d.brand.name}
-                </span>
+            <div className="flex flex-col gap-4 rounded-3xl bg-white/10 p-4 ring-1 ring-white/15 sm:p-5">
+              <div className="grid flex-1 place-items-center py-6 lg:py-8">
+                <Image src="/halal-logo.svg" alt="Halal" width={160} height={160} className="size-32 sm:size-40" />
               </div>
-              <div className="mt-8 flex flex-col gap-4 rounded-2xl bg-white p-4 text-ink sm:flex-row sm:items-center sm:justify-between sm:p-5">
-                <div>
-                  <p className="text-lg font-semibold">Kevser Fleischerei</p>
-                  <p className="text-muted">{d.home.stdAddress}</p>
+              <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 text-ink sm:p-5">
+                <div className="flex items-center gap-4">
+                  <Image src="/kevser-logo.png" alt="" width={400} height={289} className="h-16 w-auto shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-lg font-semibold">Kevser Fleischerei</p>
+                    <p className="text-muted">{d.home.stdAddress}</p>
+                  </div>
                 </div>
                 <a
                   href={PARTNER_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-forest-dark px-6 font-semibold text-white hover:bg-forest"
+                  className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full bg-forest-dark px-6 font-semibold text-white hover:bg-forest"
                 >
                   {d.home.stdStoreCta}
                 </a>

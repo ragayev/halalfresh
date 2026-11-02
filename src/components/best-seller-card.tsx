@@ -5,6 +5,7 @@ import { formatMoney } from "@/domain/money";
 import { formatWeight } from "@/domain/pricing";
 import { ProductImage } from "./product-image";
 import { AddToCart } from "./add-to-cart";
+import { PartnerTag } from "./partner-badge";
 
 export function BestSellerCard({ p, locale, d }: { p: ProductView; locale: string; d: Dictionary }) {
   return (
@@ -24,6 +25,7 @@ export function BestSellerCard({ p, locale, d }: { p: ProductView; locale: strin
         <p className="text-xs text-muted">
           {d.home.perPack} {formatWeight(p.minGrams)}
         </p>
+        <PartnerTag />
         <p className="pb-2 pt-1 text-xl font-bold leading-none text-ink">
           {formatMoney(p.pricePerKgCents, locale)}
           <span className="text-xs font-medium text-muted">{d.common.perKg}</span>

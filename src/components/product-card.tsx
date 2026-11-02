@@ -6,6 +6,7 @@ import { formatWeight } from "@/domain/pricing";
 import { ProductImage } from "./product-image";
 import { QuickAdd } from "./quick-add";
 import { Badge } from "./ui";
+import { PartnerTag } from "./partner-badge";
 import { cn } from "@/lib/utils";
 
 export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale: string; d: Dictionary; priority?: boolean }) {
@@ -48,6 +49,7 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
             </>
           )}
         </p>
+        <PartnerTag className="pt-1" />
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           {p.pricePerKgCents > 0 ? (
             <p className="leading-none">

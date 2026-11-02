@@ -5,6 +5,7 @@ import { formatMoney } from "@/domain/money";
 import { formatWeight } from "@/domain/pricing";
 import { ProductImage } from "./product-image";
 import { AddToCart } from "./add-to-cart";
+import { PartnerTag } from "./partner-badge";
 
 /** Fleischpaket card: large image, name, total weight, price, short description, add-to-cart. Contents live on the detail page. */
 export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale: string; d: Dictionary; priority?: boolean }) {
@@ -38,6 +39,7 @@ export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale:
           <p className="shrink-0 text-xl font-bold leading-none text-forest">{formatMoney(p.pricePerKgCents, locale)}</p>
         </div>
         <p className="line-clamp-3 text-sm text-muted">{p.description}</p>
+        <PartnerTag />
         <div className="mt-auto pt-3">
           {p.isAvailable ? (
             <AddToCart
