@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CalendarClock, CreditCard, ShieldCheck, Leaf, Snowflake, Star, Store, Truck } from "lucide-react";
+import { ArrowRight, CalendarClock, CreditCard, ShieldCheck, Leaf, Snowflake, Store, Truck } from "lucide-react";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
-import { getDictionary, t } from "@/i18n/get-dictionary";
+import { getDictionary } from "@/i18n/get-dictionary";
 import { cookies } from "next/headers";
 import { listProducts } from "@/server/catalog";
 import { BUNDLE_CATEGORY } from "@/domain/bundles";
@@ -17,9 +17,6 @@ import { StandardsPostcode } from "@/components/standards-postcode";
 
 // Google share link of the shop (reviews, hours, directions).
 const PARTNER_URL = "https://share.google/VmenJVKEgN1HV3exG";
-// TODO confirm with Kevser: Google rating and review count shown on the store card.
-const PARTNER_RATING = "4,6";
-const PARTNER_REVIEWS = 68;
 
 export const dynamic = "force-dynamic";
 
@@ -157,7 +154,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </ol>
         </section>
 
-        {/* TODO confirm with Kevser: rating/review count, halal certificate details, same-day + cool-box claims. */}
+        {/* Partner details and any certification claims must be verified before publishing. */}
         <section
           id="standards"
           aria-labelledby="trust"
@@ -185,10 +182,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <div>
                   <p className="text-lg font-semibold">Kevser Fleischerei</p>
                   <p className="text-muted">{d.home.stdAddress}</p>
-                  <p className="mt-1 inline-flex items-center gap-1.5 text-sm">
-                    <Star className="size-4 fill-amber-600 text-amber-600" aria-hidden />
-                    {t(d.home.stdReviews, { rating: PARTNER_RATING, count: PARTNER_REVIEWS })}
-                  </p>
                 </div>
                 <a
                   href={PARTNER_URL}
