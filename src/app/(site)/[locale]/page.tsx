@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CalendarClock, CreditCard, ShieldCheck, Leaf, Snowflake, Store, Truck } from "lucide-react";
+import { ArrowRight, CalendarClock, CreditCard, MapPin, ShoppingBasket, ShieldCheck, Leaf, Snowflake, Store, Truck } from "lucide-react";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -129,12 +129,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <h2 id="how-h" className="mb-8 font-display text-3xl font-normal sm:text-4xl">
             {d.home.howTitle}
           </h2>
-          <ol className="grid gap-4 sm:grid-cols-3 sm:gap-6">
+          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             {(
               [
-                ["step1Title", "step1Text", Store],
-                ["step2Title", "step2Text", CreditCard],
-                ["step3Title", "step3Text", Truck],
+                ["step1Title", "step1Text", MapPin],
+                ["step2Title", "step2Text", ShoppingBasket],
+                ["step3Title", "step3Text", CreditCard],
+                ["step4Title", "step4Text", Truck],
               ] as const
             ).map(([a, b, Icon], i) => (
               <li
