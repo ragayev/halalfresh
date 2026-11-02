@@ -132,24 +132,31 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             {(
               [
-                ["step1Title", "step1Text", MapPin],
-                ["step2Title", "step2Text", ShoppingBasket],
-                ["step3Title", "step3Text", CreditCard],
-                ["step4Title", "step4Text", Truck],
+                ["step1Title", "step1Text", MapPin, "/how-it-works/how-step-1.webp"],
+                ["step2Title", "step2Text", ShoppingBasket, "/how-it-works/how-step-2.webp"],
+                ["step3Title", "step3Text", CreditCard, "/how-it-works/how-step-3.webp"],
+                ["step4Title", "step4Text", Truck, "/how-it-works/how-step-4.webp"],
               ] as const
-            ).map(([a, b, Icon], i) => (
-              <li
-                key={a}
-                className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-card ring-1 ring-line/60 transition hover:-translate-y-1 hover:shadow-xl"
-              >
-                <span className="absolute -end-2 -top-6 font-display text-[7rem] font-normal leading-none text-sage transition group-hover:text-emerald-100">
-                  {i + 1}
-                </span>
-                <span className="relative grid size-14 place-items-center rounded-2xl bg-forest text-white shadow-sm">
-                  <Icon className="size-7" aria-hidden />
-                </span>
-                <p className="relative mt-5 text-xl font-semibold">{d.home[a]}</p>
-                <p className="relative mt-1.5 text-muted">{d.home[b]}</p>
+            ).map(([a, b, Icon, imagePath], i) => (
+              <li key={a} className="group relative overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-line/60 transition hover:-translate-y-1 hover:shadow-xl">
+                {/* The gradient and icon remain usable even before optional image assets are deployed. */}
+                <div
+                  role="img"
+                  aria-label={d.home[a]}
+                  className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#f4f0e6] to-[#dce9dc] bg-cover bg-center"
+                  style={{ backgroundImage: `url("${imagePath}")` }}
+                >
+                  <span className="absolute start-3 top-3 grid size-10 place-items-center rounded-xl bg-forest text-white shadow-md ring-2 ring-white/80">
+                    <Icon className="size-5" aria-hidden />
+                  </span>
+                  <span className="absolute bottom-3 end-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold tabular-nums text-forest shadow-sm">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="space-y-2 p-5">
+                  <h3 className="text-lg font-semibold leading-tight text-ink">{d.home[a]}</h3>
+                  <p className="text-sm leading-relaxed text-muted">{d.home[b]}</p>
+                </div>
               </li>
             ))}
           </ol>
