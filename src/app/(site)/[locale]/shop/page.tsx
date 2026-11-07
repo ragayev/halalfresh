@@ -46,6 +46,9 @@ const CATEGORY_ICONS: Record<string, PhosphorIcon> = {
   mangal: Fire,
   sarkuteri: Knife,
   sakatat: Heart,
+  hazir: Package,
+  icecek: SquaresFour,
+  ekipman: SquaresFour,
 };
 
 const SORTS = new Set(["popular", "price-asc", "price-desc", "name"]);
