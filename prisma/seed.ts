@@ -155,7 +155,6 @@ async function seedSupplierArticles(merchantId: string) {
   const source = JSON.parse(readFileSync(join(__dirname, "data/kevser-articles.json"), "utf8")) as {
     items: SupplierArticle[];
   };
-  const extraIds = new Map<string, string>();
   for (const [i, [slug, names]] of Object.entries(SUPPLIER_CATEGORY_META).entries()) {
     const c = await db.category.upsert({
       where: { slug },
@@ -169,7 +168,6 @@ async function seedSupplierArticles(merchantId: string) {
         ),
       },
     });
-    extraIds.set(slug, c.id);
   }
   const categories = await db.category.findMany({ select: { id: true, slug: true } });
   const categoryIds = new Map(categories.map((c) => [c.slug, c.id]));
@@ -178,7 +176,7 @@ async function seedSupplierArticles(merchantId: string) {
   for (const [i, a] of source.items.entries()) {
     const sku = a.sku.trim();
     const slug = `kevser-${sku}`;
-    if (!/^\\d{8,9}$/.test(sku)) throw new Error(`Unexpected supplier article number: ${sku}`);
+    if (!/^\d{8,9}$/.test(sku)) throw new Error(`Unexpected supplier article number: ${sku}`);
     if (!categoryIds.has(a.category)) throw new Error(`Unknown supplier category: ${a.category}`);
 
     if (a.existingSlug) {
