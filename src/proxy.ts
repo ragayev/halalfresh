@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { LOCALES, DEFAULT_LOCALE, LOCALE_COOKIE } from "@/i18n/config";
+import { LOCALES, DEFAULT_LOCALE } from "@/i18n/config";
 
 /** Optimistic checks only: admin pages and actions re-verify the session server-side. */
 export function proxy(req: NextRequest) {
@@ -19,21 +19,13 @@ export function proxy(req: NextRequest) {
   if ((LOCALES as readonly string[]).includes(first)) {
     const h = new Headers(req.headers);
     h.set("x-pathname", pathname);
-    const res = NextResponse.next({ request: { headers: h } });
-    if (req.cookies.get(LOCALE_COOKIE)?.value !== first)
-      res.cookies.set(LOCALE_COOKIE, first, {
-        path: "/",
-        maxAge: 31536000,
-        sameSite: "lax",
-      });
-    return res;
+    // Language lives in the URL only: the MVP sets no cookies on the shop.
+    return NextResponse.next({ request: { headers: h } });
   }
 
-  // No locale prefix: prefer saved choice, then Accept-Language, then English.
-  const saved = req.cookies.get(LOCALE_COOKIE)?.value;
+  // No locale prefix: Accept-Language, then German.
   let locale: string = DEFAULT_LOCALE;
-  if (saved && (LOCALES as readonly string[]).includes(saved)) locale = saved;
-  else {
+  {
     // Highest-q supported language wins; anything unsupported falls back to DEFAULT_LOCALE (de).
     const ranked = (req.headers.get("accept-language") ?? "")
       .split(",")

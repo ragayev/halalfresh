@@ -1,5 +1,5 @@
 import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle2, Info, Loader2, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "ghost" | "warn" | "danger";
@@ -7,19 +7,19 @@ type Size = "sm" | "md" | "lg" | "icon";
 
 export function buttonClasses({ variant = "primary", size = "md", full }: { variant?: Variant; size?: Size; full?: boolean } = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-[var(--radius-button)] font-semibold transition-colors duration-150 select-none",
-    "disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-px",
-    size === "sm" && "h-10 px-4 text-sm",
-    size === "md" && "h-11 px-5 text-[15px]",
+    "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-semibold transition-colors duration-150 select-none",
+    "disabled:cursor-not-allowed disabled:opacity-40 active:translate-y-px",
+    // Touch targets stay >= 44px at every size.
+    size === "sm" && "min-h-11 px-4 text-sm",
+    size === "md" && "h-12 px-5 text-base lg:h-11",
     size === "lg" && "h-14 px-7 text-base",
-    size === "icon" && "h-10 w-10",
+    size === "icon" && "size-11",
     full && "w-full",
-    variant === "primary" &&
-      "bg-forest text-white shadow-sm hover:bg-forest-dark",
-    variant === "secondary" && "bg-white text-forest ring-1 ring-line hover:bg-sage-soft hover:ring-forest/30",
-    variant === "ghost" && "text-ink hover:bg-sage",
-    variant === "warn" && "bg-warn text-warn-ink hover:brightness-95",
-    variant === "danger" && "bg-danger text-white hover:brightness-110",
+    variant === "primary" && "bg-primary text-text-inverse hover:bg-primary-hover",
+    variant === "secondary" && "border border-border-strong bg-surface text-text hover:bg-surface-alt",
+    variant === "ghost" && "px-2 text-primary hover:underline",
+    variant === "warn" && "bg-warning-bg text-warning hover:brightness-95",
+    variant === "danger" && "bg-danger text-text-inverse hover:brightness-110",
   );
 }
 
@@ -60,17 +60,17 @@ export function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-heading">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-text">
         {label}
       </label>
       {children}
       {hint && !error && (
-        <p id={`${htmlFor}-hint`} className="text-xs text-muted">
+        <p id={`${htmlFor}-hint`} className="text-sm text-text-muted">
           {hint}
         </p>
       )}
       {error && (
-        <p id={`${htmlFor}-err`} role="alert" className="text-xs font-medium text-danger">
+        <p id={`${htmlFor}-err`} role="alert" className="text-sm font-medium text-danger">
           {error}
         </p>
       )}
@@ -79,14 +79,14 @@ export function Field({
 }
 
 const inputBase =
-  "w-full rounded-[var(--radius-button)] border bg-white px-4 text-[15px] text-ink placeholder:text-muted/70 transition-colors focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/25";
+  "w-full rounded-[var(--radius-md)] border bg-surface px-3.5 text-base text-text placeholder:text-text-muted/70 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }>(
   ({ className, invalid, ...p }, ref) => (
     <input
       ref={ref}
       aria-invalid={invalid || undefined}
-      className={cn(inputBase, "h-12", invalid ? "border-danger" : "border-line", className)}
+      className={cn(inputBase, "h-12", invalid ? "border-danger" : "border-border-strong", className)}
       {...p}
     />
   ),
@@ -94,7 +94,7 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
 Input.displayName = "Input";
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(({ className, ...p }, ref) => (
-  <textarea ref={ref} className={cn(inputBase, "min-h-24 border-line py-3", className)} {...p} />
+  <textarea ref={ref} className={cn(inputBase, "min-h-24 border-border-strong py-3", className)} {...p} />
 ));
 Textarea.displayName = "Textarea";
 
@@ -107,7 +107,7 @@ export function Card({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-line", className)} {...p}>
+    <div className={cn("rounded-[var(--radius-lg)] bg-surface shadow-sm ring-1 ring-border", className)} {...p}>
       {children}
     </div>
   );
@@ -122,28 +122,78 @@ export function ProgressBar({ value, max, label }: { value: number; max: number;
       aria-valuemax={100}
       aria-valuenow={pct}
       aria-label={label}
-      className="h-2.5 w-full overflow-hidden rounded-full bg-white/70 ring-1 ring-black/5"
+      className="h-1 w-full overflow-hidden rounded-full bg-primary-soft"
     >
-      <div className="h-full rounded-full bg-forest transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
+      <div className="h-full rounded-full bg-primary transition-[width] duration-200 ease-out" style={{ width: `${pct}%` }} />
     </div>
   );
 }
 
 const tones = {
-  green: "bg-sage text-forest",
-  amber: "bg-warn text-warn-ink",
-  red: "bg-red-100 text-danger",
-  gray: "bg-neutral-100 text-neutral-700",
-  blue: "bg-sky-100 text-sky-800",
+  neutral: "bg-surface-alt text-text",
+  primary: "bg-primary-soft text-primary",
+  fresh: "bg-fresh-soft text-fresh",
+  warning: "bg-warning-bg text-warning",
+  danger: "bg-danger-bg text-danger",
+  info: "bg-info-bg text-info",
+  // legacy names
+  green: "bg-fresh-soft text-fresh",
+  amber: "bg-warning-bg text-warning",
+  red: "bg-danger-bg text-danger",
+  gray: "bg-surface-alt text-text",
+  blue: "bg-info-bg text-info",
 } as const;
-export function Badge({ tone = "gray", children, className }: { tone?: keyof typeof tones; children: ReactNode; className?: string }) {
+export function Badge({ tone = "neutral", children, className }: { tone?: keyof typeof tones; children: ReactNode; className?: string }) {
+  return <span className={cn("t-caption inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5", tones[tone], className)}>{children}</span>;
+}
+
+const noticeTones = {
+  info: { box: "bg-info-bg text-info", icon: Info },
+  warning: { box: "bg-warning-bg text-warning", icon: AlertTriangle },
+  danger: { box: "bg-danger-bg text-danger", icon: AlertCircle },
+  success: { box: "bg-fresh-soft text-fresh", icon: CheckCircle2 },
+} as const;
+/** Icon + text, never colour alone. */
+export function Notice({ tone = "info", children, className }: { tone?: keyof typeof noticeTones; children: ReactNode; className?: string }) {
+  const { box, icon: Icon } = noticeTones[tone];
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", tones[tone], className)}>
-      {children}
-    </span>
+    <div role={tone === "danger" ? "alert" : "note"} className={cn("t-small flex gap-3 rounded-[var(--radius-md)] p-3", box, className)}>
+      <Icon className="mt-0.5 size-5 shrink-0" strokeWidth={1.75} aria-hidden />
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+/** Whole row is clickable; 20x20 box. */
+export const Checkbox = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { label: ReactNode; error?: string }>(
+  ({ label, error, className, ...p }, ref) => (
+    <div>
+      <label className={cn("flex min-h-11 cursor-pointer items-start gap-3 py-2 text-base", className)}>
+        <input ref={ref} type="checkbox" className="mt-0.5 size-5 shrink-0 cursor-pointer rounded-[var(--radius-sm)] accent-[var(--color-primary)]" {...p} />
+        <span>{label}</span>
+      </label>
+      {error && (
+        <p role="alert" className="text-sm font-medium text-danger">
+          {error}
+        </p>
+      )}
+    </div>
+  ),
+);
+Checkbox.displayName = "Checkbox";
+
+export function SellerBox({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="flex gap-3 rounded-[var(--radius-md)] bg-surface-alt p-4">
+      <Store className="mt-0.5 size-5 shrink-0" strokeWidth={1.75} aria-hidden />
+      <div className="t-small">
+        <p className="font-semibold">{title}</p>
+        <div className="text-text">{children}</div>
+      </div>
+    </div>
   );
 }
 
 export function Container({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn("mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8", className)}>{children}</div>;
+  return <div className={cn("mx-auto w-full max-w-[var(--container)] px-4 sm:px-6 lg:px-8", className)}>{children}</div>;
 }

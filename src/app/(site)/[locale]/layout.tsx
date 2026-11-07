@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Display, Inter } from "next/font/google";
 import { notFound } from "next/navigation";
+import { preload } from "react-dom";
 import "../../globals.css";
 import { LOCALES, isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -11,19 +11,8 @@ import { PostcodeGate } from "@/components/delivery-ui";
 import { Header, BottomNav, Footer } from "@/components/chrome";
 import { siteUrl } from "@/lib/env";
 
-const sans = Inter({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-sans-body",
-  display: "swap",
-});
-const display = DM_Serif_Display({
-  subsets: ["latin", "latin-ext"],
-  weight: "400",
-  variable: "--font-display-head",
-  display: "swap",
-});
 export const viewport: Viewport = {
-  themeColor: "#124734",
+  themeColor: "#7a1f2b",
   width: "device-width",
   initialScale: 1,
 };
@@ -62,8 +51,10 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dictionary = await getDictionary(locale);
+  for (const f of ["inter-latin-wght-normal", "fraunces-latin-opsz-normal"])
+    preload(`/fonts/${f}.woff2`, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
-    <html lang={locale} data-scroll-behavior="smooth" className={`${sans.variable} ${display.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth">
       <body className="min-h-dvh pb-20 lg:pb-0">
         <I18nProvider locale={locale} dictionary={dictionary}>
           <CartProvider>

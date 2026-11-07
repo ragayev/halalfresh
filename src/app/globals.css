@@ -1,44 +1,163 @@
 @import "tailwindcss";
 
-/* Brand tokens (semantic; --color-heading and --color-muted live in @theme below). Tailwind utility names below (forest, cream, ink...) alias these. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/fraunces-latin-opsz-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/fraunces-latin-ext-opsz-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Design tokens (brief §17). Components use tokens only. Light mode only. */
 :root {
-  --color-primary: #124734;
-  --color-primary-hover: #0b3425;
-  --color-text: #26332c;
-  --color-background: #faf9f5;
+  --color-primary: #7a1f2b;
+  --color-primary-hover: #63181f;
+  --color-primary-soft: #f6e9ea;
+  --color-fresh: #2f6b4f;
+  --color-fresh-soft: #e7f1eb;
+
+  --color-bg: #faf6f0;
   --color-surface: #ffffff;
-  --color-accent: #c49a42;
-  --color-border: #e1e6dc;
-  --spacing-unit: 8px;
+  --color-surface-alt: #f3ede4;
+  --color-border: #e5ddd2;
+  --color-border-strong: #cfc4b5;
+  --color-text: #1f1a17;
+  --color-text-muted: #6b625b;
+  --color-text-inverse: #ffffff;
+  --color-ink: #2a2420;
+
+  --color-warning: #8a5a12;
+  --color-warning-bg: #fdf3e1;
+  --color-danger: #b42318;
+  --color-danger-bg: #fdecea;
+  --color-info: #1f5f8b;
+  --color-info-bg: #e8f1f8;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgb(31 26 23 / 0.06);
+  --shadow-md: 0 4px 16px rgb(31 26 23 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(31 26 23 / 0.12);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-sheet: 250ms;
+
+  --container: 1200px;
 }
 
 @theme {
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-soft: var(--color-primary-soft);
+  --color-fresh: var(--color-fresh);
+  --color-fresh-soft: var(--color-fresh-soft);
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-alt: var(--color-surface-alt);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-ink: var(--color-ink);
+  --color-warning: var(--color-warning);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-danger: var(--color-danger);
+  --color-danger-bg: var(--color-danger-bg);
+  --color-info: var(--color-info);
+  --color-info-bg: var(--color-info-bg);
+
+  /* Legacy aliases so pre-MVP components pick up the new palette until they are rewritten. */
   --color-forest: var(--color-primary);
   --color-forest-dark: var(--color-primary-hover);
-  --color-heading: #102d22;
-  --color-sage: #e4ece1;
-  --color-sage-soft: #f0f4ed;
-  --color-cream: var(--color-background);
-  --color-ink: var(--color-text);
-  --color-muted: #596a61;
+  --color-heading: var(--color-text);
+  --color-sage: var(--color-primary-soft);
+  --color-sage-soft: var(--color-surface-alt);
+  --color-cream: var(--color-bg);
+  --color-muted: var(--color-text-muted);
   --color-line: var(--color-border);
-  --color-gold: var(--color-accent);
-  --color-warn: #fff0cc;
-  --color-warn-ink: #6b4a00;
-  --color-danger: #a4291f;
-  --font-sans: var(--font-sans-body), "Inter", Arial, sans-serif;
-  --font-display: var(--font-display-head), "DM Serif Display", Georgia, serif;
-  --radius-card: 16px;
-  --radius-button: 12px;
-  --shadow-card: 0 1px 2px rgb(16 45 34 / 0.05), 0 6px 18px -10px rgb(16 45 34 / 0.14);
+  --color-gold: var(--color-primary);
+  --color-warn: var(--color-warning-bg);
+  --color-warn-ink: var(--color-warning);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+
+  --radius-card: var(--radius-lg);
+  --radius-button: var(--radius-md);
+  --shadow-card: var(--shadow-sm);
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
 }
+
+/* Type scale (mobile first; >= 1024px sizes in the media query). */
+:root {
+  --fs-display: 36px; --lh-display: 40px;
+  --fs-h1: 30px; --lh-h1: 36px;
+  --fs-h2: 24px; --lh-h2: 30px;
+  --fs-h3: 20px; --lh-h3: 28px;
+  --fs-price-lg: 24px; --lh-price-lg: 28px;
+}
+@media (min-width: 1024px) {
+  :root {
+    --fs-display: 56px; --lh-display: 60px;
+    --fs-h1: 40px; --lh-h1: 46px;
+    --fs-h2: 30px; --lh-h2: 36px;
+    --fs-h3: 22px; --lh-h3: 30px;
+    --fs-price-lg: 28px; --lh-price-lg: 32px;
+  }
+}
+.t-display, .t-h1, .t-h2 { font-family: var(--font-display); font-weight: 600; font-variation-settings: "opsz" 72; letter-spacing: -0.01em; }
+.t-display { font-size: var(--fs-display); line-height: var(--lh-display); }
+.t-h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+.t-h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); }
+.t-h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: 600; }
+.t-body-lg { font-size: 18px; line-height: 28px; }
+.t-small { font-size: 14px; line-height: 20px; }
+.t-caption { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.02em; }
+.t-price { font-size: 18px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.t-price-lg { font-size: var(--fs-price-lg); line-height: var(--lh-price-lg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.tabular { font-variant-numeric: tabular-nums; }
+.wordmark { font-family: var(--font-display); font-weight: 600; color: var(--color-primary); letter-spacing: -0.01em; }
 
 html {
   scroll-behavior: smooth;
 }
 body {
-  background: var(--color-cream);
-  color: var(--color-ink);
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "kern", "liga";
@@ -47,7 +166,13 @@ body {
 h1,
 h2,
 h3 {
-  color: var(--color-heading);
+  color: var(--color-text);
+}
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 :focus-visible {
   outline: 2px solid var(--color-primary);

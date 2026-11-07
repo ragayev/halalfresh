@@ -67,7 +67,7 @@ export async function seedBasics() {
 export function checkoutBody(ctx: Awaited<ReturnType<typeof seedBasics>>, over: Record<string, unknown> = {}) {
   return {
     requestId: randomUUID(),
-    locale: "en",
+    locale: "de",
     lines: [{ productId: ctx.beef.id, grams: 8000 }], // 8 kg * €20 = €160
     customer: {
       name: "Example Customer",

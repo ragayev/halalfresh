@@ -121,9 +121,9 @@ describe("customer notifications", () => {
     await initiate(p);
     const [m] = mailsTo("customer@example.com")[0];
     expect(m.subject).toContain(`#HF-${p.order.number}`);
-    expect(m.text).toContain("not been collected");
-    expect(m.text).not.toMatch(/received your payment/i);
-    expect(m.text).toContain(`/en/order/${p.token}`);
+    expect(m.text).toContain("noch nicht eingezogen");
+    expect(m.text).not.toMatch(/Zahlung ist eingegangen/i);
+    expect(m.text).toContain(`/de/order/${p.token}`);
   });
   it("sends 'payment received' only after settlement, once", async () => {
     const p = await placeOrder();
@@ -132,7 +132,7 @@ describe("customer notifications", () => {
     await settle(p);
     const texts = mailsTo("customer@example.com").map(([m]) => m.text as string);
     expect(texts).toHaveLength(2);
-    expect(texts.filter((t) => /received your payment/i.test(t))).toHaveLength(1);
+    expect(texts.filter((t) => /Zahlung ist eingegangen/i.test(t))).toHaveLength(1);
   });
   it("notifies confirmed, out-for-delivery, delivered; skips internal steps; never twice", async () => {
     const p = await placeOrder();
