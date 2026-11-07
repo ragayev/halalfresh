@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="t d">
+  <title id="t">Halal Fresh – ürün görseli yakında</title>
+  <desc id="d">Ürün fotoğrafı henüz bulunmayan ürünler için nötr görsel.</desc>
+  <rect width="800" height="600" fill="#f2f5ef"/>
+  <circle cx="400" cy="268" r="125" fill="#e1eadf"/>
+  <path d="M348 230c0-25 19-45 43-45s43 20 43 45-19 45-43 45-43-20-43-45Zm43 65c-49 0-90 32-90 78h180c0-46-41-78-90-78Z" fill="#739682"/>
+  <path d="M292 378h216" stroke="#295b44" stroke-width="8" stroke-linecap="round"/>
+  <text x="400" y="470" font-family="Arial,Helvetica,sans-serif" font-size="35" fill="#254d3d" font-weight="700" text-anchor="middle">Halal Fresh</text>
+  <text x="400" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#648272" text-anchor="middle">Produktbild folgt</text>
+</svg>
