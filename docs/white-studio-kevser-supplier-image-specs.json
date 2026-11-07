@@ -1,0 +1,1562 @@
+{
+  "version": 1,
+  "origin": "prisma/data/kevser-articles.json",
+  "note": "These 111 supplier SKUs are separate from the 45 base catalogue entries. Admin DB may differ due to changes, hidden products and other seed paths; compare against DB before publishing.",
+  "style": "photorealistic pure-white studio product photograph",
+  "products": [
+    {
+      "id": "kevser-032016001",
+      "sku": "032016001",
+      "name": {
+        "tr": "Şekilli Adana Köfte",
+        "de": "ADANA BOULETTE (GEFORMT)",
+        "en": "Shaped Adana Meatballs"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016001.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Shaped Adana Meatballs (ADANA BOULETTE (GEFORMT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016002",
+      "sku": "032016002",
+      "name": {
+        "tr": "Adana Köfte",
+        "de": "ADANA BOULETTE",
+        "en": "Adana Meatballs"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016002.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Adana Meatballs (ADANA BOULETTE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016003",
+      "sku": "032016003",
+      "name": {
+        "tr": "Köfte",
+        "de": "BOULETTE",
+        "en": "Meatballs"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016003.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Meatballs (BOULETTE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016004",
+      "sku": "032016004",
+      "name": {
+        "tr": "Şekilli Köfte",
+        "de": "BOULETTE (GEFORMT)",
+        "en": "Shaped Meatballs"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016004.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Shaped Meatballs (BOULETTE (GEFORMT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016005",
+      "sku": "032016005",
+      "name": {
+        "tr": "Izgaralık Sosis",
+        "de": "BRATWURST",
+        "en": "Grilling Sausage"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016005.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Grilling Sausage (BRATWURST), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016006",
+      "sku": "032016006",
+      "name": {
+        "tr": "Kemikli Bütün Boğa Eti",
+        "de": "BULLE (GANZES) MIT KNOCHEN",
+        "en": "Whole Bull With Bones"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016006.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Whole Bull With Bones (BULLE (GANZES) MIT KNOCHEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016007",
+      "sku": "032016007",
+      "name": {
+        "tr": "Kemiksiz Bütün Boğa Eti",
+        "de": "BULLE (GANZES) OHNE KNOCHEN",
+        "en": "Whole Boneless Bull"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016007.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Whole Boneless Bull (BULLE (GANZES) OHNE KNOCHEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016008",
+      "sku": "032016008",
+      "name": {
+        "tr": "Marine Yarım Tavuk",
+        "de": "HÄHNCHEN ( HALBES ) MARINIERT",
+        "en": "Marinated Half Chicken"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016008.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Half Chicken (HÄHNCHEN ( HALBES ) MARINIERT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016011",
+      "sku": "032016011",
+      "name": {
+        "tr": "Tavuk Fileto",
+        "de": "HÄHNCHEN FILET",
+        "en": "Chicken Fillet"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016011.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Fillet (HÄHNCHEN FILET), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016012",
+      "sku": "032016012",
+      "name": {
+        "tr": "Marine Tavuk Fileto",
+        "de": "HÄHNCHEN FILET (MARINIERT)",
+        "en": "Marinated Chicken Fillet"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016012.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Fillet (HÄHNCHEN FILET (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016014",
+      "sku": "032016014",
+      "name": {
+        "tr": "Marine Tavuk Kanat",
+        "de": "HÄHNCHEN FLÜGEL (MARINIERT)",
+        "en": "Marinated Chicken Wings"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016014.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Wings (HÄHNCHEN FLÜGEL (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016015",
+      "sku": "032016015",
+      "name": {
+        "tr": "Marine Bütün Tavuk",
+        "de": "HÄHNCHEN GANZES (MARINIERT)",
+        "en": "Marinated Whole Chicken"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016015.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Whole Chicken (HÄHNCHEN GANZES (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016016",
+      "sku": "032016016",
+      "name": {
+        "tr": "Jülyen Tavuk Eti",
+        "de": "HÄHNCHEN GESCHNETZELTES",
+        "en": "Chicken Strips"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016016.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Strips (HÄHNCHEN GESCHNETZELTES), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016017",
+      "sku": "032016017",
+      "name": {
+        "tr": "Marine Jülyen Tavuk",
+        "de": "HÄHNCHEN GESCHNETZELTES (MARINIERT)",
+        "en": "Marinated Chicken Strips"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016017.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Strips (HÄHNCHEN GESCHNETZELTES (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016018",
+      "sku": "032016018",
+      "name": {
+        "tr": "Tavuk Yüreği",
+        "de": "HÄHNCHEN HERZ",
+        "en": "Chicken Hearts"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016018.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Hearts (HÄHNCHEN HERZ), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016020",
+      "sku": "032016020",
+      "name": {
+        "tr": "Marine Tavuk But",
+        "de": "HÄHNCHEN KEULE (MARINIERT)",
+        "en": "Marinated Chicken Leg"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016020.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Leg (HÄHNCHEN KEULE (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016021",
+      "sku": "032016021",
+      "name": {
+        "tr": "Tavuk Pirzola",
+        "de": "HÄHNCHEN KOTELETT",
+        "en": "Chicken Chops"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016021.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Chops (HÄHNCHEN KOTELETT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016022",
+      "sku": "032016022",
+      "name": {
+        "tr": "Marine Tavuk Pirzola",
+        "de": "HÄHNCHEN KOTELETT (MARINIERT)",
+        "en": "Marinated Chicken Chops"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016022.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Chops (HÄHNCHEN KOTELETT (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016023",
+      "sku": "032016023",
+      "name": {
+        "tr": "Tavuk Ciğeri",
+        "de": "HÄHNCHEN LEBER",
+        "en": "Chicken Liver"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016023.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Liver (HÄHNCHEN LEBER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016024",
+      "sku": "032016024",
+      "name": {
+        "tr": "Tavuk Taşlığı",
+        "de": "HÄHNCHEN MAGEN",
+        "en": "Chicken Gizzards"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016024.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Gizzards (HÄHNCHEN MAGEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016025",
+      "sku": "032016025",
+      "name": {
+        "tr": "Tavuk Şnitzel",
+        "de": "HÄHNCHEN SCHNITZEL",
+        "en": "Chicken Schnitzel"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016025.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Schnitzel (HÄHNCHEN SCHNITZEL), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016026",
+      "sku": "032016026",
+      "name": {
+        "tr": "Marine Tavuk Şnitzel",
+        "de": "HÄHNCHEN SCHNITZEL (MARINIERT)",
+        "en": "Marinated Chicken Schnitzel"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016026.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Schnitzel (HÄHNCHEN SCHNITZEL (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016028",
+      "sku": "032016028",
+      "name": {
+        "tr": "Marine Tavuk Şiş",
+        "de": "HÄHNCHEN SPIEß (MARINIERT)",
+        "en": "Marinated Chicken Skewers"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016028.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Chicken Skewers (HÄHNCHEN SPIEß (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016031",
+      "sku": "032016031",
+      "name": {
+        "tr": "Tavuk Kanat Ucu",
+        "de": "HÄHNCHENFLÜGELSPITZE",
+        "en": "Chicken Wing Tips"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016031.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Wing Tips (HÄHNCHENFLÜGELSPITZE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016033",
+      "sku": "032016033",
+      "name": {
+        "tr": "Kemikli Dana Gerdan",
+        "de": "KALB KAMM MIT KNOCHEN",
+        "en": "Bone-in Veal Neck"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016033.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Bone-in Veal Neck (KALB KAMM MIT KNOCHEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016034",
+      "sku": "032016034",
+      "name": {
+        "tr": "Dana Üst But",
+        "de": "KALB OBERSCHALE",
+        "en": "Veal Topside"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016034.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Topside (KALB OBERSCHALE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016035",
+      "sku": "032016035",
+      "name": {
+        "tr": "Dana İşkembe",
+        "de": "KALB PANSEN",
+        "en": "Veal Tripe"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016035.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Tripe (KALB PANSEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016036",
+      "sku": "032016036",
+      "name": {
+        "tr": "Dana Rumpsteak",
+        "de": "KALB RUMSTEAK",
+        "en": "Veal Rump Steak"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016036.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Rump Steak (KALB RUMSTEAK), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016037",
+      "sku": "032016037",
+      "name": {
+        "tr": "Marine Dana Biftek",
+        "de": "KALB STEAK (MARINIERT)",
+        "en": "Marinated Veal Steak"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016037.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Veal Steak (KALB STEAK (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016038",
+      "sku": "032016038",
+      "name": {
+        "tr": "Dana Alt But",
+        "de": "KALB UNTERSCHALE",
+        "en": "Veal Silverside"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016038.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Silverside (KALB UNTERSCHALE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016039",
+      "sku": "032016039",
+      "name": {
+        "tr": "Dana Eti",
+        "de": "KALBFLEISCH",
+        "en": "Veal Meat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016039.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Meat (KALBFLEISCH), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016040",
+      "sku": "032016040",
+      "name": {
+        "tr": "Dana Kuşbaşı",
+        "de": "KALBS GULASCH",
+        "en": "Diced Veal"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016040.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Diced Veal (KALBS GULASCH), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016041",
+      "sku": "032016041",
+      "name": {
+        "tr": "Kemikli Dana Döş",
+        "de": "KALBSBRUSTLAPPEN MIT KNOCHEN (HELL)",
+        "en": "Bone-in Veal Breast"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016041.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Bone-in Veal Breast (KALBSBRUSTLAPPEN MIT KNOCHEN (HELL)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016042",
+      "sku": "032016042",
+      "name": {
+        "tr": "Dana Nuar (Kugel)",
+        "de": "KALBSKUGEL",
+        "en": "Veal Knuckle"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016042.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Knuckle (KALBSKUGEL), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016043",
+      "sku": "032016043",
+      "name": {
+        "tr": "Dana Sırt Eti",
+        "de": "KALBSRÜCKEN",
+        "en": "Veal Loin"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016043.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Loin (KALBSRÜCKEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016044",
+      "sku": "032016044",
+      "name": {
+        "tr": "Dana Omuz",
+        "de": "KALBSSCHULTER",
+        "en": "Veal Shoulder"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016044.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Shoulder (KALBSSCHULTER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016045",
+      "sku": "032016045",
+      "name": {
+        "tr": "Dana Dil",
+        "de": "KALBSZUNGE",
+        "en": "Veal Tongue"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016045.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Tongue (KALBSZUNGE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016047",
+      "sku": "032016047",
+      "name": {
+        "tr": "Bütün Kuzu (A1)",
+        "de": "LAMM GANZES (A1)",
+        "en": "Whole Lamb (A1)"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016047.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Whole Lamb (A1) (LAMM GANZES (A1)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016048",
+      "sku": "032016048",
+      "name": {
+        "tr": "Bütün Kuzu (A2)",
+        "de": "LAMM GANZES (A2)",
+        "en": "Whole Lamb (A2)"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016048.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Whole Lamb (A2) (LAMM GANZES (A2)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016050",
+      "sku": "032016050",
+      "name": {
+        "tr": "Kuzu Kıyma %10 Yağ",
+        "de": "LAMM HACKFLEISCH 10% FETT",
+        "en": "Lamb Mince 10% Fat"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016050.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Mince 10% Fat (LAMM HACKFLEISCH 10% FETT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016051",
+      "sku": "032016051",
+      "name": {
+        "tr": "Kuzu Kelle",
+        "de": "LAMM KOPF",
+        "en": "Lamb Head"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016051.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Head (LAMM KOPF), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016053",
+      "sku": "032016053",
+      "name": {
+        "tr": "Kuzu Pirzola (Bel Kısmı Hariç)",
+        "de": "LAMM KOTELETTS O. TAILLE",
+        "en": "Lamb Chops (Without Waist)"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016053.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Chops (Without Waist) (LAMM KOTELETTS O. TAILLE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016054",
+      "sku": "032016054",
+      "name": {
+        "tr": "Kuzu Döş",
+        "de": "LAMM LAPPEN",
+        "en": "Lamb Flap"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016054.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Flap (LAMM LAPPEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016055",
+      "sku": "032016055",
+      "name": {
+        "tr": "Kuzu Ciğeri",
+        "de": "LAMM LEBER",
+        "en": "Lamb Liver"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016055.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Liver (LAMM LEBER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016056",
+      "sku": "032016056",
+      "name": {
+        "tr": "Kemiksiz Kuzu Eti",
+        "de": "LAMM OHNE KNOCHEN",
+        "en": "Boneless Lamb"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016056.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Boneless Lamb (LAMM OHNE KNOCHEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016058",
+      "sku": "032016058",
+      "name": {
+        "tr": "Kemiksiz Kuzu Kaburga",
+        "de": "LAMM RIPPEN OHNE KNOCHEN",
+        "en": "Boneless Lamb Ribs"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016058.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Boneless Lamb Ribs (LAMM RIPPEN OHNE KNOCHEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016059",
+      "sku": "032016059",
+      "name": {
+        "tr": "Kuzu Sırt",
+        "de": "LAMM RÜCKEN",
+        "en": "Lamb Loin"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016059.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Loin (LAMM RÜCKEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016061",
+      "sku": "032016061",
+      "name": {
+        "tr": "Kuzu Şiş",
+        "de": "LAMM SPIEß",
+        "en": "Lamb Skewers"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016061.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Skewers (LAMM SPIEß), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016062",
+      "sku": "032016062",
+      "name": {
+        "tr": "Marine Kuzu Şiş",
+        "de": "LAMM SPIEß (MARINIERT)",
+        "en": "Marinated Lamb Skewers"
+      },
+      "category": "mangal",
+      "targetImage": "/images/products/white-studio/kevser-032016062.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Lamb Skewers (LAMM SPIEß (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016063",
+      "sku": "032016063",
+      "name": {
+        "tr": "Kuzu Biftek",
+        "de": "LAMM STEAK",
+        "en": "Lamb Steak"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016063.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Steak (LAMM STEAK), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016064",
+      "sku": "032016064",
+      "name": {
+        "tr": "Marine Kuzu Biftek",
+        "de": "LAMM STEAK (MARINIERT)",
+        "en": "Marinated Lamb Steak"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016064.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Lamb Steak (LAMM STEAK (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016067",
+      "sku": "032016067",
+      "name": {
+        "tr": "Kuzu Kafes",
+        "de": "LAMMKARREE",
+        "en": "Rack of Lamb"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-032016067.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Rack of Lamb (LAMMKARREE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016069",
+      "sku": "032016069",
+      "name": {
+        "tr": "Mantı",
+        "de": "MANTI (TÜRKISCHE TORTELLINI)",
+        "en": "Turkish Manti Dumplings"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-032016069.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Turkish Manti Dumplings (MANTI (TÜRKISCHE TORTELLINI)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016070",
+      "sku": "032016070",
+      "name": {
+        "tr": "Merguez Sosis",
+        "de": "MERGUEZ WURST",
+        "en": "Merguez Sausage"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016070.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Merguez Sausage (MERGUEZ WURST), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016071",
+      "sku": "032016071",
+      "name": {
+        "tr": "Nugget 500 g",
+        "de": "Nuggets 500gr",
+        "en": "Chicken Nuggets 500 g"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-032016071.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Nuggets 500 g (Nuggets 500gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016072",
+      "sku": "032016072",
+      "name": {
+        "tr": "Dana Kuyruk",
+        "de": "OCHSENSCHWANZ",
+        "en": "Oxtail"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016072.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Oxtail (OCHSENSCHWANZ), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016073",
+      "sku": "032016073",
+      "name": {
+        "tr": "Hindi But",
+        "de": "PUTE KEULE",
+        "en": "Turkey Leg"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016073.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Turkey Leg (PUTE KEULE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016075",
+      "sku": "032016075",
+      "name": {
+        "tr": "Hindi / Kaz (Teyit Edilecek)",
+        "de": "PUTEN GANS",
+        "en": "Turkey / Goose (Needs Confirmation)"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-032016075.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Turkey / Goose (Needs Confirmation) (PUTEN GANS), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016076",
+      "sku": "032016076",
+      "name": {
+        "tr": "Dana Et Kırpıntısı 70/30",
+        "de": "RINDER ABSCHNITT 70/30",
+        "en": "Beef Trimmings 70/30"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016076.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Trimmings 70/30 (RINDER ABSCHNITT 70/30), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016077",
+      "sku": "032016077",
+      "name": {
+        "tr": "Dana Et Kırpıntısı 80/20",
+        "de": "RINDER ABSCHNITT 80/20",
+        "en": "Beef Trimmings 80/20"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016077.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Trimmings 80/20 (RINDER ABSCHNITT 80/20), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016078",
+      "sku": "032016078",
+      "name": {
+        "tr": "Dana Et Kırpıntısı 90/10",
+        "de": "RINDER ABSCHNITT 90/10",
+        "en": "Beef Trimmings 90/10"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016078.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Trimmings 90/10 (RINDER ABSCHNITT 90/10), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016079",
+      "sku": "032016079",
+      "name": {
+        "tr": "Kemiksiz Dana Döş",
+        "de": "RINDER BRUST OHNE KNOCHEN",
+        "en": "Boneless Beef Brisket"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016079.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Boneless Beef Brisket (RINDER BRUST OHNE KNOCHEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016080",
+      "sku": "032016080",
+      "name": {
+        "tr": "Dana Omuz (Kalın)",
+        "de": "RINDER DICKE BUG",
+        "en": "Beef Thick Shoulder"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016080.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Thick Shoulder (RINDER DICKE BUG), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016082",
+      "sku": "032016082",
+      "name": {
+        "tr": "Marine Dana Antrikot",
+        "de": "RINDER ENTRECOTE (MARINIERT)",
+        "en": "Marinated Beef Entrecôte"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016082.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Beef Entrecôte (RINDER ENTRECOTE (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016083",
+      "sku": "032016083",
+      "name": {
+        "tr": "Dana Yağı",
+        "de": "RINDER FETT",
+        "en": "Beef Fat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016083.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Fat (RINDER FETT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016084",
+      "sku": "032016084",
+      "name": {
+        "tr": "Dana Bonfile",
+        "de": "RINDER FILET",
+        "en": "Beef Tenderloin"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016084.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Tenderloin (RINDER FILET), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016085",
+      "sku": "032016085",
+      "name": {
+        "tr": "Dana Kuşbaşı %10 Yağ",
+        "de": "RINDER GULASCH (10% FETT)",
+        "en": "Diced Beef 10% Fat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016085.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Diced Beef 10% Fat (RINDER GULASCH (10% FETT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016087",
+      "sku": "032016087",
+      "name": {
+        "tr": "Marine Dana Kuşbaşı",
+        "de": "RINDER GULASCH (MARINIERT)",
+        "en": "Marinated Diced Beef"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016087.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Marinated Diced Beef (RINDER GULASCH (MARINIERT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016088",
+      "sku": "032016088",
+      "name": {
+        "tr": "Dana Kıyma %20 Yağ",
+        "de": "RINDER HACKFLEISCH (20% FETT)",
+        "en": "Beef Mince 20% Fat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016088.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Mince 20% Fat (RINDER HACKFLEISCH (20% FETT)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016089",
+      "sku": "032016089",
+      "name": {
+        "tr": "Dana Kıyma %3 Yağ",
+        "de": "RINDER HACKFLEISCH (MAGER) 3% FETT",
+        "en": "Lean Beef Mince 3% Fat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016089.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lean Beef Mince 3% Fat (RINDER HACKFLEISCH (MAGER) 3% FETT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016090",
+      "sku": "032016090",
+      "name": {
+        "tr": "Dana Kıyma %10 Yağ",
+        "de": "RINDER HACKFLEISCH 10% FETT",
+        "en": "Beef Mince 10% Fat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016090.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Mince 10% Fat (RINDER HACKFLEISCH 10% FETT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016091",
+      "sku": "032016091",
+      "name": {
+        "tr": "Dana Kıyma %30 Yağ",
+        "de": "RINDER HACKFLEISCH 30%FETT",
+        "en": "Beef Mince 30% Fat"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016091.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Mince 30% Fat (RINDER HACKFLEISCH 30%FETT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016094",
+      "sku": "032016094",
+      "name": {
+        "tr": "Dana Yüksek Kaburga",
+        "de": "RINDER HOCHRIPPE",
+        "en": "Beef Rib Roast"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016094.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Rib Roast (RINDER HOCHRIPPE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016095",
+      "sku": "032016095",
+      "name": {
+        "tr": "Dana But",
+        "de": "RINDER KEULE",
+        "en": "Beef Round"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016095.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Round (RINDER KEULE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016096",
+      "sku": "032016096",
+      "name": {
+        "tr": "Dana Döş / Etek",
+        "de": "RINDER LAPPEN",
+        "en": "Beef Flank"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016096.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Flank (RINDER LAPPEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016100",
+      "sku": "032016100",
+      "name": {
+        "tr": "Dana Şnitzel",
+        "de": "RINDER SCHNITZEL",
+        "en": "Beef Schnitzel"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016100.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Schnitzel (RINDER SCHNITZEL), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016102",
+      "sku": "032016102",
+      "name": {
+        "tr": "Dana Et Kırpıntısı",
+        "de": "RINDER TREAMING",
+        "en": "Beef Trimmings"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016102.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Trimmings (RINDER TREAMING), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016103",
+      "sku": "032016103",
+      "name": {
+        "tr": "Dana Dil",
+        "de": "RINDER ZUNGE",
+        "en": "Beef Tongue"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-032016103.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Tongue (RINDER ZUNGE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016105",
+      "sku": "032016105",
+      "name": {
+        "tr": "Dilimli Tavuk Salamı 200 g",
+        "de": "SALAMI SCHEIBEN (HÄHNCHEN) 200 gr",
+        "en": "Sliced Chicken Salami 200 g"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016105.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Sliced Chicken Salami 200 g (SALAMI SCHEIBEN (HÄHNCHEN) 200 gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016106",
+      "sku": "032016106",
+      "name": {
+        "tr": "Dilimli Dana Salamı 200 g",
+        "de": "SALAMI SCHEIBEN (RIND) 200gr",
+        "en": "Sliced Beef Salami 200 g"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016106.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Sliced Beef Salami 200 g (SALAMI SCHEIBEN (RIND) 200gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016107",
+      "sku": "032016107",
+      "name": {
+        "tr": "Tavuk Salamı (Baton)",
+        "de": "SALAMI STANGE (HÄHNCHEN)",
+        "en": "Chicken Salami Stick"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016107.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Salami Stick (SALAMI STANGE (HÄHNCHEN)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016108",
+      "sku": "032016108",
+      "name": {
+        "tr": "Dana Salamı (Baton)",
+        "de": "SALAMI STANGE (RIND)",
+        "en": "Beef Salami Stick"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016108.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Salami Stick (SALAMI STANGE (RIND)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016109",
+      "sku": "032016109",
+      "name": {
+        "tr": "Şnitzel 150 g / 1,5 kg",
+        "de": "SCHNITZEL 150gr 1,5 kg",
+        "en": "Schnitzel 150 g / 1.5 kg"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-032016109.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Schnitzel 150 g / 1.5 kg (SCHNITZEL 150gr 1,5 kg), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016110",
+      "sku": "032016110",
+      "name": {
+        "tr": "Sosis 500 g",
+        "de": "SOSIS 500gr",
+        "en": "Sausages 500 g"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016110.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Sausages 500 g (SOSIS 500gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016112",
+      "sku": "032016112",
+      "name": {
+        "tr": "Acılı Sucuk",
+        "de": "SUCUK (SCHARF)",
+        "en": "Hot Sucuk"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016112.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Hot Sucuk (SUCUK (SCHARF)), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016114",
+      "sku": "032016114",
+      "name": {
+        "tr": "T-Bone Biftek",
+        "de": "T-BONE STEAK",
+        "en": "T-Bone Steak"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016114.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of T-Bone Steak (T-BONE STEAK), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016115",
+      "sku": "032016115",
+      "name": {
+        "tr": "Dana Omuz (V-Kalb)",
+        "de": "V-KALBSSCHULTER",
+        "en": "Veal Shoulder (V)"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-032016115.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Veal Shoulder (V) (V-KALBSSCHULTER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016116",
+      "sku": "032016116",
+      "name": {
+        "tr": "Tavuk Sosis 350 g",
+        "de": "WÜRSTCHEN (HÄHNCHEN) 350gr",
+        "en": "Chicken Sausages 350 g"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016116.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Sausages 350 g (WÜRSTCHEN (HÄHNCHEN) 350gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016117",
+      "sku": "032016117",
+      "name": {
+        "tr": "Dana Sosis 900 g",
+        "de": "WÜRSTCHEN (RIND) 900 gr",
+        "en": "Beef Sausages 900 g"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-032016117.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Sausages 900 g (WÜRSTCHEN (RIND) 900 gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016118",
+      "sku": "032016118",
+      "name": {
+        "tr": "Tavuk Döner",
+        "de": "HÄHNCHEN DÖNER",
+        "en": "Chicken Doner"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-032016118.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Doner (HÄHNCHEN DÖNER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016119",
+      "sku": "032016119",
+      "name": {
+        "tr": "Dondurulmuş Dilimli Tavuk Döner",
+        "de": "HÄHNCHEN DÖNER, FERTIG GESCHNITTEN TK",
+        "en": "Frozen Sliced Chicken Doner"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-032016119.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Frozen Sliced Chicken Doner (HÄHNCHEN DÖNER, FERTIG GESCHNITTEN TK), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-032016120",
+      "sku": "032016120",
+      "name": {
+        "tr": "Ayran",
+        "de": "AYRAN",
+        "en": "Ayran"
+      },
+      "category": "icecek",
+      "targetImage": "/images/products/white-studio/kevser-032016120.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Ayran (AYRAN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016121",
+      "sku": "32016121",
+      "name": {
+        "tr": "Mangolu Ayran",
+        "de": "AYRAN MANGO",
+        "en": "Mango Ayran"
+      },
+      "category": "icecek",
+      "targetImage": "/images/products/white-studio/kevser-32016121.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Mango Ayran (AYRAN MANGO), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016122",
+      "sku": "32016122",
+      "name": {
+        "tr": "Vişneli Ayran",
+        "de": "AYRAN KIRSCHE",
+        "en": "Cherry Ayran"
+      },
+      "category": "icecek",
+      "targetImage": "/images/products/white-studio/kevser-32016122.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Cherry Ayran (AYRAN KIRSCHE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016123",
+      "sku": "32016123",
+      "name": {
+        "tr": "Dana Ayak",
+        "de": "RINDER FUSS",
+        "en": "Beef Feet"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-32016123.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Feet (RINDER FUSS), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016124",
+      "sku": "32016124",
+      "name": {
+        "tr": "Dana Omuz",
+        "de": "Rinder Schulter",
+        "en": "Beef Shoulder"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-32016124.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Beef Shoulder (Rinder Schulter), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016125",
+      "sku": "32016125",
+      "name": {
+        "tr": "Bütün Dana Eti",
+        "de": "RINDER GANZE",
+        "en": "Whole Beef"
+      },
+      "category": "dana",
+      "targetImage": "/images/products/white-studio/kevser-32016125.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Whole Beef (RINDER GANZE), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016126",
+      "sku": "32016126",
+      "name": {
+        "tr": "Döşlü Kuzu Pirzola",
+        "de": "LAMM KOTTLET MIT LAPPEN",
+        "en": "Lamb Chop with Flap"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-32016126.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Chop with Flap (LAMM KOTTLET MIT LAPPEN), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016127",
+      "sku": "32016127",
+      "name": {
+        "tr": "Yağsız Kuzu Kuşbaşı",
+        "de": "LAMM GULASCH MAGER",
+        "en": "Lean Diced Lamb"
+      },
+      "category": "kuzu",
+      "targetImage": "/images/products/white-studio/kevser-32016127.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lean Diced Lamb (LAMM GULASCH MAGER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016128",
+      "sku": "32016128",
+      "name": {
+        "tr": "Nugget (Adı Teyit Edilecek)",
+        "de": "NAGES",
+        "en": "Nuggets (Name Needs Confirmation)"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-32016128.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Nuggets (Name Needs Confirmation) (NAGES), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016129",
+      "sku": "32016129",
+      "name": {
+        "tr": "Tavuk Sosis 500 g",
+        "de": "WURST HÄHNCHEN 500 gr",
+        "en": "Chicken Sausage 500 g"
+      },
+      "category": "sarkuteri",
+      "targetImage": "/images/products/white-studio/kevser-32016129.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Sausage 500 g (WURST HÄHNCHEN 500 gr), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016130",
+      "sku": "32016130",
+      "name": {
+        "tr": "Tavuk Burger Köftesi",
+        "de": "HÄHNCHEN BURGER",
+        "en": "Chicken Burger Patty"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-32016130.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Burger Patty (HÄHNCHEN BURGER), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016131",
+      "sku": "32016131",
+      "name": {
+        "tr": "Hamburger Ekmeği",
+        "de": "burger brot",
+        "en": "Burger Bun"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-32016131.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Burger Bun (burger brot), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016132",
+      "sku": "32016132",
+      "name": {
+        "tr": "Endüstriyel Yağ Ayırıcı",
+        "de": "kompakte Fettabscheideranlage für Gastronomieküche",
+        "en": "Commercial Grease Separator"
+      },
+      "category": "ekipman",
+      "targetImage": "/images/products/white-studio/kevser-32016132.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Commercial Grease Separator (kompakte Fettabscheideranlage für Gastronomieküche), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016133",
+      "sku": "32016133",
+      "name": {
+        "tr": "Soğutma Ünitesi / Soğuk Oda",
+        "de": "Kühleinheit /-zelle",
+        "en": "Refrigeration Unit / Cold Room"
+      },
+      "category": "ekipman",
+      "targetImage": "/images/products/white-studio/kevser-32016133.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Refrigeration Unit / Cold Room (Kühleinheit /-zelle), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016135",
+      "sku": "32016135",
+      "name": {
+        "tr": "Kuzu İşkembe",
+        "de": "lamm pansen",
+        "en": "Lamb Tripe"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-32016135.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Lamb Tripe (lamm pansen), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016136",
+      "sku": "32016136",
+      "name": {
+        "tr": "Sucuk Burger",
+        "de": "sucuk Burger",
+        "en": "Sucuk Burger"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-32016136.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Sucuk Burger (sucuk Burger), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016137",
+      "sku": "32016137",
+      "name": {
+        "tr": "Derisiz Tavuk Pirzola",
+        "de": "HÄHNCHEN KOTELETT OHNE HAUT",
+        "en": "Skinless Chicken Chops"
+      },
+      "category": "tavuk",
+      "targetImage": "/images/products/white-studio/kevser-32016137.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Skinless Chicken Chops (HÄHNCHEN KOTELETT OHNE HAUT), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016138",
+      "sku": "32016138",
+      "name": {
+        "tr": "Tavuk Kanat Tabağı",
+        "de": "Hähnchen Flügel teller",
+        "en": "Chicken Wing Plate"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-32016138.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Wing Plate (Hähnchen Flügel teller), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016139",
+      "sku": "32016139",
+      "name": {
+        "tr": "Tavuk Sakatat",
+        "de": "Hähnchen innerei",
+        "en": "Chicken Offal"
+      },
+      "category": "sakatat",
+      "targetImage": "/images/products/white-studio/kevser-32016139.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Chicken Offal (Hähnchen innerei), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    },
+    {
+      "id": "kevser-32016140",
+      "sku": "32016140",
+      "name": {
+        "tr": "Smash Burger Köftesi",
+        "de": "smash",
+        "en": "Smash Burger Patty"
+      },
+      "category": "hazir",
+      "targetImage": "/images/products/white-studio/kevser-32016140.webp",
+      "reviewRequired": true,
+      "qualityStatus": "not_generated",
+      "prompt": "Accurate premium e-commerce product photo of Smash Burger Patty (smash), pure-white studio background, soft diffused lighting, 1:1 image, realistic colors and anatomy, no text or logos. Product specifics require butcher verification; no misleading attributes."
+    }
+  ]
+}
