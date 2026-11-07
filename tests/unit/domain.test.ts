@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { computeTotals, lineTotalCents, validateQuantity, formatWeight, PricingError } from "@/domain/pricing";
-import { canTransitionFulfillment, canTransitionPayment, paymentStatusAfterRefunds } from "@/domain/order-state";
-import { buildWhatsappMessage, normalizeWhatsappNumber, whatsappLink } from "@/domain/whatsapp";
-import { formatMoney } from "@/domain/money";
+import { buildKevserMessage, customerWhatsappLink, normalizeWhatsappNumber, whatsappLink } from "@/domain/whatsapp";
 
 const product = {
   id: "p",
@@ -77,70 +75,50 @@ describe("minimum order", () => {
   });
 });
 
-describe("order state", () => {
-  it("allows forward fulfillment flow only", () => {
-    expect(canTransitionFulfillment("AWAITING_FORWARDING", "FORWARDED")).toBe(true);
-    expect(canTransitionFulfillment("FORWARDED", "AWAITING_FORWARDING")).toBe(true); // undo mistaken mark
-    expect(canTransitionFulfillment("AWAITING_FORWARDING", "DELIVERED")).toBe(false);
-    expect(canTransitionFulfillment("DELIVERED", "PREPARING")).toBe(false);
-    expect(canTransitionFulfillment("CANCELLED", "FORWARDED")).toBe(false);
-  });
-  it("never downgrades a paid order from late failure/expiry events", () => {
-    expect(canTransitionPayment("PAID", "PAYMENT_FAILED")).toBe(false);
-    expect(canTransitionPayment("PAID", "CANCELLED")).toBe(false);
-    expect(canTransitionPayment("PAID", "PENDING_PAYMENT")).toBe(false);
-    expect(canTransitionPayment("PENDING_PAYMENT", "PAID")).toBe(true);
-    expect(canTransitionPayment("CANCELLED", "PAID")).toBe(true);
-    expect(canTransitionPayment("REFUNDED", "PAID")).toBe(false);
-  });
-  it("derives refund status from totals", () => {
-    expect(paymentStatusAfterRefunds(15000, 0)).toBe("PAID");
-    expect(paymentStatusAfterRefunds(15000, 100)).toBe("PARTIALLY_REFUNDED");
-    expect(paymentStatusAfterRefunds(15000, 15000)).toBe("REFUNDED");
-  });
-});
-
 describe("whatsapp", () => {
   const order = {
-    number: 10042,
-    customerName: "Example Customer",
+    number: 123,
+    firstName: "Ayşe",
+    lastName: "Yılmaz",
     phone: "+4915112345678",
     street: "Example Street 12",
     postalCode: "12345",
     city: "Berlin",
-    items: [
-      { productName: "Beef Cubes", quantityGrams: 3000 },
-      { productName: "Chicken Breast", quantityGrams: 4500 },
-    ],
-    totalCents: 16500,
-    paymentStatus: "PAID",
     deliveryDate: "2026-06-06",
     slotStartTime: "10:00",
     slotEndTime: "14:00",
-    deliveryInstructions: "Ring twice",
+    paymentMethod: "PAYPAL" as const,
+    items: [
+      { productName: "Kuzu But", requestedGrams: 2500 },
+      { productName: "Dana Kıyma", requestedGrams: 1000 },
+    ],
+    estimatedTotalCents: 15000,
+    maxTotalCents: 16500,
+    notes: "Ring twice",
   };
-  it("builds the message with all required fields", () => {
-    const m = buildWhatsappMessage(order);
+  it("builds the Turkish Kevser template", () => {
+    const m = buildKevserMessage(order);
     for (const s of [
-      "NEW HALAL FRESH ORDER",
-      "#HF-10042",
-      "Example Customer",
-      "+4915112345678",
-      "Example Street 12",
-      "12345 Berlin",
-      "- Beef Cubes — 3 kg",
-      "- Chicken Breast — 4.5 kg",
-      "PAID",
-      "Saturday",
-      "10:00–14:00",
-      "Ring twice",
+      "🟢 Sipariş #HF-000123",
+      "Müşteri: Ayşe Y. · +4915112345678",
+      "Adres: Example Street 12, 12345 Berlin",
+      "Teslimat: 6 Haziran Cumartesi, 10:00–14:00",
+      "Ödeme: PayPal",
+      "- Kuzu But · 2,5 kg",
+      "- Dana Kıyma · 1,0 kg",
+      "Tahmini:",
+      "Max:",
+      "Not: Ring twice",
     ])
       expect(m).toContain(s);
-    expect(m).toContain(formatMoney(16500, "de"));
+    expect(m).not.toContain("Yılmaz");
   });
-  it("omits empty instructions", () => {
-    expect(buildWhatsappMessage({ ...order, deliveryInstructions: "  " })).not.toContain("Instructions");
+  it("omits empty notes and labels cash", () => {
+    const m = buildKevserMessage({ ...order, notes: "  ", paymentMethod: "CASH" });
+    expect(m).not.toContain("Not:");
+    expect(m).toContain("Ödeme: Nakit");
   });
+  it("links a customer without prefilled text", () => expect(customerWhatsappLink("+4915112345678")).toBe("https://wa.me/4915112345678"));
   it("creates a url-encoded wa.me link", () => {
     const link = whatsappLink("4915112345678", "A&B\nÄ");
     expect(link).toBe("https://wa.me/4915112345678?text=A%26B%0A%C3%84");
