@@ -216,14 +216,8 @@ test.describe("admin", () => {
     await expect(page.getByText("Already marked as forwarded")).toBeVisible();
     await page.getByTestId("status-CONFIRMED_BY_BUTCHER").click();
     await expect(page.getByTestId("status-PREPARING")).toBeVisible();
-  });
-  test("product admin: database-derived stats, SKU search and status filter", async ({ page }) => {
-    await page.goto("/admin/login");
-    await page.getByLabel("Email").fill("e2e-admin@example.com");
-    await page.getByLabel("Password").fill("e2e-password-123");
-    await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 
+    // Product admin (same session): database-derived stats, SKU search, status filter, CSV export.
     await page.goto("/admin/products");
     await expect(page.getByRole("heading", { name: "Products" })).toBeVisible();
     await expect(page.getByText("Purchasable")).toBeVisible();
