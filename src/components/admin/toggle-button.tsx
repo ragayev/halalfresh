@@ -8,7 +8,7 @@ export function ToggleButton({
   value,
 }: {
   id: string;
-  field: "isAvailable" | "isFeatured" | "isHidden" | "preorderEligible";
+  field: "isAvailable" | "isFeatured" | "preorderEligible";
   value: boolean;
 }) {
   const [pending, start] = useTransition();

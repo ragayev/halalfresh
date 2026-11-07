@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { FulfillmentStatus, type Prisma } from "@prisma/client";
+import { FulfillmentStatus } from "@prisma/client";
 import { db } from "@/lib/db";
 import { login, logout, requireAdmin } from "@/server/auth";
 import { AppError } from "@/server/errors";
@@ -10,6 +10,10 @@ import { addNote, audit, authorizeEarlyFulfillment, cancelOrder, prepareWhatsapp
 import { getMerchant } from "@/server/settings";
 import { normalizeWhatsappNumber } from "@/domain/whatsapp";
 import type { BundleItem } from "@/domain/bundles";
+import { parsePriceToCents } from "@/domain/money";
+import { PRODUCT_STATUSES, SELLING_UNITS } from "@/domain/product-rules";
+import { applyCsvImport, planCsvImport, type CsvPlan } from "@/server/catalog-csv";
+import { createProduct, parseSkuList, setAvailability, setFlag, setStatus, setSupplierSkus, updateProduct, type ProductInput } from "@/server/product-service";
 
 export type ActionResult = { ok: boolean; message?: string; url?: string };
 const fail = (e: unknown): ActionResult => ({
@@ -102,10 +106,12 @@ export async function cancelAction(orderId: string): Promise<ActionResult> {
 }
 
 // ---- Products ----
+// Validation lives here (shape of the form); business rules live in src/domain/product-rules.ts and are enforced by
+// src/server/product-service.ts, the only writer of product state.
 const euro = z
   .string()
-  .transform((s) => Math.round(parseFloat(s.replace(",", ".")) * 100))
-  .pipe(z.number().int().min(1).max(100000));
+  .transform((s) => parsePriceToCents(s))
+  .pipe(z.number().int().min(0).max(10_000_000));
 const grams = z.coerce.number().int().min(50).max(100000);
 const productSchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -118,6 +124,8 @@ const productSchema = z.object({
   description: z.string().trim().min(2).max(2000),
   categoryId: z.string().min(1),
   price: euro,
+  sellingUnit: z.enum(SELLING_UNITS),
+  status: z.enum(PRODUCT_STATUSES),
   stepGrams: grams,
   minGrams: grams,
   maxGrams: grams,
@@ -128,11 +136,11 @@ const productSchema = z.object({
   descDe: z.string().trim().max(2000).optional(),
   nameTr: z.string().trim().max(120).optional(),
   descTr: z.string().trim().max(2000).optional(),
+  /** Supplier article numbers, separated by comma, space or newline. Present on every edit form. */
+  supplierSkus: z.string().max(2000).optional(),
   /** Bundles only: one component per line, "grams | Deutsch | Türkçe | English | catalogue-slug (optional)". */
   bundleItems: z.string().max(4000).optional(),
 });
-
-const BUNDLE_NOT_CONFIRMED = "Confirm the butcher-approved price first (tick “Price confirmed”) before making a bundle visible or available.";
 
 function parseBundleLines(text: string): BundleItem[] | string {
   const out: BundleItem[] = [];
@@ -154,102 +162,112 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
       message: `Check fields: ${Object.keys(parsed.error.flatten().fieldErrors).join(", ")}`,
     };
   const v = parsed.data;
-  if (v.minGrams % v.stepGrams !== 0 || v.maxGrams < v.minGrams)
-    return {
-      ok: false,
-      message: "Min must be a multiple of the step, and max ≥ min",
-    };
-  let bundleData: { bundleItems: object; priceConfirmed: boolean } | null = null;
+  let bundleItems: BundleItem[] | undefined;
   if (v.bundleItems !== undefined) {
     const items = parseBundleLines(v.bundleItems);
     if (typeof items === "string") return { ok: false, message: items };
-    bundleData = { bundleItems: items as unknown as object, priceConfirmed: fd.get("priceConfirmed") === "on" };
-    if (!bundleData.priceConfirmed && (fd.get("isHidden") !== "on" || fd.get("isAvailable") === "on"))
-      return { ok: false, message: BUNDLE_NOT_CONFIRMED };
+    bundleItems = items;
   }
   try {
-    const merchant = await getMerchant();
-    // Keep importer metadata (supplier article numbers) and existing EN data on admin edits.
-    const previous = id === "new"
-      ? null
-      : await db.product.findUnique({ where: { id }, select: { translations: true } });
-    const translations = previous?.translations && typeof previous.translations === "object" && !Array.isArray(previous.translations)
-      ? (previous.translations as Record<string, unknown>)
-      : {};
-    const previousLocale = (locale: string): Record<string, unknown> => {
-      const value = translations[locale];
-      return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
-    };
-    const data = {
-      ...(bundleData ?? {}),
+    const skus = v.supplierSkus !== undefined ? parseSkuList(v.supplierSkus) : null;
+    const input: ProductInput = {
       name: v.name,
       slug: v.slug,
       description: v.description,
       categoryId: v.categoryId,
-      pricePerKgCents: v.price,
+      priceCents: v.price,
+      priceConfirmed: fd.get("priceConfirmed") === "on",
+      sellingUnit: v.sellingUnit,
       stepGrams: v.stepGrams,
       minGrams: v.minGrams,
       maxGrams: v.maxGrams,
-      origin: v.origin || null,
-      halalCertification: v.halalCertification || null,
-      allergenInfo: v.allergenInfo || null,
-      isAvailable: fd.get("isAvailable") === "on",
+      origin: v.origin,
+      halalCertification: v.halalCertification,
+      allergenInfo: v.allergenInfo,
       isFeatured: fd.get("isFeatured") === "on",
-      isHidden: fd.get("isHidden") === "on",
+      isAvailable: fd.get("isAvailable") === "on",
       preorderEligible: fd.get("preorderEligible") === "on",
-      translations: {
-        ...translations,
-        en: { ...previousLocale("en"), name: v.name, description: v.description },
-        de: { ...previousLocale("de"), name: v.nameDe, description: v.descDe },
-        tr: { ...previousLocale("tr"), name: v.nameTr, description: v.descTr },
-      } as Prisma.InputJsonObject,
+      status: v.status,
+      translations: { de: { name: v.nameDe, description: v.descDe }, tr: { name: v.nameTr, description: v.descTr } },
+      bundleItems,
     };
-    const p =
-      id === "new"
-        ? await db.product.create({
-            data: { ...data, merchantId: merchant.id },
-          })
-        : await db.product.update({ where: { id }, data });
+    const p = id === "new" ? await createProduct(input, a.email) : await updateProduct(id, input, a.email);
+    if (skus) await setSupplierSkus(p.id, skus, a.email);
     const file = fd.get("image");
     if (file instanceof File && file.size > 0) {
       if (file.size > 2_000_000) return { ok: false, message: "Image must be under 2 MB" };
       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return { ok: false, message: "Use JPEG, PNG or WebP" };
+      // Database-backed upload (the only runtime-writable storage on Vercel). Replaces the current image(s).
       await db.productImage.deleteMany({ where: { productId: p.id } });
       await db.productImage.create({
-        data: {
-          productId: p.id,
-          data: Buffer.from(await file.arrayBuffer()),
-          mimeType: file.type,
-          alt: v.name,
-        },
+        data: { productId: p.id, data: Buffer.from(await file.arrayBuffer()), mimeType: file.type, alt: v.name },
       });
+      await audit(a.email, "product.image.upload", "Product", p.id);
     }
-    await audit(a.email, id === "new" ? "product.create" : "product.update", "Product", p.id);
     revalidatePath("/admin/products");
   } catch (e) {
-    return {
-      ok: false,
-      message: e instanceof Error && e.message.includes("Unique") ? "Slug already in use" : "Could not save product",
-    };
+    return fail(e);
   }
   redirect("/admin/products");
 }
 
 export async function toggleProductAction(
   id: string,
-  field: "isAvailable" | "isFeatured" | "isHidden" | "preorderEligible",
+  field: "isAvailable" | "isFeatured" | "preorderEligible",
   value: boolean,
 ): Promise<ActionResult> {
   const a = await requireAdmin();
-  // A bundle with a placeholder price must not go live (visible = isHidden off; or purchasable = available on).
-  if ((field === "isHidden" && !value) || (field === "isAvailable" && value)) {
-    const cur = await db.product.findUnique({ where: { id }, select: { bundleItems: true, priceConfirmed: true } });
-    if (cur?.bundleItems != null && !cur.priceConfirmed) return { ok: false, message: BUNDLE_NOT_CONFIRMED };
+  try {
+    if (field === "isAvailable") await setAvailability(id, value, a.email);
+    else await setFlag(id, field, value, a.email);
+    revalidatePath("/admin/products");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
   }
-  await db.product.update({ where: { id }, data: { [field]: value } });
-  await audit(a.email, `product.${field}`, "Product", id, { value });
-  revalidatePath("/admin/products");
-  return { ok: true };
+}
+
+export async function setProductStatusAction(id: string, to: string): Promise<ActionResult> {
+  const a = await requireAdmin();
+  try {
+    await setStatus(id, z.enum(PRODUCT_STATUSES).parse(to), a.email);
+    revalidatePath("/admin/products");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+// ---- CSV price / availability import ----
+export type CsvPreview = ActionResult & { plan?: CsvPlan };
+
+async function readCsv(fd: FormData): Promise<string | null> {
+  const f = fd.get("file");
+  if (f instanceof File && f.size > 0) return f.size > 2_000_000 ? null : await f.text();
+  const t = fd.get("text");
+  return typeof t === "string" && t.trim() ? t : null;
+}
+
+export async function previewCsvAction(_: CsvPreview | null, fd: FormData): Promise<CsvPreview> {
+  await requireAdmin();
+  const text = await readCsv(fd);
+  if (!text) return { ok: false, message: "Choose a CSV file (UTF-8, up to 2 MB) or paste its content" };
+  const plan = await planCsvImport(text);
+  return { ok: !plan.errors.length && !plan.counts.reject, plan, message: plan.errors[0] };
+}
+
+/** Explicit second step: the server re-plans from the submitted text, so a stale or edited preview cannot widen the change. */
+export async function applyCsvAction(_: CsvPreview | null, fd: FormData): Promise<CsvPreview> {
+  const a = await requireAdmin();
+  const text = await readCsv(fd);
+  if (!text) return { ok: false, message: "Nothing to import" };
+  try {
+    const plan = await applyCsvImport(text, a.email);
+    revalidatePath("/admin/products");
+    return { ok: true, plan, message: `Applied: ${plan.counts.update} updated, ${plan.counts.skip} unchanged` };
+  } catch (e) {
+    return fail(e);
+  }
 }
 
 // ---- Settings ----
