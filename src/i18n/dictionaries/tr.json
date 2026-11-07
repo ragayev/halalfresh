@@ -1,7 +1,7 @@
 {
   "brand": {
-    "name": "Halal Fresh",
-    "tagline": "Taze Helal Et, Kapınızda."
+    "name": "Etamico",
+    "tagline": "Berlinli kasaptan helal et"
   },
   "nav": {
     "home": "Ana sayfa",
@@ -63,7 +63,7 @@
     "minOrderText": "Sipariş vermek için en az {amount} tutarında ürün ekleyin. Teslimat ücreti dahil değildir.",
     "shopByCategory": "Kategoriye göre alışveriş",
     "featured": "Bu haftanın favorileri",
-    "trustTitle": "Neden Halal Fresh",
+    "trustTitle": "Neden Etamico",
     "trust1Title": "Kevser Fleischerei’dan",
     "trust1Text": "Berlin’deki kasabınız tarafından hazırlanır ve teslim edilir.",
     "trust2Title": "1–3 günde teslimat",
@@ -207,7 +207,7 @@
     "postcodeUnsupported": "Bu posta koduna henüz teslimat yapmıyoruz.",
     "summary": "Sipariş özeti",
     "seller": "Satıcı ve teslimat",
-    "sellerText": "Siparişiniz {merchant} tarafından satılır ve karşılanır. Halal Fresh pazar yerini ve sipariş sürecini işletir.",
+    "sellerText": "Siparişiniz {merchant} tarafından satılır ve karşılanır. Etamico pazar yerini ve sipariş sürecini işletir.",
     "terms": "{terms} ve {privacy} metinlerini okudum, kabul ediyorum.",
     "termsLink": "Şartlar",
     "privacyLink": "Gizlilik Politikası",
@@ -319,12 +319,12 @@
     "CANCELLED": "İptal edildi"
   },
   "footer": {
-    "about": "Halal Fresh siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei’dir.",
+    "about": "Etamico siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei’dir.",
     "legal": "Yasal",
     "privacy": "Gizlilik Politikası",
     "imprint": "Künye (Impressum)",
     "terms": "Kullanım Koşulları",
-    "rights": "© {year} Halal Fresh",
+    "rights": "© {year} Etamico",
     "storage": "Yalnızca gerekli depolamayı kullanırız (sepetiniz, posta kodunuz ve dil seçiminiz). İzleme veya reklam çerezi yok.",
     "partnerTitle": "Berlin'deki ortağımız",
     "partnerText": "Siparişin Berlin'deki ortak kasabımız Kevser Fleischerei tarafından hazırlanır."
@@ -345,16 +345,16 @@
   },
   "email": {
     "hello": "Merhaba",
-    "confirmationSubject": "Halal Fresh siparişiniz",
+    "confirmationSubject": "Etamico siparişiniz",
     "confirmationIntro": "Teşekkürler! Ödemenizi aldık. Kasap siparişinizi hazırlayacak.",
-    "statusSubject": "Halal Fresh siparişiniz hakkında güncelleme",
+    "statusSubject": "Etamico siparişiniz hakkında güncelleme",
     "statusIntro": "Siparişinizin durumu şimdi: {status}.",
     "order": "Sipariş",
     "total": "Toplam",
     "delivery": "Teslimat",
     "seller": "Satıcı",
     "viewOrder": "Siparişinizi görüntüleyin",
-    "sepaAckSubject": "Halal Fresh siparişiniz alındı",
+    "sepaAckSubject": "Etamico siparişiniz alındı",
     "sepaAckIntro": "Teşekkürler! Siparişiniz alındı ve SEPA otomatik ödeme talimatınız onaylandı. Tutar henüz tahsil edilmedi; bankanız bunu genellikle birkaç iş günü içinde yapar. Sizi bilgilendireceğiz."
   },
   "delivery": {
@@ -384,7 +384,7 @@
     "waitlistName": "Ad",
     "waitlistContact": "Telefon veya e-posta",
     "waitlistLanguage": "Tercih edilen dil",
-    "waitlistConsent": "Bölgemde teslimat başladığında bana haber verilmesi için Halal Fresh'in adımı, iletişim bilgilerimi ve posta kodumu saklamasını kabul ediyorum. Onayımı istediğim zaman geri çekebilirim. {privacy} metnine bak.",
+    "waitlistConsent": "Bölgemde teslimat başladığında bana haber verilmesi için Etamico'nun adımı, iletişim bilgilerimi ve posta kodumu saklamasını kabul ediyorum. Onayımı istediğim zaman geri çekebilirim. {privacy} metnine bak.",
     "waitlistPrivacy": "Gizlilik Politikası",
     "waitlistConsentRequired": "Lütfen onayını işaretle.",
     "waitlistInvalid": "Lütfen ad ve telefon/e-posta bilgini kontrol et.",

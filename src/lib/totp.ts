@@ -55,4 +55,4 @@ export function verifyTotp(secret: string, code: string, nowMs = Date.now()): bo
 }
 
 export const otpauthUrl = (email: string, secret: string) =>
-  `otpauth://totp/${encodeURIComponent(`Halal Fresh:${email}`)}?secret=${secret}&issuer=${encodeURIComponent("Halal Fresh")}`;
+  `otpauth://totp/${encodeURIComponent(`Etamico:${email}`)}?secret=${secret}&issuer=${encodeURIComponent("Etamico")}`;

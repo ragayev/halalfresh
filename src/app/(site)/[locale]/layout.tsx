@@ -12,7 +12,7 @@ import { Header, BottomNav, Footer } from "@/components/chrome";
 import { siteUrl } from "@/lib/env";
 
 export const viewport: Viewport = {
-  themeColor: "#7a1f2b",
+  themeColor: "#8B1A1F",
   width: "device-width",
   initialScale: 1,
 };
@@ -43,7 +43,16 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: d.home.heroText,
       locale,
     },
-    icons: { icon: "/icon-crest.png" },
+    applicationName: d.brand.name,
+    manifest: "/manifest.webmanifest",
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "48x48" },
+        { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+        { url: "/icons/favicon-48.png", sizes: "48x48", type: "image/png" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
   };
 }
 

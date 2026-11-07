@@ -48,7 +48,7 @@ const T = {
     delivery: "Lieferung",
     view: "Bestellung ansehen",
     weighNote: "Fleisch wird nach tatsächlichem Gewicht abgerechnet. Der Endbetrag beträgt maximal den Maximalbetrag.",
-    created: "vielen Dank für Ihre Bestellung bei Halal Fresh.",
+    created: "vielen Dank für Ihre Bestellung bei Etamico.",
     accepted: "Ihre Bestellung wurde angenommen und wird vorbereitet.",
     weighed: "Ihre Bestellung wurde abgewogen.",
     corrected: "Das Gewicht Ihrer Bestellung wurde korrigiert. Bitte beachten Sie den neuen Endbetrag.",
@@ -68,7 +68,7 @@ const T = {
     delivery: "Teslimat",
     view: "Siparişi görüntüle",
     weighNote: "Et gerçek ağırlığa göre ücretlendirilir. Nihai tutar azami tutarı aşmaz.",
-    created: "Halal Fresh'ten verdiğiniz sipariş için teşekkür ederiz.",
+    created: "Etamico'dan verdiğiniz sipariş için teşekkür ederiz.",
     accepted: "Siparişiniz kabul edildi ve hazırlanıyor.",
     weighed: "Siparişiniz tartıldı.",
     corrected: "Siparişinizin ağırlığı düzeltildi. Lütfen yeni nihai tutara dikkat edin.",
@@ -106,36 +106,36 @@ export function renderTemplate(key: TemplateKey, v: TemplateVars): Rendered {
     case "order_created": {
       const legal = ["", "— Rechtliche Hinweise (Deutsch) —", NO_WITHDRAWAL_DE, sellerBlockDe(v.seller), "Die AGB der Kevser Fleischerei finden Sie im Anhang bzw. unten in dieser E-Mail."];
       return {
-        subject: `Halal Fresh ${no}`,
+        subject: `Etamico ${no}`,
         email: body(t.created, [`${t.estimated}: ${m(v.estimatedTotalCents)}`, `${t.max}: ${m(v.maxTotalCents)}`, t.weighNote, ""]) + "\n" + legal.join("\n"),
-        sms: `Halal Fresh ${no}: ${t.created} ${v.link}`,
+        sms: `Etamico ${no}: ${t.created} ${v.link}`,
       };
     }
     case "accepted":
-      return { subject: `Halal Fresh ${no}`, email: body(t.accepted), sms: `Halal Fresh ${no}: ${t.accepted} ${v.link}` };
+      return { subject: `Etamico ${no}`, email: body(t.accepted), sms: `Etamico ${no}: ${t.accepted} ${v.link}` };
     case "weighed":
     case "weight_corrected": {
       const intro = key === "weighed" ? t.weighed : t.corrected;
       const cap = v.cappedAmountCents ? [] : [];
       return {
-        subject: `Halal Fresh ${no}: ${t.final} ${v.finalTotalCents != null ? m(v.finalTotalCents) : ""}`,
+        subject: `Etamico ${no}: ${t.final} ${v.finalTotalCents != null ? m(v.finalTotalCents) : ""}`,
         email: body(intro, [`${t.final}: ${v.finalTotalCents != null ? m(v.finalTotalCents) : ""}`, payLine(), ...cap, ""]),
-        sms: `Halal Fresh ${no}: ${t.final} ${v.finalTotalCents != null ? m(v.finalTotalCents) : ""}. ${v.link}`,
+        sms: `Etamico ${no}: ${t.final} ${v.finalTotalCents != null ? m(v.finalTotalCents) : ""}. ${v.link}`,
       };
     }
     case "out_for_delivery":
-      return { subject: `Halal Fresh ${no}`, email: body(t.ofd), sms: `Halal Fresh ${no}: ${t.ofd}` };
+      return { subject: `Etamico ${no}`, email: body(t.ofd), sms: `Etamico ${no}: ${t.ofd}` };
     case "cancelled":
       return {
-        subject: `Halal Fresh ${no}`,
+        subject: `Etamico ${no}`,
         email: body(t.cancelled, v.cancelReason ? [`${t.reason}: ${v.cancelReason}`, ""] : []),
-        sms: `Halal Fresh ${no}: ${t.cancelled}`,
+        sms: `Etamico ${no}: ${t.cancelled}`,
       };
     case "payment_overdue":
       return {
-        subject: `Halal Fresh ${no}: ${t.final}`,
+        subject: `Etamico ${no}: ${t.final}`,
         email: body(t.overdue, [payLine(), ""]),
-        sms: `Halal Fresh ${no}: ${t.overdue} ${v.link}`,
+        sms: `Etamico ${no}: ${t.overdue} ${v.link}`,
       };
   }
 }
