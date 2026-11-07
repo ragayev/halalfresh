@@ -752,7 +752,8 @@
       "de": "RINDER fille",
       "tr": "Dana Fileto",
       "en": "Beef Fillet",
-      "category": "dana"
+      "category": "dana",
+      "existingSlug": "kevser-032016084"
     },
     {
       "sku": "032016105",
@@ -794,8 +795,7 @@
       "de": "SOSIS 500gr",
       "tr": "Sosis 500 g",
       "en": "Sausages 500 g",
-      "category": "sarkuteri",
-      "existingSlug": "helal-sosis"
+      "category": "sarkuteri"
     },
     {
       "sku": "032016111",
