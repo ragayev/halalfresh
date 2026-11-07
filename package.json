@@ -12,6 +12,8 @@
     "db:migrate": "prisma migrate deploy",
     "db:dev": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
+    "catalog:audit": "tsx scripts/catalog-audit.ts",
+    "catalog:import": "tsx scripts/catalog-import.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "gen:images": "tsx scripts/gen-images.ts",
