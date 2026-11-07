@@ -1,0 +1,1014 @@
+{
+  "note": "Transcribed from 8 supplier list photos provided on 2026-11-07. Supplier names/codes preserved; translated names and category assignments require merchant review. No prices, stock availability or halal certification supplied. Equipment is admin-only.",
+  "items": [
+    {
+      "sku": "032016001",
+      "de": "ADANA BOULETTE (GEFORMT)",
+      "tr": "Şekilli Adana Köfte",
+      "en": "Shaped Adana Meatballs",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016002",
+      "de": "ADANA BOULETTE",
+      "tr": "Adana Köfte",
+      "en": "Adana Meatballs",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016003",
+      "de": "BOULETTE",
+      "tr": "Köfte",
+      "en": "Meatballs",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016004",
+      "de": "BOULETTE (GEFORMT)",
+      "tr": "Şekilli Köfte",
+      "en": "Shaped Meatballs",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016005",
+      "de": "BRATWURST",
+      "tr": "Izgaralık Sosis",
+      "en": "Grilling Sausage",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016006",
+      "de": "BULLE (GANZES) MIT KNOCHEN",
+      "tr": "Kemikli Bütün Boğa Eti",
+      "en": "Whole Bull With Bones",
+      "category": "dana"
+    },
+    {
+      "sku": "032016007",
+      "de": "BULLE (GANZES) OHNE KNOCHEN",
+      "tr": "Kemiksiz Bütün Boğa Eti",
+      "en": "Whole Boneless Bull",
+      "category": "dana"
+    },
+    {
+      "sku": "032016008",
+      "de": "HÄHNCHEN ( HALBES ) MARINIERT",
+      "tr": "Marine Yarım Tavuk",
+      "en": "Marinated Half Chicken",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016009",
+      "de": "HÄHNCHEN (GANZES)",
+      "tr": "Bütün Tavuk",
+      "en": "Whole Chicken",
+      "category": "tavuk",
+      "existingSlug": "butun-tavuk"
+    },
+    {
+      "sku": "032016010",
+      "de": "HÄHNCHEN BRUST",
+      "tr": "Tavuk Göğüs",
+      "en": "Chicken Breast",
+      "category": "tavuk",
+      "existingSlug": "tavuk-gogus"
+    },
+    {
+      "sku": "032016011",
+      "de": "HÄHNCHEN FILET",
+      "tr": "Tavuk Fileto",
+      "en": "Chicken Fillet",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016012",
+      "de": "HÄHNCHEN FILET (MARINIERT)",
+      "tr": "Marine Tavuk Fileto",
+      "en": "Marinated Chicken Fillet",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016013",
+      "de": "HÄHNCHEN FLÜGEL",
+      "tr": "Tavuk Kanat",
+      "en": "Chicken Wings",
+      "category": "tavuk",
+      "existingSlug": "tavuk-kanat"
+    },
+    {
+      "sku": "032016014",
+      "de": "HÄHNCHEN FLÜGEL (MARINIERT)",
+      "tr": "Marine Tavuk Kanat",
+      "en": "Marinated Chicken Wings",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016015",
+      "de": "HÄHNCHEN GANZES (MARINIERT)",
+      "tr": "Marine Bütün Tavuk",
+      "en": "Marinated Whole Chicken",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016016",
+      "de": "HÄHNCHEN GESCHNETZELTES",
+      "tr": "Jülyen Tavuk Eti",
+      "en": "Chicken Strips",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016017",
+      "de": "HÄHNCHEN GESCHNETZELTES (MARINIERT)",
+      "tr": "Marine Jülyen Tavuk",
+      "en": "Marinated Chicken Strips",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016018",
+      "de": "HÄHNCHEN HERZ",
+      "tr": "Tavuk Yüreği",
+      "en": "Chicken Hearts",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016019",
+      "de": "HÄHNCHEN KEULE",
+      "tr": "Tavuk But",
+      "en": "Chicken Leg",
+      "category": "tavuk",
+      "existingSlug": "tavuk-kemikli-kalcali-but"
+    },
+    {
+      "sku": "032016020",
+      "de": "HÄHNCHEN KEULE (MARINIERT)",
+      "tr": "Marine Tavuk But",
+      "en": "Marinated Chicken Leg",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016021",
+      "de": "HÄHNCHEN KOTELETT",
+      "tr": "Tavuk Pirzola",
+      "en": "Chicken Chops",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016022",
+      "de": "HÄHNCHEN KOTELETT (MARINIERT)",
+      "tr": "Marine Tavuk Pirzola",
+      "en": "Marinated Chicken Chops",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016023",
+      "de": "HÄHNCHEN LEBER",
+      "tr": "Tavuk Ciğeri",
+      "en": "Chicken Liver",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016024",
+      "de": "HÄHNCHEN MAGEN",
+      "tr": "Tavuk Taşlığı",
+      "en": "Chicken Gizzards",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016025",
+      "de": "HÄHNCHEN SCHNITZEL",
+      "tr": "Tavuk Şnitzel",
+      "en": "Chicken Schnitzel",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016026",
+      "de": "HÄHNCHEN SCHNITZEL (MARINIERT)",
+      "tr": "Marine Tavuk Şnitzel",
+      "en": "Marinated Chicken Schnitzel",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016027",
+      "de": "HÄHNCHEN SPIEß",
+      "tr": "Tavuk Şiş",
+      "en": "Chicken Skewers",
+      "category": "mangal",
+      "existingSlug": "tavuk-sis"
+    },
+    {
+      "sku": "032016028",
+      "de": "HÄHNCHEN SPIEß (MARINIERT)",
+      "tr": "Marine Tavuk Şiş",
+      "en": "Marinated Chicken Skewers",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016029",
+      "de": "HÄHNCHEN UNTERKEULE",
+      "tr": "Tavuk Baget",
+      "en": "Chicken Drumsticks",
+      "category": "tavuk",
+      "existingSlug": "tavuk-baget"
+    },
+    {
+      "sku": "032016030",
+      "de": "HÄHNCHENBRUST GULASCH",
+      "tr": "Tavuk Göğüs Kuşbaşı",
+      "en": "Diced Chicken Breast",
+      "category": "tavuk",
+      "existingSlug": "tavuk-kusbasi"
+    },
+    {
+      "sku": "032016031",
+      "de": "HÄHNCHENFLÜGELSPITZE",
+      "tr": "Tavuk Kanat Ucu",
+      "en": "Chicken Wing Tips",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016032",
+      "de": "HAMBURGER PATTY",
+      "tr": "Hamburger Köftesi",
+      "en": "Hamburger Patty",
+      "category": "mangal",
+      "existingSlug": "hamburger-koftesi"
+    },
+    {
+      "sku": "032016033",
+      "de": "KALB KAMM MIT KNOCHEN",
+      "tr": "Kemikli Dana Gerdan",
+      "en": "Bone-in Veal Neck",
+      "category": "dana"
+    },
+    {
+      "sku": "032016034",
+      "de": "KALB OBERSCHALE",
+      "tr": "Dana Üst But",
+      "en": "Veal Topside",
+      "category": "dana"
+    },
+    {
+      "sku": "032016035",
+      "de": "KALB PANSEN",
+      "tr": "Dana İşkembe",
+      "en": "Veal Tripe",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016036",
+      "de": "KALB RUMSTEAK",
+      "tr": "Dana Rumpsteak",
+      "en": "Veal Rump Steak",
+      "category": "dana"
+    },
+    {
+      "sku": "032016037",
+      "de": "KALB STEAK (MARINIERT)",
+      "tr": "Marine Dana Biftek",
+      "en": "Marinated Veal Steak",
+      "category": "dana"
+    },
+    {
+      "sku": "032016038",
+      "de": "KALB UNTERSCHALE",
+      "tr": "Dana Alt But",
+      "en": "Veal Silverside",
+      "category": "dana"
+    },
+    {
+      "sku": "032016039",
+      "de": "KALBFLEISCH",
+      "tr": "Dana Eti",
+      "en": "Veal Meat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016040",
+      "de": "KALBS GULASCH",
+      "tr": "Dana Kuşbaşı",
+      "en": "Diced Veal",
+      "category": "dana"
+    },
+    {
+      "sku": "032016041",
+      "de": "KALBSBRUSTLAPPEN MIT KNOCHEN (HELL)",
+      "tr": "Kemikli Dana Döş",
+      "en": "Bone-in Veal Breast",
+      "category": "dana"
+    },
+    {
+      "sku": "032016042",
+      "de": "KALBSKUGEL",
+      "tr": "Dana Nuar (Kugel)",
+      "en": "Veal Knuckle",
+      "category": "dana"
+    },
+    {
+      "sku": "032016043",
+      "de": "KALBSRÜCKEN",
+      "tr": "Dana Sırt Eti",
+      "en": "Veal Loin",
+      "category": "dana"
+    },
+    {
+      "sku": "032016044",
+      "de": "KALBSSCHULTER",
+      "tr": "Dana Omuz",
+      "en": "Veal Shoulder",
+      "category": "dana"
+    },
+    {
+      "sku": "032016045",
+      "de": "KALBSZUNGE",
+      "tr": "Dana Dil",
+      "en": "Veal Tongue",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016046",
+      "de": "KAVURMA",
+      "tr": "Kavurma",
+      "en": "Kavurma",
+      "category": "sarkuteri",
+      "existingSlug": "kavurma"
+    },
+    {
+      "sku": "032016047",
+      "de": "LAMM GANZES (A1)",
+      "tr": "Bütün Kuzu (A1)",
+      "en": "Whole Lamb (A1)",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016048",
+      "de": "LAMM GANZES (A2)",
+      "tr": "Bütün Kuzu (A2)",
+      "en": "Whole Lamb (A2)",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016049",
+      "de": "LAMM GULASCH",
+      "tr": "Kuzu Kuşbaşı",
+      "en": "Diced Lamb",
+      "category": "kuzu",
+      "existingSlug": "kuzu-kusbasi"
+    },
+    {
+      "sku": "032016050",
+      "de": "LAMM HACKFLEISCH 10% FETT",
+      "tr": "Kuzu Kıyma %10 Yağ",
+      "en": "Lamb Mince 10% Fat",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016051",
+      "de": "LAMM KOPF",
+      "tr": "Kuzu Kelle",
+      "en": "Lamb Head",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016052",
+      "de": "LAMM KOTELETT",
+      "tr": "Kuzu Pirzola",
+      "en": "Lamb Chops",
+      "category": "kuzu",
+      "existingSlug": "kuzu-pirzola"
+    },
+    {
+      "sku": "032016053",
+      "de": "LAMM KOTELETTS O. TAILLE",
+      "tr": "Kuzu Pirzola (Bel Kısmı Hariç)",
+      "en": "Lamb Chops (Without Waist)",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016054",
+      "de": "LAMM LAPPEN",
+      "tr": "Kuzu Döş",
+      "en": "Lamb Flap",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016055",
+      "de": "LAMM LEBER",
+      "tr": "Kuzu Ciğeri",
+      "en": "Lamb Liver",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016056",
+      "de": "LAMM OHNE KNOCHEN",
+      "tr": "Kemiksiz Kuzu Eti",
+      "en": "Boneless Lamb",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016057",
+      "de": "LAMM RIPPEN MIT KNOCHEN",
+      "tr": "Kemikli Kuzu Kaburga",
+      "en": "Bone-in Lamb Ribs",
+      "category": "kuzu",
+      "existingSlug": "kuzu-kaburga"
+    },
+    {
+      "sku": "032016058",
+      "de": "LAMM RIPPEN OHNE KNOCHEN",
+      "tr": "Kemiksiz Kuzu Kaburga",
+      "en": "Boneless Lamb Ribs",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016059",
+      "de": "LAMM RÜCKEN",
+      "tr": "Kuzu Sırt",
+      "en": "Lamb Loin",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016060",
+      "de": "LAMM SCHULTER",
+      "tr": "Kuzu Kol",
+      "en": "Lamb Shoulder",
+      "category": "kuzu",
+      "existingSlug": "kuzu-kol"
+    },
+    {
+      "sku": "032016061",
+      "de": "LAMM SPIEß",
+      "tr": "Kuzu Şiş",
+      "en": "Lamb Skewers",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016062",
+      "de": "LAMM SPIEß (MARINIERT)",
+      "tr": "Marine Kuzu Şiş",
+      "en": "Marinated Lamb Skewers",
+      "category": "mangal"
+    },
+    {
+      "sku": "032016063",
+      "de": "LAMM STEAK",
+      "tr": "Kuzu Biftek",
+      "en": "Lamb Steak",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016064",
+      "de": "LAMM STEAK (MARINIERT)",
+      "tr": "Marine Kuzu Biftek",
+      "en": "Marinated Lamb Steak",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016065",
+      "de": "LAMMHALS",
+      "tr": "Kuzu Gerdan",
+      "en": "Lamb Neck",
+      "category": "kuzu",
+      "existingSlug": "kuzu-gerdan"
+    },
+    {
+      "sku": "032016066",
+      "de": "LAMMHAXE",
+      "tr": "Kuzu İncik",
+      "en": "Lamb Shank",
+      "category": "kuzu",
+      "existingSlug": "kuzu-incik"
+    },
+    {
+      "sku": "032016067",
+      "de": "LAMMKARREE",
+      "tr": "Kuzu Kafes",
+      "en": "Rack of Lamb",
+      "category": "kuzu"
+    },
+    {
+      "sku": "032016068",
+      "de": "LAMMKEULE",
+      "tr": "Kuzu But",
+      "en": "Leg of Lamb",
+      "category": "kuzu",
+      "existingSlug": "kuzu-but"
+    },
+    {
+      "sku": "032016069",
+      "de": "MANTI (TÜRKISCHE TORTELLINI)",
+      "tr": "Mantı",
+      "en": "Turkish Manti Dumplings",
+      "category": "hazir"
+    },
+    {
+      "sku": "032016070",
+      "de": "MERGUEZ WURST",
+      "tr": "Merguez Sosis",
+      "en": "Merguez Sausage",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016071",
+      "de": "Nuggets 500gr",
+      "tr": "Nugget 500 g",
+      "en": "Chicken Nuggets 500 g",
+      "category": "hazir"
+    },
+    {
+      "sku": "032016072",
+      "de": "OCHSENSCHWANZ",
+      "tr": "Dana Kuyruk",
+      "en": "Oxtail",
+      "category": "dana"
+    },
+    {
+      "sku": "032016073",
+      "de": "PUTE KEULE",
+      "tr": "Hindi But",
+      "en": "Turkey Leg",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016074",
+      "de": "PUTENBRUST",
+      "tr": "Hindi Göğüs",
+      "en": "Turkey Breast",
+      "category": "tavuk",
+      "existingSlug": "hindi-gogus"
+    },
+    {
+      "sku": "032016075",
+      "de": "PUTEN GANS",
+      "tr": "Hindi / Kaz (Teyit Edilecek)",
+      "en": "Turkey / Goose (Needs Confirmation)",
+      "category": "tavuk"
+    },
+    {
+      "sku": "032016076",
+      "de": "RINDER ABSCHNITT 70/30",
+      "tr": "Dana Et Kırpıntısı 70/30",
+      "en": "Beef Trimmings 70/30",
+      "category": "dana"
+    },
+    {
+      "sku": "032016077",
+      "de": "RINDER ABSCHNITT 80/20",
+      "tr": "Dana Et Kırpıntısı 80/20",
+      "en": "Beef Trimmings 80/20",
+      "category": "dana"
+    },
+    {
+      "sku": "032016078",
+      "de": "RINDER ABSCHNITT 90/10",
+      "tr": "Dana Et Kırpıntısı 90/10",
+      "en": "Beef Trimmings 90/10",
+      "category": "dana"
+    },
+    {
+      "sku": "032016079",
+      "de": "RINDER BRUST OHNE KNOCHEN",
+      "tr": "Kemiksiz Dana Döş",
+      "en": "Boneless Beef Brisket",
+      "category": "dana"
+    },
+    {
+      "sku": "032016080",
+      "de": "RINDER DICKE BUG",
+      "tr": "Dana Omuz (Kalın)",
+      "en": "Beef Thick Shoulder",
+      "category": "dana"
+    },
+    {
+      "sku": "032016081",
+      "de": "RINDER ENTRECOTE",
+      "tr": "Dana Antrikot",
+      "en": "Beef Entrecôte",
+      "category": "dana",
+      "existingSlug": "dana-antrikot"
+    },
+    {
+      "sku": "032016082",
+      "de": "RINDER ENTRECOTE (MARINIERT)",
+      "tr": "Marine Dana Antrikot",
+      "en": "Marinated Beef Entrecôte",
+      "category": "dana"
+    },
+    {
+      "sku": "032016083",
+      "de": "RINDER FETT",
+      "tr": "Dana Yağı",
+      "en": "Beef Fat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016084",
+      "de": "RINDER FILET",
+      "tr": "Dana Bonfile",
+      "en": "Beef Tenderloin",
+      "category": "dana"
+    },
+    {
+      "sku": "032016085",
+      "de": "RINDER GULASCH (10% FETT)",
+      "tr": "Dana Kuşbaşı %10 Yağ",
+      "en": "Diced Beef 10% Fat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016086",
+      "de": "RINDER GULASCH (MAGER)",
+      "tr": "Yağsız Dana Kuşbaşı",
+      "en": "Lean Diced Beef",
+      "category": "dana",
+      "existingSlug": "dana-kusbasi"
+    },
+    {
+      "sku": "032016087",
+      "de": "RINDER GULASCH (MARINIERT)",
+      "tr": "Marine Dana Kuşbaşı",
+      "en": "Marinated Diced Beef",
+      "category": "dana"
+    },
+    {
+      "sku": "032016088",
+      "de": "RINDER HACKFLEISCH (20% FETT)",
+      "tr": "Dana Kıyma %20 Yağ",
+      "en": "Beef Mince 20% Fat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016089",
+      "de": "RINDER HACKFLEISCH (MAGER) 3% FETT",
+      "tr": "Dana Kıyma %3 Yağ",
+      "en": "Lean Beef Mince 3% Fat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016090",
+      "de": "RINDER HACKFLEISCH 10% FETT",
+      "tr": "Dana Kıyma %10 Yağ",
+      "en": "Beef Mince 10% Fat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016091",
+      "de": "RINDER HACKFLEISCH 30%FETT",
+      "tr": "Dana Kıyma %30 Yağ",
+      "en": "Beef Mince 30% Fat",
+      "category": "dana"
+    },
+    {
+      "sku": "032016092",
+      "de": "RINDER HALS",
+      "tr": "Dana Gerdan",
+      "en": "Beef Neck",
+      "category": "dana",
+      "existingSlug": "dana-gerdan"
+    },
+    {
+      "sku": "032016093",
+      "de": "RINDER HAXE",
+      "tr": "Dana İncik",
+      "en": "Beef Shank",
+      "category": "dana",
+      "existingSlug": "dana-incik"
+    },
+    {
+      "sku": "032016094",
+      "de": "RINDER HOCHRIPPE",
+      "tr": "Dana Yüksek Kaburga",
+      "en": "Beef Rib Roast",
+      "category": "dana"
+    },
+    {
+      "sku": "032016095",
+      "de": "RINDER KEULE",
+      "tr": "Dana But",
+      "en": "Beef Round",
+      "category": "dana"
+    },
+    {
+      "sku": "032016096",
+      "de": "RINDER LAPPEN",
+      "tr": "Dana Döş / Etek",
+      "en": "Beef Flank",
+      "category": "dana"
+    },
+    {
+      "sku": "032016097",
+      "de": "RINDER LEBER",
+      "tr": "Dana Ciğeri",
+      "en": "Beef Liver",
+      "category": "sakatat",
+      "existingSlug": "dana-ciger"
+    },
+    {
+      "sku": "032016098",
+      "de": "RINDER PANSEN",
+      "tr": "Dana İşkembe",
+      "en": "Beef Tripe",
+      "category": "sakatat",
+      "existingSlug": "iskembe"
+    },
+    {
+      "sku": "032016099",
+      "de": "RINDER SCHINKEN (PASTIRMA)",
+      "tr": "Pastırma",
+      "en": "Pastırma",
+      "category": "sarkuteri",
+      "existingSlug": "pastirma"
+    },
+    {
+      "sku": "032016100",
+      "de": "RINDER SCHNITZEL",
+      "tr": "Dana Şnitzel",
+      "en": "Beef Schnitzel",
+      "category": "dana"
+    },
+    {
+      "sku": "032016101",
+      "de": "RINDER STEAK",
+      "tr": "Dana Biftek",
+      "en": "Beef Steak",
+      "category": "dana",
+      "existingSlug": "dana-biftek"
+    },
+    {
+      "sku": "032016102",
+      "de": "RINDER TREAMING",
+      "tr": "Dana Et Kırpıntısı",
+      "en": "Beef Trimmings",
+      "category": "dana"
+    },
+    {
+      "sku": "032016103",
+      "de": "RINDER ZUNGE",
+      "tr": "Dana Dil",
+      "en": "Beef Tongue",
+      "category": "sakatat"
+    },
+    {
+      "sku": "032016104",
+      "de": "RINDER fille",
+      "tr": "Dana Fileto",
+      "en": "Beef Fillet",
+      "category": "dana"
+    },
+    {
+      "sku": "032016105",
+      "de": "SALAMI SCHEIBEN (HÄHNCHEN) 200 gr",
+      "tr": "Dilimli Tavuk Salamı 200 g",
+      "en": "Sliced Chicken Salami 200 g",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016106",
+      "de": "SALAMI SCHEIBEN (RIND) 200gr",
+      "tr": "Dilimli Dana Salamı 200 g",
+      "en": "Sliced Beef Salami 200 g",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016107",
+      "de": "SALAMI STANGE (HÄHNCHEN)",
+      "tr": "Tavuk Salamı (Baton)",
+      "en": "Chicken Salami Stick",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016108",
+      "de": "SALAMI STANGE (RIND)",
+      "tr": "Dana Salamı (Baton)",
+      "en": "Beef Salami Stick",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016109",
+      "de": "SCHNITZEL 150gr 1,5 kg",
+      "tr": "Şnitzel 150 g / 1,5 kg",
+      "en": "Schnitzel 150 g / 1.5 kg",
+      "category": "hazir"
+    },
+    {
+      "sku": "032016110",
+      "de": "SOSIS 500gr",
+      "tr": "Sosis 500 g",
+      "en": "Sausages 500 g",
+      "category": "sarkuteri",
+      "existingSlug": "helal-sosis"
+    },
+    {
+      "sku": "032016111",
+      "de": "SUCUK",
+      "tr": "Sucuk",
+      "en": "Sucuk",
+      "category": "sarkuteri",
+      "existingSlug": "sucuk"
+    },
+    {
+      "sku": "032016112",
+      "de": "SUCUK (SCHARF)",
+      "tr": "Acılı Sucuk",
+      "en": "Hot Sucuk",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016113",
+      "de": "SUCUK (SCHEIBEN)",
+      "tr": "Dilimlenmiş Sucuk",
+      "en": "Sliced Sucuk",
+      "category": "sarkuteri",
+      "existingSlug": "dilimlenmis-sucuk"
+    },
+    {
+      "sku": "032016114",
+      "de": "T-BONE STEAK",
+      "tr": "T-Bone Biftek",
+      "en": "T-Bone Steak",
+      "category": "dana"
+    },
+    {
+      "sku": "032016115",
+      "de": "V-KALBSSCHULTER",
+      "tr": "Dana Omuz (V-Kalb)",
+      "en": "Veal Shoulder (V)",
+      "category": "dana"
+    },
+    {
+      "sku": "032016116",
+      "de": "WÜRSTCHEN (HÄHNCHEN) 350gr",
+      "tr": "Tavuk Sosis 350 g",
+      "en": "Chicken Sausages 350 g",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016117",
+      "de": "WÜRSTCHEN (RIND) 900 gr",
+      "tr": "Dana Sosis 900 g",
+      "en": "Beef Sausages 900 g",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "032016118",
+      "de": "HÄHNCHEN DÖNER",
+      "tr": "Tavuk Döner",
+      "en": "Chicken Doner",
+      "category": "hazir"
+    },
+    {
+      "sku": "032016119",
+      "de": "HÄHNCHEN DÖNER, FERTIG GESCHNITTEN TK",
+      "tr": "Dondurulmuş Dilimli Tavuk Döner",
+      "en": "Frozen Sliced Chicken Doner",
+      "category": "hazir"
+    },
+    {
+      "sku": "032016120",
+      "de": "AYRAN",
+      "tr": "Ayran",
+      "en": "Ayran",
+      "category": "icecek"
+    },
+    {
+      "sku": "32016121",
+      "de": "AYRAN MANGO",
+      "tr": "Mangolu Ayran",
+      "en": "Mango Ayran",
+      "category": "icecek"
+    },
+    {
+      "sku": "32016122",
+      "de": "AYRAN KIRSCHE",
+      "tr": "Vişneli Ayran",
+      "en": "Cherry Ayran",
+      "category": "icecek"
+    },
+    {
+      "sku": "32016123",
+      "de": "RINDER FUSS",
+      "tr": "Dana Ayak",
+      "en": "Beef Feet",
+      "category": "sakatat"
+    },
+    {
+      "sku": "32016124",
+      "de": "Rinder Schulter",
+      "tr": "Dana Omuz",
+      "en": "Beef Shoulder",
+      "category": "dana"
+    },
+    {
+      "sku": "32016125",
+      "de": "RINDER GANZE",
+      "tr": "Bütün Dana Eti",
+      "en": "Whole Beef",
+      "category": "dana"
+    },
+    {
+      "sku": "32016126",
+      "de": "LAMM KOTTLET MIT LAPPEN",
+      "tr": "Döşlü Kuzu Pirzola",
+      "en": "Lamb Chop with Flap",
+      "category": "kuzu"
+    },
+    {
+      "sku": "32016127",
+      "de": "LAMM GULASCH MAGER",
+      "tr": "Yağsız Kuzu Kuşbaşı",
+      "en": "Lean Diced Lamb",
+      "category": "kuzu"
+    },
+    {
+      "sku": "32016128",
+      "de": "NAGES",
+      "tr": "Nugget (Adı Teyit Edilecek)",
+      "en": "Nuggets (Name Needs Confirmation)",
+      "category": "hazir"
+    },
+    {
+      "sku": "32016129",
+      "de": "WURST HÄHNCHEN 500 gr",
+      "tr": "Tavuk Sosis 500 g",
+      "en": "Chicken Sausage 500 g",
+      "category": "sarkuteri"
+    },
+    {
+      "sku": "32016130",
+      "de": "HÄHNCHEN BURGER",
+      "tr": "Tavuk Burger Köftesi",
+      "en": "Chicken Burger Patty",
+      "category": "hazir"
+    },
+    {
+      "sku": "32016131",
+      "de": "burger brot",
+      "tr": "Hamburger Ekmeği",
+      "en": "Burger Bun",
+      "category": "hazir"
+    },
+    {
+      "sku": "32016132",
+      "de": "kompakte Fettabscheideranlage für Gastronomieküche",
+      "tr": "Endüstriyel Yağ Ayırıcı",
+      "en": "Commercial Grease Separator",
+      "category": "ekipman"
+    },
+    {
+      "sku": "32016133",
+      "de": "Kühleinheit /-zelle",
+      "tr": "Soğutma Ünitesi / Soğuk Oda",
+      "en": "Refrigeration Unit / Cold Room",
+      "category": "ekipman"
+    },
+    {
+      "sku": "32016134",
+      "de": "lamm schwanzfett",
+      "tr": "Kuzu Kuyruk Yağı",
+      "en": "Lamb Tail Fat",
+      "category": "kuzu",
+      "existingSlug": "kuzu-kuyruk-yagi"
+    },
+    {
+      "sku": "32016135",
+      "de": "lamm pansen",
+      "tr": "Kuzu İşkembe",
+      "en": "Lamb Tripe",
+      "category": "sakatat"
+    },
+    {
+      "sku": "32016136",
+      "de": "sucuk Burger",
+      "tr": "Sucuk Burger",
+      "en": "Sucuk Burger",
+      "category": "hazir"
+    },
+    {
+      "sku": "32016137",
+      "de": "HÄHNCHEN KOTELETT OHNE HAUT",
+      "tr": "Derisiz Tavuk Pirzola",
+      "en": "Skinless Chicken Chops",
+      "category": "tavuk"
+    },
+    {
+      "sku": "32016138",
+      "de": "Hähnchen Flügel teller",
+      "tr": "Tavuk Kanat Tabağı",
+      "en": "Chicken Wing Plate",
+      "category": "hazir"
+    },
+    {
+      "sku": "32016139",
+      "de": "Hähnchen innerei",
+      "tr": "Tavuk Sakatat",
+      "en": "Chicken Offal",
+      "category": "sakatat"
+    },
+    {
+      "sku": "32016140",
+      "de": "smash",
+      "tr": "Smash Burger Köftesi",
+      "en": "Smash Burger Patty",
+      "category": "hazir"
+    }
+  ]
+}
