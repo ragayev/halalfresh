@@ -1,0 +1,2 @@
+-- Not reversible in place: the MVP order model replaces the Stripe order model.
+-- Restore from the legacy_* archive tables or a database backup, and redeploy the previous release.

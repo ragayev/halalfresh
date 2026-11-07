@@ -7,30 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum PaymentStatus {
-  PENDING_PAYMENT
+enum OrderStatus {
+  NEW
+  ACCEPTED
+  PREPARING
+  WEIGHED
+  PAYMENT_OVERDUE
   PAID
-  PAYMENT_FAILED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  DELIVERED_UNPAID
+  CASH_COLLECTED
+  REFUSED_AT_DOOR
   CANCELLED
-  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  PAYPAL
+  CASH
+}
+
+/// CAPTURE_AFTER_WEIGH is the MVP. AUTHORIZE_THEN_CAPTURE is reserved for the later auth/capture + marketplace-fee flow.
+enum PaymentMode {
+  CAPTURE_AFTER_WEIGH
+  AUTHORIZE_THEN_CAPTURE
+}
+
+enum PaymentRecordStatus {
+  CREATED
+  APPROVED
+  PENDING
+  COMPLETED
+  DENIED
+  VOIDED
   REFUNDED
 }
 
-enum FulfillmentStatus {
-  AWAITING_FORWARDING
-  FORWARDED
-  CONFIRMED_BY_BUTCHER
-  PREPARING
-  OUT_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-}
-
-enum CommissionStatus {
-  PENDING
-  EARNED
-  PARTIALLY_REVERSED
-  REVERSED
+enum ConsentType {
+  MARKETING
+  DATA_TRANSFER
+  TERMS
 }
 
 enum DeliveryMode {
@@ -66,36 +82,33 @@ enum SellingUnit {
 /// A partner butcher. MVP has exactly one row; every order points at its merchant
 /// so multi-merchant can be added later without reshaping orders.
 model Merchant {
-  id                String   @id @default(cuid())
-  name              String
-  legalName         String?
-  addressLine       String?
-  postalCode        String?
-  city              String?
-  contactEmail      String?
-  contactPhone      String?
-  whatsappNumber    String? // digits only, international format, e.g. 4915112345678
-  stripeAccountId   String?  @unique
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id             String   @id @default(cuid())
+  name           String
+  legalName      String?
+  addressLine    String?
+  postalCode     String?
+  city           String?
+  contactEmail   String?
+  contactPhone   String?
+  whatsappNumber String? // digits only, international format, e.g. 4915112345678
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  settings      MerchantSettings?
-  products      Product[]
+  settings         MerchantSettings?
+  products         Product[]
   supplierArticles SupplierArticle[]
-  deliveryZones DeliveryZone[]
-  blackoutDates DeliveryBlackoutDate[]
-  orders        Order[]
+  deliveryZones    DeliveryZone[]
+  blackoutDates    DeliveryBlackoutDate[]
+  orders           Order[]
 }
 
 model MerchantSettings {
-  id                      String   @id @default(cuid())
-  merchantId              String   @unique
-  merchant                Merchant @relation(fields: [merchantId], references: [id])
-  /// Platform commission in basis points (1500 = 15%). Placeholder, not a confirmed agreement.
-  commissionBps           Int      @default(1500)
+  id              String   @id @default(cuid())
+  merchantId      String   @unique
+  merchant        Merchant @relation(fields: [merchantId], references: [id])
   /// How far ahead (days) the next-delivery search looks. Must cover the longest cycle (monthly = 31+).
-  slotHorizonDays         Int      @default(90)
-  updatedAt               DateTime @updatedAt
+  slotHorizonDays Int      @default(90)
+  updatedAt       DateTime @updatedAt
 }
 
 model Category {
@@ -110,47 +123,47 @@ model Category {
 }
 
 model Product {
-  id             String   @id @default(cuid())
-  merchantId     String
-  merchant       Merchant @relation(fields: [merchantId], references: [id])
-  categoryId     String
-  category       Category @relation(fields: [categoryId], references: [id])
-  slug           String   @unique
-  name           String
-  description    String
+  id                 String        @id @default(cuid())
+  merchantId         String
+  merchant           Merchant      @relation(fields: [merchantId], references: [id])
+  categoryId         String
+  category           Category      @relation(fields: [categoryId], references: [id])
+  slug               String        @unique
+  name               String
+  description        String
   /// { de: { name, description }, tr: { name, description } }
-  translations   Json     @default("{}")
+  translations       Json          @default("{}")
   /// Price per kilogram in integer cents.
-  pricePerKgCents Int
+  pricePerKgCents    Int
   /// Orderable increment in grams (500 or 1000 typical).
-  stepGrams      Int      @default(1000)
-  minGrams       Int      @default(1000)
-  maxGrams       Int      @default(20000)
-  origin         String?
+  stepGrams          Int           @default(1000)
+  minGrams           Int           @default(1000)
+  maxGrams           Int           @default(20000)
+  origin             String?
   /// Only set when the certification is verified by the operator. Shown verbatim.
   halalCertification String?
-  allergenInfo   String?
-  isAvailable    Boolean  @default(true)
-  isFeatured     Boolean  @default(false)
+  allergenInfo       String?
+  isAvailable        Boolean       @default(true)
+  isFeatured         Boolean       @default(false)
   /// LEGACY MIRROR of `status <> ACTIVE` (enforced by the product_hidden_matches_status CHECK). Decide with `status`.
-  isHidden       Boolean  @default(false)
+  isHidden           Boolean       @default(false)
   /// Canonical publishing state. Written only by src/server/product-service.ts.
-  status         ProductStatus @default(ACTIVE)
+  status             ProductStatus @default(ACTIVE)
   /// How the product is sold. Quantities stay integers; see src/domain/product-rules.ts for the unit convention.
-  sellingUnit    SellingUnit @default(KG)
+  sellingUnit        SellingUnit   @default(KG)
   /// Can be ordered from preorder-only zones (Ramadan box, Kurban/aqiqah shares).
-  preorderEligible Boolean @default(false)
+  preorderEligible   Boolean       @default(false)
   /// Fleischpaket: [{ grams, names: { de, tr, en }, productSlug? }]. Non-null = bundle sold per package;
   /// quantity unit is 1000 "grams" per package and pricePerKgCents is the price of ONE package (see domain/bundles.ts).
-  bundleItems    Json?
+  bundleItems        Json?
   /// false = price is a placeholder; a bundle cannot be made visible until the operator confirms it.
-  priceConfirmed Boolean  @default(true)
-  sortOrder      Int      @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  priceConfirmed     Boolean       @default(true)
+  sortOrder          Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
-  images     ProductImage[]
-  orderItems OrderItem[]
+  images           ProductImage[]
+  orderItems       OrderItem[]
   supplierArticles SupplierArticle[]
 
   @@index([status, categoryId])
@@ -160,15 +173,15 @@ model Product {
 }
 
 model ProductImage {
-  id        String  @id @default(cuid())
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id            String  @id @default(cuid())
+  productId     String
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   /// Either a static path under /public, or null when `data` holds an upload.
-  url       String?
-  data      Bytes?
-  mimeType  String?
-  alt       String  @default("")
-  position  Int     @default(0)
+  url           String?
+  data          Bytes?
+  mimeType      String?
+  alt           String  @default("")
+  position      Int     @default(0)
   /// Generic or illustrative stand-in (not a photo of this exact product). Shown with a notice; flagged in the admin.
   isPlaceholder Boolean @default(false)
 
@@ -195,29 +208,29 @@ model SupplierArticle {
 }
 
 model DeliveryZone {
-  id         String   @id @default(cuid())
-  merchantId String
-  merchant   Merchant @relation(fields: [merchantId], references: [id])
-  name       String
-  mode       DeliveryMode @default(REGULAR)
-  isActive   Boolean  @default(true)
-  sortOrder  Int      @default(0)
-  minOrderCents    Int @default(0)
-  deliveryFeeCents Int @default(0)
+  id                         String          @id @default(cuid())
+  merchantId                 String
+  merchant                   Merchant        @relation(fields: [merchantId], references: [id])
+  name                       String
+  mode                       DeliveryMode    @default(REGULAR)
+  isActive                   Boolean         @default(true)
+  sortOrder                  Int             @default(0)
+  minOrderCents              Int             @default(0)
+  deliveryFeeCents           Int             @default(0)
   /// Delivery is free from this merchandise subtotal. null = never free.
   freeDeliveryThresholdCents Int?
-  routes     DeliveryRoute[]
-  orders     Order[]
+  routes                     DeliveryRoute[]
+  orders                     Order[]
 
   @@index([merchantId])
 }
 
 model DeliveryRoute {
-  id        String       @id @default(cuid())
+  id        String          @id @default(cuid())
   zoneId    String
-  zone      DeliveryZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  zone      DeliveryZone    @relation(fields: [zoneId], references: [id], onDelete: Cascade)
   name      String
-  isActive  Boolean      @default(true)
+  isActive  Boolean         @default(true)
   schedules RouteSchedule[]
   postcodes PostcodeRoute[]
   orders    Order[]
@@ -226,19 +239,19 @@ model DeliveryRoute {
 }
 
 model RouteSchedule {
-  id        String        @id @default(cuid())
-  routeId   String
-  route     DeliveryRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
-  kind      ScheduleKind  @default(WEEKLY)
+  id                String        @id @default(cuid())
+  routeId           String
+  route             DeliveryRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  kind              ScheduleKind  @default(WEEKLY)
   /// ISO weekday: 1 = Monday ... 7 = Sunday (Sunday is never delivered).
-  weekday   Int
+  weekday           Int
   /// Only for NTH_WEEKDAY_OF_MONTH: 1..5.
-  nth       Int?
-  windowStart String // "14:00" Europe/Berlin
-  windowEnd   String // "18:00"
+  nth               Int?
+  windowStart       String // "14:00" Europe/Berlin
+  windowEnd         String // "18:00"
   /// Order cutoff: hours before the window starts. Whole days are subtracted on the Berlin calendar (DST-stable).
   cutoffHoursBefore Int
-  isActive  Boolean       @default(true)
+  isActive          Boolean       @default(true)
 
   @@index([routeId])
 }
@@ -276,16 +289,36 @@ model WaitlistEntry {
 }
 
 model Customer {
-  id        String    @id @default(cuid())
-  email     String
-  name      String
-  phone     String
-  locale    String    @default("en")
-  createdAt DateTime  @default(now())
-  addresses Address[]
+  id           String   @id @default(cuid())
+  /// Identity: phone normalised to E.164.
+  phoneE164    String   @unique
+  email        String
+  firstName    String
+  lastName     String
+  /// Orders refused at the door. Cash is blocked while > 0. Retained 2 years.
+  refusedCount Int      @default(0)
+  /// Manual admin override.
+  blockedCash  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
   orders    Order[]
+  consents  Consent[]
+  addresses Address[]
 
   @@index([email])
+}
+
+model Consent {
+  id             String      @id @default(cuid())
+  customerId     String
+  customer       Customer    @relation(fields: [customerId], references: [id])
+  orderId        String?
+  type           ConsentType
+  wordingVersion String
+  granted        Boolean
+  createdAt      DateTime    @default(now())
+
+  @@index([customerId])
 }
 
 model Address {
@@ -295,173 +328,168 @@ model Address {
   street     String
   postalCode String
   city       String
+  notes      String?
   createdAt  DateTime @default(now())
-  orders     Order[]
 }
 
 model Order {
-  id            String @id @default(cuid())
-  /// Human-friendly number: HF-<number>. Not an access credential.
-  number        Int    @unique @default(autoincrement())
-  /// Unguessable token for the customer-facing order page.
-  accessToken   String @unique
-  /// Client-generated idempotency key for the checkout attempt; prevents duplicate orders on double submit.
-  requestId     String? @unique
-  merchantId    String
-  merchant      Merchant @relation(fields: [merchantId], references: [id])
-  customerId    String
-  customer      Customer @relation(fields: [customerId], references: [id])
-  addressId     String
-  address       Address  @relation(fields: [addressId], references: [id])
+  id          String   @id @default(cuid())
+  /// Display number: HF-000123 (zero-padded). Not an access credential.
+  number      Int      @unique @default(autoincrement())
+  /// Unguessable token (>= 128 bit, URL-safe) for /b/{token}.
+  publicToken String   @unique
+  /// Client-generated idempotency key for the checkout attempt.
+  requestId   String?  @unique
+  merchantId  String
+  merchant    Merchant @relation(fields: [merchantId], references: [id])
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+
+  street        String
+  postalCode    String
+  city          String
+  deliveryNotes String?
+
   zoneId        String
-  zone          DeliveryZone @relation(fields: [zoneId], references: [id])
+  zone          DeliveryZone   @relation(fields: [zoneId], references: [id])
   routeId       String?
   route         DeliveryRoute? @relation(fields: [routeId], references: [id], onDelete: SetNull)
-  /// Snapshot of the delivery terms at order time (zone rows are editable, orders are not).
   zoneName      String
-  deliveryMode  DeliveryMode @default(REGULAR)
-  minOrderCents Int          @default(0)
-  freeDeliveryThresholdCents Int?
-  /// Id of the pre-v2 DeliverySlot this order used (table dropped); traceability only.
-  legacySlotId  String?
+  deliveryMode  DeliveryMode   @default(REGULAR)
+  deliveryDate  DateTime       @db.Date
+  slotStartTime String
+  slotEndTime   String
+  locale        String         @default("de")
 
-  /// Calendar date of delivery (UTC midnight of the local date) + snapshot of slot times.
-  deliveryDate     DateTime @db.Date
-  slotStartTime    String
-  slotEndTime      String
-  deliveryInstructions String?
-  locale           String   @default("en")
+  status        OrderStatus   @default(NEW)
+  paymentMethod PaymentMethod
+  paymentMode   PaymentMode   @default(CAPTURE_AFTER_WEIGH)
 
-  currency            String @default("EUR")
-  subtotalCents       Int
+  /// Rules snapshotted at order time.
+  toleranceBps        Int
+  minOrderCents       Int  @default(0)
   deliveryFeeCents    Int
-  totalCents          Int
-  commissionBps       Int
-  applicationFeeCents Int
-  refundedCents       Int    @default(0)
+  estimatedTotalCents Int
+  maxTotalCents       Int
+  finalTotalCents     Int?
+  /// final items total minus max items total when the tolerance cap applied (absorbed by the seller).
+  cappedAmountCents   Int?
+  paidAmountCents     Int?
+  refundedCents       Int  @default(0)
+  /// Reserved for the marketplace model.
+  commissionBps       Int?
+  commissionCents     Int?
 
-  paymentStatus     PaymentStatus     @default(PENDING_PAYMENT)
-  fulfillmentStatus FulfillmentStatus @default(AWAITING_FORWARDING)
+  cancelReason String?
+  notes        String?
+  adminNotes   String?
+  refusedAt    DateTime?
+  acceptedAt   DateTime?
+  weighedAt    DateTime?
+  paidAt       DateTime?
+  /// Set when the order reaches a terminal state; the public link expires a configurable time after.
+  terminalAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  adminNotes        String?
-  forwardedAt       DateTime?
-  forwardedBy       String?
-  whatsappOpenCount Int       @default(0)
-  lastWhatsappOpenAt DateTime?
-  paidAt            DateTime?
-  /// Set from the verified Stripe webhook once the customer accepted the SEPA mandate and the debit was initiated. NOT money received.
-  sepaInitiatedAt   DateTime?
-  /// Admin's explicit, audited acceptance of the collection risk so fulfillment may proceed while SEPA is still processing.
-  earlyFulfillmentAuthorizedAt DateTime?
-  earlyFulfillmentAuthorizedBy String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  items            OrderItem[]
+  payments         Payment[]
+  events           OrderEvent[]
+  notifications    Notification[]
+  notificationLogs NotificationLog[]
 
-  items      OrderItem[]
-  payments   Payment[]
-  events     OrderEvent[]
-  notifications NotificationLog[]
-  commission CommissionRecord?
-
-  @@index([paymentStatus, fulfillmentStatus])
+  @@index([status, deliveryDate])
   @@index([createdAt])
-  @@index([deliveryDate])
+  @@index([customerId])
   @@index([merchantId])
 }
 
-/// Immutable purchase snapshot.
+/// Order line. Name and price are snapshots; grams/prices follow the pricing rules in src/domain/pricing.ts.
 model OrderItem {
-  id               String  @id @default(cuid())
-  orderId          String
-  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId        String?
-  product          Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  productName      String
-  productSlug      String
+  id                  String   @id @default(cuid())
+  orderId             String
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId           String?
+  product             Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName         String
+  productSlug         String
   unitPricePerKgCents Int
-  quantityGrams    Int
-  lineTotalCents   Int
-  /// Bundle contents frozen at checkout ({ totalGrams, items }); null for regular products.
-  bundleSnapshot   Json?
+  requestedGrams      Int
+  estimatedCents      Int
+  /// null until weighed; 0 = item unavailable.
+  actualGrams         Int?
+  finalCents          Int?
+  /// Tags lines that came from expanding a bundle (analytics only).
+  bundleId            String?
 
   @@index([orderId])
 }
 
+/// Append-only audit log of every state change.
 model OrderEvent {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   orderId    String
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  type       String // PAYMENT_*, FULFILLMENT_*, WHATSAPP_OPENED, FORWARDED, NOTE, REFUND
-  fromStatus String?
-  toStatus   String?
-  note       String?
-  actor      String? // admin email or "system"/"stripe"
-  createdAt  DateTime @default(now())
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus?
+  /// customer | admin | system | webhook
+  actor      String
+  reason     String?
+  metadata   Json?
+  createdAt  DateTime     @default(now())
 
   @@index([orderId, createdAt])
 }
 
 model Payment {
-  id                    String        @id @default(cuid())
-  orderId               String
-  order                 Order         @relation(fields: [orderId], references: [id])
-  provider              String        @default("stripe")
-  stripeCheckoutSessionId String?     @unique
-  stripePaymentIntentId String?       @unique
-  stripeChargeId        String?
-  connectedAccountId    String?
-  idempotencyKey        String        @unique
-  checkoutUrl           String?
-  status                PaymentStatus @default(PENDING_PAYMENT)
-  amountCents           Int
-  applicationFeeCents   Int
-  /// Stripe processing fee charged to the connected account, when known.
-  stripeFeeCents        Int?
-  balanceTransactionId  String?
-  failureReason         String?
-  paidAt                DateTime?
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
-  refunds               Refund[]
+  id                String              @id @default(cuid())
+  orderId           String
+  order             Order               @relation(fields: [orderId], references: [id])
+  provider          String              @default("paypal")
+  providerOrderId   String?             @unique
+  providerCaptureId String?             @unique
+  amountCents       Int
+  status            PaymentRecordStatus @default(CREATED)
+  idempotencyKey    String              @unique
+  /// Raw provider responses, for debugging.
+  raw               Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
 
   @@index([orderId])
 }
 
-model Refund {
-  id                    String   @id @default(cuid())
-  paymentId             String
-  payment               Payment  @relation(fields: [paymentId], references: [id])
-  stripeRefundId        String   @unique
-  amountCents           Int
-  /// Share of the platform commission returned alongside the refund.
-  applicationFeeRefundCents Int  @default(0)
-  reason                String?
-  status                String   @default("succeeded")
-  createdAt             DateTime @default(now())
+model Notification {
+  id                String   @id @default(cuid())
+  orderId           String
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  /// email | sms | telegram
+  channel           String
+  template          String
+  recipient         String
+  /// pending | sent | failed
+  status            String
+  providerMessageId String?
+  error             String?
+  createdAt         DateTime @default(now())
 
-  @@index([paymentId])
+  @@index([orderId])
+  /// One row per (order, channel, template) may be claimed to de-duplicate automatic sends.
+  @@index([orderId, channel, template])
 }
 
-model CommissionRecord {
-  id             String           @id @default(cuid())
-  orderId        String           @unique
-  order          Order            @relation(fields: [orderId], references: [id])
-  merchantId     String
-  baseCents      Int // commissionable merchandise + delivery gross
-  rateBps        Int
-  amountCents    Int
-  reversedCents  Int              @default(0)
-  status         CommissionStatus @default(PENDING)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-
-  @@index([status])
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
 }
 
 model AdminUser {
   id           String   @id @default(cuid())
   email        String   @unique
   passwordHash String
+  /// Base32 TOTP secret; null = not enrolled.
+  totpSecret   String?
   createdAt    DateTime @default(now())
 }
 
@@ -489,9 +517,9 @@ model NotificationLog {
   @@unique([orderId, kind])
 }
 
-/// Idempotency ledger for Stripe webhooks.
+/// Idempotency ledger for PayPal webhooks.
 model ProcessedWebhookEvent {
-  id          String   @id // Stripe event id
+  id          String   @id // PayPal event id
   type        String
   processedAt DateTime @default(now())
 }

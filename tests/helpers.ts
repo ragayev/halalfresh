@@ -1,11 +1,10 @@
 import { randomUUID } from "node:crypto";
-import Stripe from "stripe";
 import { db } from "@/lib/db";
 import { addDays, berlinToday } from "@/domain/delivery";
 
 export async function resetDb() {
   await db.$executeRawUnsafe(
-    `TRUNCATE "OrderEvent","Refund","Payment","CommissionRecord","OrderItem","Order","Address","Customer","WaitlistEntry","DeliveryBlackoutDate","PostcodeRoute","RouteSchedule","DeliveryRoute","DeliveryZone","ProductImage","SupplierArticle","Product","Category","MerchantSettings","Merchant","AdminUser","AuditLog","ProcessedWebhookEvent","RateLimit" RESTART IDENTITY CASCADE`,
+    `TRUNCATE "OrderEvent","Notification","Consent","Payment","OrderItem","Order","Address","Customer","Setting","WaitlistEntry","DeliveryBlackoutDate","PostcodeRoute","RouteSchedule","DeliveryRoute","DeliveryZone","ProductImage","SupplierArticle","Product","Category","MerchantSettings","Merchant","AdminUser","AuditLog","ProcessedWebhookEvent","RateLimit" RESTART IDENTITY CASCADE`,
   );
 }
 
@@ -14,7 +13,6 @@ export async function seedBasics() {
     data: {
       name: "Test Butcher",
       whatsappNumber: "4915112345678",
-      stripeAccountId: "acct_test_1",
       settings: { create: {} },
     },
   });
@@ -68,56 +66,12 @@ export function checkoutBody(ctx: Awaited<ReturnType<typeof seedBasics>>, over: 
   return {
     requestId: randomUUID(),
     locale: "de",
-    lines: [{ productId: ctx.beef.id, grams: 8000 }], // 8 kg * €20 = €160
-    customer: {
-      name: "Example Customer",
-      email: "customer@example.com",
-      phone: "+4915112345678",
-    },
-    address: {
-      street: "Example Street 12",
-      postalCode: "10115",
-      city: "Berlin",
-    },
-    deliveryInstructions: "Ring twice",
-    acceptTerms: true,
+    lines: [{ productId: ctx.beef.id, grams: 8000 }], // 8 kg * €20 = €160 estimated, €176 max
+    customer: { firstName: "Example", lastName: "Customer", email: "customer@example.com", phone: "0151 12345678" },
+    address: { street: "Example Street 12", postalCode: "10115", city: "Berlin" },
+    deliveryNotes: "Ring twice",
+    paymentMethod: "PAYPAL",
+    consents: { terms: true, marketing: false, dataTransfer: false },
     ...over,
   };
-}
-
-const stripe = new Stripe("sk_test_dummy");
-export function signedEvent(
-  type: string,
-  object: Record<string, unknown>,
-  account: string | null = "acct_test_1",
-  id = `evt_${randomUUID()}`,
-) {
-  const payload = JSON.stringify({
-    id,
-    object: "event",
-    type,
-    account: account ?? undefined,
-    api_version: "x",
-    created: 1,
-    livemode: false,
-    pending_webhooks: 1,
-    request: null,
-    data: { object },
-  });
-  const header = stripe.webhooks.generateTestHeaderString({
-    payload,
-    secret: process.env.STRIPE_WEBHOOK_SECRET!,
-  });
-  return { id, payload, header };
-}
-
-export async function postWebhook(payload: string, header: string) {
-  const { POST } = await import("@/app/api/webhooks/stripe/route");
-  return POST(
-    new Request("http://localhost/api/webhooks/stripe", {
-      method: "POST",
-      body: payload,
-      headers: { "stripe-signature": header },
-    }),
-  );
 }
