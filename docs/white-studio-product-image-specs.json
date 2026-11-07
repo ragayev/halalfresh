@@ -1,0 +1,684 @@
+{
+  "version": 1,
+  "style": "premium-white-studio",
+  "source": "prisma/data/catalog.json",
+  "total": 45,
+  "productionPolicy": "Never replace live existing images until individual generation, anatomical verification, bundle composition confirmation, and human approval.",
+  "products": [
+    {
+      "id": "dana-kiyma",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Kıyma",
+        "de": "Rinderhackfleisch",
+        "en": "Beef Mince"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-kiyma.webp",
+      "targetImage": "/images/products/white-studio/dana-kiyma.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. fresh loose finely ground raw beef mince, distinguish from whole cuts.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-kusbasi",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Kuşbaşı",
+        "de": "Rindergulasch (gewürfelt)",
+        "en": "Diced Beef"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-kusbasi.webp",
+      "targetImage": "/images/products/white-studio/dana-kusbasi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. irregular bite-size cubes of boneless raw beef, not a steak.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-antrikot",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Antrikot",
+        "de": "Rinderentrecôte",
+        "en": "Beef Entrecôte"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-antrikot.webp",
+      "targetImage": "/images/products/white-studio/dana-antrikot.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. boneless beef ribeye steak with natural marbling and identifiable ribeye cap.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-kaburga",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Kaburga",
+        "de": "Rinderrippen",
+        "en": "Beef Ribs"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-kaburga.webp",
+      "targetImage": "/images/products/white-studio/dana-kaburga.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw beef short ribs with multiple rib bones and meat attached.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-incik",
+      "category": "dana",
+      "name": {
+        "tr": "Dana İncik",
+        "de": "Rinderhaxe",
+        "en": "Beef Shank"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-incik.webp",
+      "targetImage": "/images/products/white-studio/dana-incik.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw beef shank cross-cuts with correct circular marrow bone.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-haslamalik",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Haşlamalık",
+        "de": "Rindfleisch zum Kochen",
+        "en": "Beef for Boiling"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-haslamalik.webp",
+      "targetImage": "/images/products/white-studio/dana-haslamalik.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. coarse beef simmering cuts with natural connective tissue, not steak.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-ilik-kemigi",
+      "category": "dana",
+      "name": {
+        "tr": "Dana İlik Kemiği",
+        "de": "Rindermarkknochen",
+        "en": "Beef Marrow Bones"
+      },
+      "status": "active",
+      "existingImage": "/images/products/dana/dana-ilik-kemigi.webp",
+      "targetImage": "/images/products/white-studio/dana-ilik-kemigi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. cleanly cut beef marrow bones with visible creamy marrow and no added meat.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-biftek",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Biftek",
+        "de": "Rindersteak",
+        "en": "Beef Steak"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/dana/dana-biftek.webp",
+      "targetImage": "/images/products/white-studio/dana-biftek.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw lean beef steak slices without ribeye-like abundant marbling.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-kemikli-yemeklik-et",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Kemikli Yemeklik Et",
+        "de": "Rindfleisch mit Knochen (Eintopf)",
+        "en": "Bone-in Stewing Beef"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/dana/dana-kemikli-yemeklik-et.webp",
+      "targetImage": "/images/products/white-studio/dana-kemikli-yemeklik-et.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw bone-in beef stew portions with natural irregular cut bone sections.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-gerdan",
+      "category": "dana",
+      "name": {
+        "tr": "Dana Gerdan",
+        "de": "Rindernacken",
+        "en": "Beef Neck"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/dana/dana-gerdan.webp",
+      "targetImage": "/images/products/white-studio/dana-gerdan.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw beef neck chunks with characteristic connective tissue.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-pirzola",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Pirzola",
+        "de": "Lammkoteletts",
+        "en": "Lamb Chops"
+      },
+      "status": "active",
+      "existingImage": "/images/products/kuzu/kuzu-pirzola.webp",
+      "targetImage": "/images/products/white-studio/kuzu-pirzola.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. several small raw lamb rib chops, delicate thin rib bones, not beef tomahawks.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-but",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu But",
+        "de": "Lammkeule",
+        "en": "Leg of Lamb"
+      },
+      "status": "active",
+      "existingImage": "/images/products/kuzu/kuzu-but.webp",
+      "targetImage": "/images/products/white-studio/kuzu-but.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. whole raw leg of lamb, anatomical thigh shape, bone if present unobscured.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-kol",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Kol",
+        "de": "Lammschulter",
+        "en": "Lamb Shoulder"
+      },
+      "status": "active",
+      "existingImage": "/images/products/kuzu/kuzu-kol.webp",
+      "targetImage": "/images/products/white-studio/kuzu-kol.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw lamb shoulder with shoulder shape and natural connective tissue.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-kusbasi",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Kuşbaşı",
+        "de": "Lammwürfel",
+        "en": "Diced Lamb"
+      },
+      "status": "active",
+      "existingImage": "/images/products/kuzu/kuzu-kusbasi.webp",
+      "targetImage": "/images/products/white-studio/kuzu-kusbasi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. small diced lamb cubes with typical light fat, smaller than beef cubes.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-kiyma",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Kıyma",
+        "de": "Lammhackfleisch",
+        "en": "Lamb Mince"
+      },
+      "status": "active",
+      "existingImage": "/images/products/kuzu/kuzu-kiyma.webp",
+      "targetImage": "/images/products/white-studio/kuzu-kiyma.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. loose freshly ground lamb mince, distinguish from beef mince.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-incik",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu İncik",
+        "de": "Lammhaxe",
+        "en": "Lamb Shank"
+      },
+      "status": "active",
+      "existingImage": "/images/products/kuzu/kuzu-incik.webp",
+      "targetImage": "/images/products/white-studio/kuzu-incik.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. small raw lamb shanks with natural long shank bone, not beef.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-kaburga",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Kaburga",
+        "de": "Lammrippen",
+        "en": "Lamb Ribs"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/kuzu/kuzu-kaburga.webp",
+      "targetImage": "/images/products/white-studio/kuzu-kaburga.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw lamb rib rack, smaller and finer than beef ribs.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-gerdan",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Gerdan",
+        "de": "Lammnacken",
+        "en": "Lamb Neck"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/kuzu/kuzu-gerdan.webp",
+      "targetImage": "/images/products/white-studio/kuzu-gerdan.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw lamb neck slices with vertebral cross-sections.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-kuyruk-yagi",
+      "category": "kuzu",
+      "name": {
+        "tr": "Kuzu Kuyruk Yağı",
+        "de": "Lammschwanzfett",
+        "en": "Lamb Tail Fat"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/kuzu/kuzu-kuyruk-yagi.webp",
+      "targetImage": "/images/products/white-studio/kuzu-kuyruk-yagi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw lamb tail fat pieces creamy white, clearly fat not lean meat.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "butun-tavuk",
+      "category": "tavuk",
+      "name": {
+        "tr": "Bütün Tavuk",
+        "de": "Ganzes Hähnchen",
+        "en": "Whole Chicken"
+      },
+      "status": "active",
+      "existingImage": "/images/products/tavuk/butun-tavuk.webp",
+      "targetImage": "/images/products/white-studio/butun-tavuk.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. one complete raw plucked eviscerated whole chicken, no head, not cooked.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-gogus",
+      "category": "tavuk",
+      "name": {
+        "tr": "Tavuk Göğüs",
+        "de": "Hähnchenbrust",
+        "en": "Chicken Breast"
+      },
+      "status": "active",
+      "existingImage": "/images/products/tavuk/tavuk-gogus.webp",
+      "targetImage": "/images/products/white-studio/tavuk-gogus.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. two skinless boneless raw chicken breast fillets.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-kemiksiz-but",
+      "category": "tavuk",
+      "name": {
+        "tr": "Tavuk Kemiksiz But",
+        "de": "Hähnchenschenkel ohne Knochen",
+        "en": "Boneless Chicken Thigh"
+      },
+      "status": "active",
+      "existingImage": "/images/products/tavuk/tavuk-kemiksiz-but.webp",
+      "targetImage": "/images/products/white-studio/tavuk-kemiksiz-but.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. unrolled boneless raw chicken thigh pieces, visibly darker than breast.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-baget",
+      "category": "tavuk",
+      "name": {
+        "tr": "Tavuk Baget",
+        "de": "Hähnchenunterkeule",
+        "en": "Chicken Drumstick"
+      },
+      "status": "active",
+      "existingImage": "/images/products/tavuk/tavuk-baget.webp",
+      "targetImage": "/images/products/white-studio/tavuk-baget.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. several raw chicken drumsticks with recognizable handle and joint.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-kanat",
+      "category": "tavuk",
+      "name": {
+        "tr": "Tavuk Kanat",
+        "de": "Hähnchenflügel",
+        "en": "Chicken Wings"
+      },
+      "status": "active",
+      "existingImage": "/images/products/tavuk/tavuk-kanat.webp",
+      "targetImage": "/images/products/white-studio/tavuk-kanat.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. several whole raw chicken wings, recognizable wing joints.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-kemikli-kalcali-but",
+      "category": "tavuk",
+      "name": {
+        "tr": "Tavuk Kemikli Kalçalı But",
+        "de": "Hähnchenkeule mit Knochen",
+        "en": "Bone-in Chicken Leg Quarter"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/tavuk/tavuk-kemikli-kalcali-but.webp",
+      "targetImage": "/images/products/white-studio/tavuk-kemikli-kalcali-but.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw bone-in chicken leg quarters, thigh and drumstick attached.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-kusbasi",
+      "category": "tavuk",
+      "name": {
+        "tr": "Tavuk Kuşbaşı",
+        "de": "Hähnchenwürfel",
+        "en": "Diced Chicken"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/tavuk/tavuk-kusbasi.webp",
+      "targetImage": "/images/products/white-studio/tavuk-kusbasi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. bite-sized boneless raw chicken breast chunks, no beef color.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "hindi-gogus",
+      "category": "tavuk",
+      "name": {
+        "tr": "Hindi Göğüs",
+        "de": "Putenbrust",
+        "en": "Turkey Breast"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/tavuk/hindi-gogus.webp",
+      "targetImage": "/images/products/white-studio/hindi-gogus.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. large raw turkey breast fillet distinguishable from chicken breast.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-ciger",
+      "category": "sakatat",
+      "name": {
+        "tr": "Dana Ciğer",
+        "de": "Rinderleber",
+        "en": "Beef Liver"
+      },
+      "status": "active",
+      "existingImage": "/images/products/sakatat/dana-ciger.webp",
+      "targetImage": "/images/products/white-studio/dana-ciger.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw glossy dark reddish-brown sliced beef liver with smooth liver cross-sections.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kuzu-ciger-takimi",
+      "category": "sakatat",
+      "name": {
+        "tr": "Kuzu Ciğer Takımı",
+        "de": "Lamminnereien-Set (Leber)",
+        "en": "Lamb Liver Set"
+      },
+      "status": "active",
+      "existingImage": "/images/products/sakatat/kuzu-ciger-takimi.webp",
+      "targetImage": "/images/products/white-studio/kuzu-ciger-takimi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw lamb liver and associated organs, exact organ inclusion requires butcher approval.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "iskembe",
+      "category": "sakatat",
+      "name": {
+        "tr": "İşkembe",
+        "de": "Pansen",
+        "en": "Tripe"
+      },
+      "status": "active",
+      "existingImage": "/images/products/sakatat/iskembe.webp",
+      "targetImage": "/images/products/white-studio/iskembe.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. cleaned raw beef tripe pieces with characteristic honeycomb texture, not smooth meat.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dana-yurek",
+      "category": "sakatat",
+      "name": {
+        "tr": "Dana Yürek",
+        "de": "Rinderherz",
+        "en": "Beef Heart"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/sakatat/dana-yurek.webp",
+      "targetImage": "/images/products/white-studio/dana-yurek.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. trimmed raw beef heart with visible cardiac muscle anatomy, not liver.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "adana-kebaplik-harc",
+      "category": "mangal",
+      "name": {
+        "tr": "Adana Kebaplık Harç",
+        "de": "Adana-Kebab-Hackmasse",
+        "en": "Adana Kebab Mix"
+      },
+      "status": "active",
+      "existingImage": "/images/products/mangal/adana-kebaplik-harc.webp",
+      "targetImage": "/images/products/white-studio/adana-kebaplik-harc.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw minced lamb and beef Adana kebab mixture, unshaped loose mix unless butcher confirms pre-shaped sale.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "izgara-kofte",
+      "category": "mangal",
+      "name": {
+        "tr": "Izgara Köfte",
+        "de": "Gegrillte Köfte",
+        "en": "Grilled Köfte"
+      },
+      "status": "active",
+      "existingImage": "/images/products/mangal/izgara-kofte.webp",
+      "targetImage": "/images/products/white-studio/izgara-kofte.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw formed Turkish oval grill meatballs, do not show cooked grill marks.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kasap-kofte",
+      "category": "mangal",
+      "name": {
+        "tr": "Kasap Köfte",
+        "de": "Metzger-Köfte",
+        "en": "Butcher's Köfte"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/mangal/kasap-kofte.webp",
+      "targetImage": "/images/products/white-studio/kasap-kofte.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw butcher-style thick hand-formed meat patties, no cooked appearance.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "hamburger-koftesi",
+      "category": "mangal",
+      "name": {
+        "tr": "Hamburger Köftesi",
+        "de": "Hamburger-Patties",
+        "en": "Burger Patties"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/mangal/hamburger-koftesi.webp",
+      "targetImage": "/images/products/white-studio/hamburger-koftesi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw circular uniform burger patties, never grilled.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "tavuk-sis",
+      "category": "mangal",
+      "name": {
+        "tr": "Tavuk Şiş",
+        "de": "Hähnchen-Spieße",
+        "en": "Chicken Skewers"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/mangal/tavuk-sis.webp",
+      "targetImage": "/images/products/white-studio/tavuk-sis.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. uncooked chicken cubes on kebab skewers, no char.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "sucuk",
+      "category": "sarkuteri",
+      "name": {
+        "tr": "Sucuk",
+        "de": "Sucuk",
+        "en": "Sucuk (Spicy Sausage)"
+      },
+      "status": "active",
+      "existingImage": "/images/products/sarkuteri/sucuk.webp",
+      "targetImage": "/images/products/white-studio/sucuk.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. uncooked Turkish sucuk sausage links with typical casing, product seasoning/shape must match real supplier.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "pastirma",
+      "category": "sarkuteri",
+      "name": {
+        "tr": "Pastırma",
+        "de": "Pastırma",
+        "en": "Pastırma (Cured Beef)"
+      },
+      "status": "active",
+      "existingImage": "/images/products/sarkuteri/pastirma.webp",
+      "targetImage": "/images/products/white-studio/pastirma.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. thin sliced Turkish cured beef pastirma with characteristic spice coating.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "kavurma",
+      "category": "sarkuteri",
+      "name": {
+        "tr": "Kavurma",
+        "de": "Kavurma",
+        "en": "Kavurma (Preserved Meat)"
+      },
+      "status": "active",
+      "existingImage": "/images/products/sarkuteri/kavurma.webp",
+      "targetImage": "/images/products/white-studio/kavurma.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. Turkish cooked preserved beef kavurma pieces, not raw steak.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "helal-salam",
+      "category": "sarkuteri",
+      "name": {
+        "tr": "Helal Salam",
+        "de": "Halal-Salami",
+        "en": "Halal Salami"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/sarkuteri/helal-salam.webp",
+      "targetImage": "/images/products/white-studio/helal-salam.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. round sliced beef/poultry halal salami, exact recipe not implied.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "helal-sosis",
+      "category": "sarkuteri",
+      "name": {
+        "tr": "Helal Sosis",
+        "de": "Halal-Wurst",
+        "en": "Halal Sausage"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/sarkuteri/helal-sosis.webp",
+      "targetImage": "/images/products/white-studio/helal-sosis.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. lightly pink halal sausage links, not pork sausage.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "dilimlenmis-sucuk",
+      "category": "sarkuteri",
+      "name": {
+        "tr": "Dilimlenmiş Sucuk",
+        "de": "Sucuk in Scheiben",
+        "en": "Sliced Sucuk"
+      },
+      "status": "draft",
+      "existingImage": "/images/products/sarkuteri/dilimlenmis-sucuk.webp",
+      "targetImage": "/images/products/white-studio/dilimlenmis-sucuk.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. uncooked sliced Turkish sucuk rounds, visible red fat-marbled cross-section.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "aile-paketi",
+      "category": "paketler",
+      "name": {
+        "tr": "Aile Paketi",
+        "de": "Familienpaket",
+        "en": "Family Pack"
+      },
+      "status": "active",
+      "existingImage": "/images/products/paketler/aile-paketi.webp",
+      "targetImage": "/images/products/white-studio/aile-paketi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. assortment of raw meat portions in separate unbranded trays; exact contents need verification.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "mangal-paketi",
+      "category": "paketler",
+      "name": {
+        "tr": "Mangal Paketi",
+        "de": "Grillpaket",
+        "en": "BBQ Pack"
+      },
+      "status": "active",
+      "existingImage": "/images/products/paketler/mangal-paketi.webp",
+      "targetImage": "/images/products/white-studio/mangal-paketi.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. raw grilling assortment of meat cuts and kofte; exact contents need verification.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    },
+    {
+      "id": "ekonomik-paket",
+      "category": "paketler",
+      "name": {
+        "tr": "Ekonomik Paket",
+        "de": "Sparpaket",
+        "en": "Economy Pack"
+      },
+      "status": "active",
+      "existingImage": "/images/products/paketler/ekonomik-paket.webp",
+      "targetImage": "/images/products/white-studio/ekonomik-paket.webp",
+      "prompt": "Professional photorealistic premium butcher e-commerce catalog product photograph, seamless pure white (#FFFFFF) studio background, soft diffused high-key commercial product lighting, natural accurate food coloration and microtexture, 40-degree front elevated camera, centered product with ample clean white margin, sharp focus, one product category only, square 1:1 image, no captions, text, logos, hands, garnish, herbs, props, plates, packaging, excessive gloss, duplicate objects, artificial plastic texture. economy meat bundle shown as separate raw portions; exact contents need verification.",
+      "qualityStatus": "not_generated",
+      "requiresButcherApproval": true
+    }
+  ]
+}
