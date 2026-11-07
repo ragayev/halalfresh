@@ -7,21 +7,25 @@ import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
 import { useCartView } from "./use-cart-view";
 import { MinOrderBanner } from "./cart-progress";
-import { Button, Card, Container, Field, Input, Textarea, buttonClasses } from "./ui";
+import { Button, Card, Checkbox, Container, Field, Input, Notice, SellerBox, Textarea, buttonClasses } from "./ui";
+import { mvpCopy } from "@/content/mvp-copy";
 import { formatMoney } from "@/domain/money";
 import { formatQuantity } from "@/domain/bundles";
 import { isValidPostcode, normalizePostcode } from "@/domain/delivery";
 import { formatCutoff, formatSlotDay } from "@/lib/format-delivery";
 import { useDelivery } from "./delivery-provider";
 import { FreeDeliveryBar } from "./cart-progress";
-type Errors = Partial<Record<"name" | "email" | "phone" | "street" | "postalCode" | "city" | "slot" | "terms", string>>;
+type Errors = Partial<Record<"firstName" | "lastName" | "email" | "phone" | "street" | "postalCode" | "city" | "slot" | "terms", string>>;
 
 export function CheckoutForm() {
   const { d, locale, t } = useI18n();
-  const { ready } = useCart();
+  const { ready, lines: cartLines } = useCart();
+  const lineBundle = new Map(cartLines.flatMap((l) => (l.bundleId ? [[l.productId, l.bundleId] as const] : [])));
   const { data, loading } = useCartView();
+  const c = mvpCopy(locale);
   const [f, setF] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
     street: "",
@@ -30,6 +34,12 @@ export function CheckoutForm() {
     instructions: "",
   });
   const [terms, setTerms] = useState(false);
+  const [marketing, setMarketing] = useState(false);
+  const [chosen, setMethod] = useState<"PAYPAL" | "CASH">("PAYPAL");
+  const [cashAllowed, setCashOk] = useState(false);
+  // Derived: cash is only effective while the server says it is allowed for the phone currently typed.
+  const cashOk = cashAllowed && f.phone.trim().length >= 6;
+  const method = cashOk ? chosen : "PAYPAL";
   const { hydrated, postcode: savedPostcode, check, status, setPostcode } = useDelivery();
   const [notice, setNotice] = useState("");
   const [errors, setErrors] = useState<Errors>({});
@@ -40,6 +50,19 @@ export function CheckoutForm() {
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setF((s) => ({ ...s, [k]: e.target.value }));
   const pc = normalizePostcode(f.postalCode);
+
+  // Cash is offered only when the server says so for this phone; the order endpoint re-checks.
+  useEffect(() => {
+    if (f.phone.trim().length < 6) return;
+    const ctrl = new AbortController();
+    const h = setTimeout(() => {
+      fetch(`/api/checkout/cash?phone=${encodeURIComponent(f.phone)}`, { signal: ctrl.signal })
+        .then((r) => (r.ok ? r.json() : { allowed: false }))
+        .then((j) => setCashOk(!!j.allowed))
+        .catch(() => undefined);
+    }, 500);
+    return () => (clearTimeout(h), ctrl.abort());
+  }, [f.phone]);
 
   // Prefill the address postcode with the one the customer already checked.
   const seeded = useRef(false);
@@ -85,7 +108,8 @@ export function CheckoutForm() {
 
   function validate(): Errors {
     const e: Errors = {};
-    if (f.name.trim().length < 2) e.name = d.checkout.required;
+    if (!f.firstName.trim()) e.firstName = d.checkout.required;
+    if (!f.lastName.trim()) e.lastName = d.checkout.required;
     if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) e.email = d.checkout.invalidEmail;
     if (!/^\+?[\d\s()/-]{6,24}$/.test(f.phone.trim())) e.phone = d.checkout.invalidPhone;
     if (f.street.trim().length < 3) e.street = d.checkout.required;
@@ -95,7 +119,7 @@ export function CheckoutForm() {
     if (current?.supported && !estimate) e.slot = d.checkout.slotNone;
     if (current?.supported && (!pricedFor || data!.hasIssues)) e.slot = hasNonPreorder ? d.delivery.cartPreorderOnly : d.cart.updated;
     if (current?.supported && !totals.meetsMinimum) e.slot = t(d.checkout.belowMin, { amount: formatMoney(totals.minOrderCents, locale) });
-    if (!terms) e.terms = d.checkout.acceptTerms;
+    if (!terms) e.terms = c.termsRequired;
     return e;
   }
 
@@ -121,12 +145,14 @@ export function CheckoutForm() {
           lines: data!.lines.map((l) => ({
             productId: l.productId,
             grams: l.grams,
+            bundleId: lineBundle.get(l.productId),
           })),
-          customer: { name: f.name, email: f.email, phone: f.phone },
+          customer: { firstName: f.firstName, lastName: f.lastName, email: f.email, phone: f.phone },
           address: { street: f.street, postalCode: pc, city: f.city },
           checkedPostcode: pc,
-          deliveryInstructions: f.instructions || undefined,
-          acceptTerms: true,
+          deliveryNotes: f.instructions || undefined,
+          paymentMethod: method,
+          consents: { terms: true, marketing, dataTransfer: false },
         }),
       });
       const j = await res.json();
@@ -135,7 +161,7 @@ export function CheckoutForm() {
         const code = j?.error?.code;
         if (code === "VALIDATION" && j.error.details) {
           const fe = j.error.details as Record<string, string[]>;
-          setErrors({ name: fe.customer && d.checkout.required });
+          setErrors({ firstName: fe.customer && d.checkout.required });
         }
         setFormError(
           code === "BELOW_MINIMUM"
@@ -159,7 +185,7 @@ export function CheckoutForm() {
         setSubmitting(false);
         return;
       }
-      window.location.assign(j.url); // Stripe-hosted Checkout
+      window.location.assign(j.url); // private order page (/b/{token})
     } catch {
       setFormError(d.common.networkError);
       setSubmitting(false);
@@ -178,17 +204,14 @@ export function CheckoutForm() {
           <FreeDeliveryBar totals={totals} check={current ?? undefined} />
           <Card className="space-y-4 p-5 sm:p-6">
             <h2 className="text-lg font-semibold">{d.checkout.contact}</h2>
-            <Field label={d.checkout.name} htmlFor="name" error={err("name")}>
-              <Input
-                id="name"
-                name="name"
-                autoComplete="name"
-                value={f.name}
-                onChange={set("name")}
-                invalid={!!err("name")}
-                aria-describedby={dsc("name")}
-              />
-            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label={c.firstName} htmlFor="firstName" error={err("firstName")}>
+                <Input id="firstName" name="firstName" autoComplete="given-name" value={f.firstName} onChange={set("firstName")} invalid={!!err("firstName")} aria-describedby={dsc("firstName")} />
+              </Field>
+              <Field label={c.lastName} htmlFor="lastName" error={err("lastName")}>
+                <Input id="lastName" name="lastName" autoComplete="family-name" value={f.lastName} onChange={set("lastName")} invalid={!!err("lastName")} aria-describedby={dsc("lastName")} />
+              </Field>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label={d.checkout.email} htmlFor="email" error={err("email")}>
                 <Input
@@ -307,6 +330,26 @@ export function CheckoutForm() {
               )}
             </div>
           </div>
+          <Card className="space-y-3 p-5 sm:p-6">
+            <h2 className="text-lg font-semibold">{c.payment}</h2>
+            <fieldset className="grid gap-3 sm:grid-cols-2">
+              <legend className="sr-only">{c.payment}</legend>
+              <label className={`flex min-h-16 cursor-pointer items-start gap-3 rounded-[var(--radius-md)] border p-3 ${method === "PAYPAL" ? "border-primary bg-primary-soft" : "border-border-strong bg-surface"}`}>
+                <input type="radio" name="method" checked={method === "PAYPAL"} onChange={() => setMethod("PAYPAL")} className="mt-1 size-5 accent-[var(--color-primary)]" />
+                <span>
+                  <span className="block font-semibold">{c.paypal}</span>
+                  <span className="t-small text-text-muted">{c.paypalHint}</span>
+                </span>
+              </label>
+              <label className={`flex min-h-16 items-start gap-3 rounded-[var(--radius-md)] border p-3 ${cashOk ? "cursor-pointer" : "cursor-not-allowed opacity-60"} ${method === "CASH" ? "border-primary bg-primary-soft" : "border-border-strong bg-surface"}`}>
+                <input type="radio" name="method" disabled={!cashOk} checked={method === "CASH"} onChange={() => setMethod("CASH")} className="mt-1 size-5 accent-[var(--color-primary)]" />
+                <span>
+                  <span className="block font-semibold">{c.cash}</span>
+                  {!cashOk && <span className="t-small text-text-muted">{c.cashUnavailable}</span>}
+                </span>
+              </label>
+            </fieldset>
+          </Card>
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
@@ -328,50 +371,38 @@ export function CheckoutForm() {
                 </li>
               ))}
             </ul>
-            <dl className="space-y-2 border-t border-line pt-3 text-[15px]">
+            <dl className="tabular space-y-2 border-t border-border pt-3 text-base">
               <div className="flex justify-between">
-                <dt className="text-muted">{d.common.subtotal}</dt>
-                <dd className="tabular-nums">{formatMoney(totals.subtotalCents, locale)}</dd>
+                <dt className="text-text-muted">{c.estimated}</dt>
+                <dd data-testid="grand-total">ca. {formatMoney(data.estimate?.estimatedTotalCents ?? totals.totalCents, locale)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-muted">{d.common.delivery}</dt>
-                <dd className="tabular-nums">
-                  {totals.deliveryFeeCents === 0 ? d.common.free : formatMoney(totals.deliveryFeeCents, locale)}
-                </dd>
+                <dt className="text-text-muted">{c.max}</dt>
+                <dd data-testid="max-total">{formatMoney(data.estimate?.maxTotalCents ?? totals.totalCents, locale)}</dd>
               </div>
-              <div className="flex justify-between border-t border-line pt-3 text-xl font-bold">
-                <dt>{d.common.total}</dt>
-                <dd className="tabular-nums" data-testid="grand-total">
-                  {formatMoney(totals.totalCents, locale)}
-                </dd>
+              <div className="flex justify-between">
+                <dt className="text-text-muted">{c.deliveryFee}</dt>
+                <dd>{totals.deliveryFeeCents === 0 ? d.common.free : formatMoney(totals.deliveryFeeCents, locale)}</dd>
               </div>
             </dl>
-            <div className="rounded-xl bg-sage-soft p-3 text-xs text-muted">
-              <p className="font-semibold text-ink">{d.checkout.seller}</p>
-              <p className="mt-0.5">
-                {t(d.checkout.sellerText, {
-                  merchant: data.merchant?.name ?? "",
-                })}
+            <SellerBox title={c.sellerTitle}>
+              <p data-testid="seller-box">
+                {data.merchant?.name}
+                {data.merchant?.address ? `, ${data.merchant.address}` : ""}
+                {data.merchant?.phone ? `, ${data.merchant.phone}` : ""}
+                {data.merchant?.email ? `, ${data.merchant.email}` : ""}
               </p>
-            </div>
-            <div>
-              <label className="flex cursor-pointer items-start gap-3 text-sm">
-                <input
-                  id="terms"
-                  type="checkbox"
-                  checked={terms}
-                  onChange={(e) => setTerms(e.target.checked)}
-                  className="mt-0.5 size-5 shrink-0 accent-forest"
-                  aria-describedby={err("terms") ? "terms-err" : undefined}
-                />
-                <TermsLabel />
-              </label>
-              {err("terms") && (
-                <p id="terms-err" role="alert" className="mt-1 text-xs font-medium text-danger">
-                  {err("terms")}
-                </p>
-              )}
-            </div>
+            </SellerBox>
+            <Notice tone="info">
+              <span data-testid="variable-price">
+                {c.variablePrice(`ca. ${formatMoney(data.estimate?.estimatedTotalCents ?? totals.totalCents, locale)}`, formatMoney(data.estimate?.maxTotalCents ?? totals.totalCents, locale))}
+              </span>
+            </Notice>
+            <Notice tone="warning">
+              <span data-testid="no-withdrawal">{c.noWithdrawal}</span>
+            </Notice>
+            <Checkbox id="terms" checked={terms} onChange={(e) => setTerms(e.target.checked)} error={err("terms")} label={<TermsLabel />} aria-describedby={err("terms") ? "terms-err" : undefined} />
+            <Checkbox id="marketing" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} label={locale === "tr" ? "Kampanya ve haberleri e-posta/SMS ile almak istiyorum (isteğe bağlı, her zaman geri alınabilir)." : "Ich möchte Angebote und Neuigkeiten per E-Mail/SMS erhalten (optional, jederzeit widerrufbar)."} />
             {formError && (
               <p role="alert" className="flex items-start gap-2 rounded-xl bg-red-50 p-3 text-sm font-medium text-danger">
                 <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
@@ -379,18 +410,9 @@ export function CheckoutForm() {
               </p>
             )}
             <Button type="submit" size="lg" full loading={submitting} disabled={!totals.meetsMinimum} data-testid="pay-btn">
-              {submitting ? (
-                d.checkout.paying
-              ) : (
-                <>
-                  <Lock className="size-4" aria-hidden />
-                  {t(d.checkout.pay, {
-                    amount: formatMoney(totals.totalCents, locale),
-                  })}
-                </>
-              )}
+              <Lock className="size-4" aria-hidden />
+              {c.orderButton}
             </Button>
-            <p className="text-center text-xs text-muted">{d.checkout.stripeNote}</p>
             <Link href={`/${locale}/cart`} className="block text-center text-sm font-medium text-forest hover:underline">
               {d.checkout.editCart}
             </Link>
@@ -402,18 +424,21 @@ export function CheckoutForm() {
 }
 
 function TermsLabel() {
-  const { d, locale } = useI18n();
-  const parts = d.checkout.terms.split(/(\{terms\}|\{privacy\})/);
+  const { locale } = useI18n();
+  const parts = (locale === "tr"
+    ? "Kevser Fleischerei {agb} ve Halal Fresh {terms} metinlerini kabul ediyorum."
+    : "Ich akzeptiere die {agb} der Kevser Fleischerei und die {terms} von Halal Fresh."
+  ).split(/(\{agb\}|\{terms\})/);
   return (
     <span>
       {parts.map((p, i) =>
-        p === "{terms}" ? (
-          <Link key={i} href={`/${locale}/legal/terms`} target="_blank" className="font-medium underline">
-            {d.checkout.termsLink}
+        p === "{agb}" ? (
+          <Link key={i} href={`/${locale}/legal/agb`} target="_blank" className="font-medium text-primary underline">
+            AGB
           </Link>
-        ) : p === "{privacy}" ? (
-          <Link key={i} href={`/${locale}/legal/privacy`} target="_blank" className="font-medium underline">
-            {d.checkout.privacyLink}
+        ) : p === "{terms}" ? (
+          <Link key={i} href={`/${locale}/legal/terms`} target="_blank" className="font-medium text-primary underline">
+            {locale === "tr" ? "Kullanım Koşulları" : "Nutzungsbedingungen"}
           </Link>
         ) : (
           <span key={i}>{p}</span>

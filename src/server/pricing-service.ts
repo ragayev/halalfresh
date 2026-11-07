@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
-import { BUNDLE_UNIT_GRAMS, parseBundleItems, snapshotBundle, type BundleSnapshot } from "@/domain/bundles";
-import { purchaseBlocker, UNIT_QUANTITY, type ProductStatus, type SellingUnit } from "@/domain/product-rules";
+import { purchaseBlocker, type ProductStatus } from "@/domain/product-rules";
 import { computeTotals, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
 import { AppError } from "./errors";
 import { getMerchant } from "./settings";
@@ -12,8 +11,8 @@ export interface PricedLine {
   grams: number;
   pricePerKgCents: number;
   lineTotalCents: number;
-  /** Contents frozen from the catalogue at pricing time (bundles only). */
-  bundleSnapshot: BundleSnapshot | null;
+  /** Set when the line came from expanding a bundle (analytics only). */
+  bundleId: string | null;
 }
 
 const MAX_LINES = 50;
@@ -26,7 +25,7 @@ export interface DeliveryTerms {
   freeDeliveryThresholdCents: number | null;
 }
 
-export async function priceCart(lines: CartLineInput[], terms: DeliveryTerms) {
+export async function priceCart(lines: (CartLineInput & { bundleId?: string })[], terms: DeliveryTerms) {
   if (!lines.length) throw new AppError("EMPTY_CART", "Cart is empty");
   if (lines.length > MAX_LINES) throw new AppError("VALIDATION", "Too many cart lines");
   const ids = new Set(lines.map((l) => l.productId));
@@ -62,14 +61,11 @@ export async function priceCart(lines: CartLineInput[], terms: DeliveryTerms) {
       }
       throw e;
     }
-    const items = parseBundleItems(p.bundleItems);
-    // A bundle that is still awaiting price approval can never be sold, whatever the flags say.
-    if (p.bundleItems != null && (!items || !p.priceConfirmed))
-      throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart is not available yet", 409, { productId: p.id, productName: p.name });
-    if ((items || (p.sellingUnit as SellingUnit) !== "KG") && l.grams % Math.max(BUNDLE_UNIT_GRAMS, UNIT_QUANTITY) !== 0)
-      throw new AppError("INVALID_QUANTITY", "Invalid bundle quantity", 409, { productId: p.id, productName: p.name });
+    // Bundles are expanded into ordinary product lines in the cart (see bundle-expand.ts); a package product is never an order line.
+    if (p.bundleItems != null || p.sellingUnit !== "KG")
+      throw new AppError("PRODUCT_UNAVAILABLE", "Bundles must be added as individual products", 409, { productId: p.id, productName: p.name });
     return {
-      bundleSnapshot: items ? snapshotBundle(items) : null,
+      bundleId: l.bundleId ?? null,
       productId: p.id,
       name: p.name,
       slug: p.slug,

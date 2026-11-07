@@ -2,13 +2,14 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { FulfillmentStatus } from "@prisma/client";
+import { OrderStatus } from "@prisma/client";
 import { db } from "@/lib/db";
 import { login, logout, requireAdmin } from "@/server/auth";
 import { AppError } from "@/server/errors";
-import { addNote, audit, authorizeEarlyFulfillment, cancelOrder, prepareWhatsapp, refundOrder, transitionFulfillment } from "@/server/orders";
+import { addNote, audit, recordWeights, transitionOrder } from "@/server/orders";
+import { notifyCustomer } from "@/server/notifications/notify";
 import { getMerchant } from "@/server/settings";
-import { normalizeWhatsappNumber } from "@/domain/whatsapp";
+import { buildKevserMessage, normalizeWhatsappNumber, whatsappLink } from "@/domain/whatsapp";
 import type { BundleItem } from "@/domain/bundles";
 import { parsePriceToCents } from "@/domain/money";
 import { PRODUCT_STATUSES, SELLING_UNITS } from "@/domain/product-rules";
@@ -37,36 +38,64 @@ export async function logoutAction() {
 }
 
 // ---- Orders ----
-export async function setFulfillmentAction(orderId: string, to: string): Promise<ActionResult> {
+const afterOrderChange = (orderId: string) => {
+  revalidatePath(`/admin/orders/${orderId}`);
+  revalidatePath("/admin/orders");
+};
+
+export async function transitionAction(orderId: string, to: string, reason?: string): Promise<ActionResult> {
   const a = await requireAdmin();
   try {
-    await transitionFulfillment(orderId, z.nativeEnum(FulfillmentStatus).parse(to), a.email);
-    revalidatePath(`/admin/orders/${orderId}`);
-    revalidatePath("/admin/orders");
+    const target = z.nativeEnum(OrderStatus).parse(to);
+    await transitionOrder(orderId, target, { actor: "admin", actorId: a.email, reason: reason?.trim() || null });
+    afterOrderChange(orderId);
     return { ok: true };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function authorizeEarlyFulfillmentAction(orderId: string, acknowledged: boolean): Promise<ActionResult> {
+export interface WeightsResult extends ActionResult {
+  finalTotalCents?: number;
+  cappedAmountCents?: number;
+}
+
+export async function weightsAction(orderId: string, weights: { itemId: string; actualGrams: number }[]): Promise<WeightsResult> {
   const a = await requireAdmin();
   try {
-    await authorizeEarlyFulfillment(orderId, a.email, acknowledged);
-    revalidatePath(`/admin/orders/${orderId}`);
-    revalidatePath("/admin/orders");
-    return { ok: true, message: "Fulfilment authorized on SEPA collection risk" };
+    const r = await recordWeights(orderId, weights, { actor: "admin", actorId: a.email });
+    afterOrderChange(orderId);
+    return { ok: true, finalTotalCents: r.finalTotalCents, cappedAmountCents: r.cappedAmountCents };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function whatsappAction(orderId: string): Promise<ActionResult> {
+/** Builds the wa.me link with Kevser's Turkish order template. Logged so the admin can see it was forwarded. */
+export async function kevserWhatsappAction(orderId: string): Promise<ActionResult> {
   const a = await requireAdmin();
   try {
-    const { url } = await prepareWhatsapp(orderId, a.email);
-    revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, url };
+    const o = await db.order.findUniqueOrThrow({ where: { id: orderId }, include: { items: { orderBy: { id: "asc" } }, customer: true, merchant: true } });
+    if (!o.merchant.whatsappNumber) throw new AppError("VALIDATION", "Set Kevser's WhatsApp number in Einstellungen first");
+    const message = buildKevserMessage({
+      number: o.number,
+      firstName: o.customer.firstName,
+      lastName: o.customer.lastName,
+      phone: o.customer.phoneE164,
+      street: o.street,
+      postalCode: o.postalCode,
+      city: o.city,
+      deliveryDate: o.deliveryDate.toISOString().slice(0, 10),
+      slotStartTime: o.slotStartTime,
+      slotEndTime: o.slotEndTime,
+      paymentMethod: o.paymentMethod,
+      items: o.items.map((i) => ({ productName: i.productName, requestedGrams: i.requestedGrams })),
+      estimatedTotalCents: o.estimatedTotalCents,
+      maxTotalCents: o.maxTotalCents,
+      notes: o.deliveryNotes,
+    });
+    await audit(a.email, "order.whatsapp_kevser", "Order", orderId);
+    return { ok: true, url: whatsappLink(o.merchant.whatsappNumber, message) };
   } catch (e) {
     return fail(e);
   }
@@ -77,32 +106,31 @@ export async function saveNoteAction(orderId: string, note: string): Promise<Act
   try {
     await addNote(orderId, note, a.email);
     revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, message: "Saved" };
+    return { ok: true, message: "Gespeichert" };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function refundAction(orderId: string, amountCents: number): Promise<ActionResult> {
+export async function resendNotificationAction(orderId: string, template: string): Promise<ActionResult> {
   const a = await requireAdmin();
   try {
-    await refundOrder(orderId, amountCents, { actor: a.email });
-    revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, message: "Refund issued" };
+    const t = z.enum(["order_created", "accepted", "weighed", "out_for_delivery", "cancelled", "payment_overdue"]).parse(template);
+    await notifyCustomer(orderId, t, { force: true });
+    await audit(a.email, "order.resend_notification", "Order", orderId, { template: t });
+    afterOrderChange(orderId);
+    return { ok: true, message: "Gesendet" };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function cancelAction(orderId: string): Promise<ActionResult> {
+export async function setBlockedCashAction(customerId: string, blocked: boolean): Promise<ActionResult> {
   const a = await requireAdmin();
-  try {
-    await cancelOrder(orderId, a.email);
-    revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, message: "Order cancelled" };
-  } catch (e) {
-    return fail(e);
-  }
+  await db.customer.update({ where: { id: customerId }, data: { blockedCash: blocked } });
+  await audit(a.email, blocked ? "customer.block_cash" : "customer.unblock_cash", "Customer", customerId);
+  revalidatePath("/admin/customers");
+  return { ok: true };
 }
 
 // ---- Products ----
@@ -319,4 +347,25 @@ export async function saveMerchantAction(_: ActionResult | null, fd: FormData): 
   await audit(a.email, "merchant.update", "Merchant", m.id);
   revalidatePath("/admin/settings");
   return { ok: true, message: "Saved" };
+}
+
+// ---- Operating settings ----
+const operatingSchema = z.object({
+  toleranceBps: z.coerce.number().int().min(0).max(5000),
+  paymentOverdueHours: z.coerce.number().int().min(1).max(240),
+  tokenExpiryDays: z.coerce.number().int().min(1).max(365),
+  telegramChatId: z.string().trim().max(64).optional(),
+});
+
+export async function saveOperatingSettingsAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  const a = await requireAdmin();
+  const p = operatingSchema.safeParse(Object.fromEntries(fd));
+  if (!p.success) return { ok: false, message: "Bitte Eingaben prüfen" };
+  const { setSetting } = await import("@/server/app-settings");
+  for (const [k, v] of Object.entries(p.data)) await setSetting(k as never, v ?? "");
+  // The halal badge is only ever shown after the operator explicitly verifies the certificate.
+  await setSetting("halalCertificateVerified", fd.get("halalCertificateVerified") === "on");
+  await audit(a.email, "settings.update", "Setting", undefined, p.data);
+  revalidatePath("/admin/settings");
+  return { ok: true, message: "Gespeichert" };
 }

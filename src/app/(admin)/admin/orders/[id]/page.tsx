@@ -1,233 +1,159 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 import { requireAdmin } from "@/server/auth";
 import { getOrderForAdmin } from "@/server/orders";
-import { adminAttention, fulfillmentGate, fulfillmentMoveAllowed, nextFulfillmentOptions } from "@/domain/order-state";
 import { formatMoney } from "@/domain/money";
-import { orderItemLines } from "@/domain/bundles";
-import { buildWhatsappMessage, deliveryLabel } from "@/domain/whatsapp";
-import { Card } from "@/components/ui";
-import { PaymentBadge, FulfillmentBadge } from "@/components/admin/badges";
-import { EarlyAuthorizePanel, NoteForm, RefundForm, StatusButtons, WhatsappPanel } from "@/components/admin/order-actions";
+import { orderNumberLabel } from "@/domain/order-state";
+import { Card, Notice } from "@/components/ui";
+import { StatusChip } from "@/components/admin/status-chip";
+import { NoteForm, OrderActions, ResendButton, WhatsappButtons } from "@/components/admin/order-actions";
+import { WeightForm } from "@/components/admin/weight-form";
 
 export const dynamic = "force-dynamic";
-const LABEL: Record<string, string> = {
-  AWAITING_FORWARDING: "Back to awaiting forwarding",
-  FORWARDED: "Mark forwarded",
-  CONFIRMED_BY_BUTCHER: "Confirmed by butcher",
-  PREPARING: "Preparing",
-  OUT_FOR_DELIVERY: "Out for delivery",
-  DELIVERED: "Delivered",
-  CANCELLED: "Cancel order",
-};
+
+const fmtTime = (d: Date) => new Intl.DateTimeFormat("de-DE", { dateStyle: "short", timeStyle: "short", timeZone: "Europe/Berlin" }).format(d);
+const RESEND: Record<string, string> = { ACCEPTED: "accepted", WEIGHED: "weighed", PAYMENT_OVERDUE: "payment_overdue", OUT_FOR_DELIVERY: "out_for_delivery", CANCELLED: "cancelled", NEW: "order_created" };
 
 export default async function OrderDetail({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const { id } = await params;
   const o = await getOrderForAdmin(id);
   if (!o) notFound();
-  const paid = o.paymentStatus === "PAID" || o.paymentStatus === "PARTIALLY_REFUNDED";
-  const gate = fulfillmentGate(o);
-  const attention = adminAttention(o);
-  const sepaPending = o.paymentStatus === "PENDING_PAYMENT" && !!o.sepaInitiatedAt;
-  const payment = o.payments[0];
-  const message = buildWhatsappMessage({
-    number: o.number,
-    customerName: o.customer.name,
-    phone: o.customer.phone,
-    street: o.address.street,
-    postalCode: o.address.postalCode,
-    city: o.address.city,
-    items: o.items,
-    totalCents: o.totalCents,
-    paymentStatus: o.paymentStatus,
-    sepaPendingAuthorized: gate === "EARLY_AUTHORIZED",
-    deliveryDate: o.deliveryDate.toISOString().slice(0, 10),
-    slotStartTime: o.slotStartTime,
-    slotEndTime: o.slotEndTime,
-    deliveryInstructions: o.deliveryInstructions,
-  });
-  // Offer only moves the server would accept right now (the server re-checks every one of them).
-  const options = nextFulfillmentOptions(o.fulfillmentStatus)
-    .filter((s) => s !== "FORWARDED" && (s === "CANCELLED" ? !sepaPending : true))
-    .filter((s) => fulfillmentMoveAllowed(o, s).ok)
-    .map((s) => ({ value: s, label: LABEL[s] }));
-  const fmt = (d: Date) =>
-    d.toLocaleString("de-DE", {
-      timeZone: "Europe/Berlin",
-      dateStyle: "short",
-      timeStyle: "short",
-    });
+  const m = (c: number) => formatMoney(c, "de");
+  const weighing = o.status === "PREPARING";
+  const correcting = (o.status === "WEIGHED" || o.status === "PAYMENT_OVERDUE") && !o.paidAt;
+  const resend = RESEND[o.status];
+
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-3">
-        <Link href="/admin/orders" className="text-sm text-forest hover:underline">
-          ← Orders
-        </Link>
-        <h1 className="text-2xl font-semibold" data-testid="order-title">
-          Order #HF-{o.number}
-        </h1>
-        <PaymentBadge s={o.paymentStatus} sepa={!!o.sepaInitiatedAt} />
-        <FulfillmentBadge s={o.fulfillmentStatus} />
-      </div>
-      {attention && (
-        <p
-          role="alert"
-          data-testid="attention-banner"
-          className={`rounded-xl p-4 text-sm font-semibold ${attention.level === "critical" ? "bg-danger text-white" : "bg-warn text-warn-ink"}`}
-        >
-          {attention.reason}
-          {o.paymentStatus === "PAYMENT_FAILED" && payment?.failureReason ? ` (${payment.failureReason})` : ""}
-        </p>
-      )}
-      {gate === "NEEDS_AUTHORIZATION" && o.fulfillmentStatus !== "CANCELLED" && (
-        <Card className="p-5">
-          <EarlyAuthorizePanel orderId={o.id} amountLabel={formatMoney(o.totalCents)} />
-        </Card>
-      )}
-      {gate === "EARLY_AUTHORIZED" && (
-        <p className="rounded-xl bg-warn p-3 text-sm font-medium text-warn-ink" data-testid="early-authorized-note">
-          Fulfilling on SEPA collection risk, authorized by {o.earlyFulfillmentAuthorizedBy}
-          {o.earlyFulfillmentAuthorizedAt ? ` on ${fmt(o.earlyFulfillmentAuthorizedAt)}` : ""}. Payment is not confirmed yet.
-        </p>
-      )}
-      <Card className="space-y-3 p-5">
-        <h2 className="font-semibold">Forward to butcher</h2>
-        {!o.merchant.whatsappNumber && (
-          <p className="rounded-xl bg-red-50 p-3 text-sm font-medium text-danger">
-            Butcher WhatsApp number missing. Set it in{" "}
-            <Link href="/admin/settings" className="underline">
-              Settings
-            </Link>
-            .
-          </p>
-        )}
-        <WhatsappPanel
+    <div className="mx-auto max-w-3xl space-y-6">
+      <Link href="/admin/orders" className="t-small inline-flex min-h-11 items-center gap-1 text-primary">
+        <ChevronLeft className="size-4" aria-hidden /> Bestellungen
+      </Link>
+      <header className="flex flex-wrap items-center gap-3">
+        <h1 className="tabular text-2xl font-semibold">{orderNumberLabel(o.number)}</h1>
+        <StatusChip status={o.status} />
+        <span className="t-small text-text-muted">{o.paymentMethod === "PAYPAL" ? "PayPal" : "Barzahlung"}</span>
+      </header>
+
+      <OrderActions orderId={o.id} status={o.status} method={o.paymentMethod} scrollToWeights={weighing} />
+      <WhatsappButtons orderId={o.id} customerPhone={o.customer.phoneE164} />
+
+      {o.cappedAmountCents ? (
+        <Notice tone="danger">
+          Gedeckelt: {m(o.cappedAmountCents)} über dem Maximalbetrag werden vom Verkäufer getragen.
+        </Notice>
+      ) : null}
+      {o.refundedCents > 0 && <Notice tone="info">Erstattet: {m(o.refundedCents)} (in PayPal durchgeführt)</Notice>}
+      {o.notes && <Notice tone="info">Kundenhinweis: {o.notes}</Notice>}
+
+      {(weighing || correcting) && (
+        <WeightForm
           orderId={o.id}
-          openCount={o.whatsappOpenCount}
-          forwardedAt={o.forwardedAt ? fmt(o.forwardedAt) : null}
-          canForward={(gate === "OPEN" || gate === "EARLY_AUTHORIZED") && !!o.merchant.whatsappNumber && o.fulfillmentStatus !== "CANCELLED"}
-          message={message}
+          correction={correcting}
+          toleranceBps={o.toleranceBps}
+          estimatedTotalCents={o.estimatedTotalCents}
+          maxTotalCents={o.maxTotalCents}
+          deliveryFeeCents={o.deliveryFeeCents}
+          lines={o.items.map((i) => ({ id: i.id, name: i.productName, requestedGrams: i.requestedGrams, unitPricePerKgCents: i.unitPricePerKgCents, actualGrams: i.actualGrams }))}
         />
-      </Card>
-      <div className="grid gap-5 lg:grid-cols-2">
-        <Card className="space-y-2 p-5 text-sm">
-          <h2 className="font-semibold">Customer & delivery</h2>
-          <p>{o.customer.name}</p>
-          <p>
-            <a className="text-forest underline" href={`mailto:${o.customer.email}`}>
-              {o.customer.email}
-            </a>{" "}
-            ·{" "}
-            <a className="text-forest underline" href={`tel:${o.customer.phone}`}>
-              {o.customer.phone}
-            </a>
-          </p>
-          <p>
-            {o.address.street}
-            <br />
-            {o.address.postalCode} {o.address.city}
-          </p>
-          <p className="font-medium">{deliveryLabel(o.deliveryDate.toISOString().slice(0, 10), o.slotStartTime, o.slotEndTime)}</p>
-          <p className="text-muted">Instructions: {o.deliveryInstructions ?? "—"}</p>
-        </Card>
-        <Card className="space-y-2 p-5 text-sm">
-          <h2 className="font-semibold">Items & totals</h2>
-          <ul className="space-y-1">
+      )}
+
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Positionen</h2>
+        <table className="w-full text-sm">
+          <thead className="text-left text-text-muted">
+            <tr>
+              <th className="py-1 font-medium">Produkt</th>
+              <th className="py-1 text-right font-medium">Bestellt</th>
+              <th className="py-1 text-right font-medium">Gewogen</th>
+              <th className="py-1 text-right font-medium">Betrag</th>
+            </tr>
+          </thead>
+          <tbody className="tabular">
             {o.items.map((i) => (
-              <li key={i.id}>
-                <div className="flex justify-between">
-                  <span>{orderItemLines(i, "de")[0].slice(2)}</span>
-                  <span className="tabular-nums">{formatMoney(i.lineTotalCents)}</span>
-                </div>
-                {orderItemLines(i, "de")
-                  .slice(1)
-                  .map((l) => (
-                    <p key={l} className="ps-3 text-xs text-muted">
-                      {l.trim()}
-                    </p>
-                  ))}
+              <tr key={i.id} className="border-t border-border">
+                <td className="py-2">
+                  {i.productName}
+                  <span className="block text-text-muted">{m(i.unitPricePerKgCents)} / kg{i.bundleId ? ` · Paket ${i.bundleId}` : ""}</span>
+                </td>
+                <td className="py-2 text-right">{i.requestedGrams} g</td>
+                <td className="py-2 text-right">{i.actualGrams == null ? "–" : i.actualGrams === 0 ? "n. v." : `${i.actualGrams} g`}</td>
+                <td className="py-2 text-right">{i.finalCents == null ? `ca. ${m(i.estimatedCents)}` : m(i.finalCents)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Beträge</h2>
+        <dl className="tabular grid grid-cols-2 gap-y-1 text-sm">
+          <dt>Geschätzt</dt><dd className="text-right">{m(o.estimatedTotalCents)}</dd>
+          <dt>Maximal (+{o.toleranceBps / 100} %)</dt><dd className="text-right">{m(o.maxTotalCents)}</dd>
+          <dt>Lieferung</dt><dd className="text-right">{m(o.deliveryFeeCents)}</dd>
+          <dt className="font-semibold">Endbetrag</dt><dd className="text-right font-semibold">{o.finalTotalCents == null ? "–" : m(o.finalTotalCents)}</dd>
+          {o.paidAmountCents != null && (<><dt>Bezahlt</dt><dd className="text-right">{m(o.paidAmountCents)}</dd></>)}
+        </dl>
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Kunde</h2>
+        <p>{o.customer.firstName} {o.customer.lastName}</p>
+        <p className="t-small text-text-muted">{o.customer.phoneE164} · {o.customer.email}</p>
+        <p className="t-small mt-2">{o.street}, {o.postalCode} {o.city}</p>
+        <p className="t-small">Lieferung: {o.deliveryDate.toISOString().slice(0, 10).split("-").reverse().join(".")} · {o.slotStartTime}–{o.slotEndTime} ({o.zoneName})</p>
+        {o.deliveryNotes && <p className="t-small mt-1">Hinweis: {o.deliveryNotes}</p>}
+        <p className="t-small mt-2 text-text-muted">
+          Verweigerungen: {o.customer.refusedCount}{o.customer.blockedCash ? " · Barzahlung gesperrt" : ""}
+        </p>
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Zahlung</h2>
+        {o.payments.length === 0 ? (
+          <p className="t-small text-text-muted">Noch keine PayPal-Zahlung gestartet.</p>
+        ) : (
+          <ul className="t-small space-y-1">
+            {o.payments.map((p) => (
+              <li key={p.id} className="tabular">
+                {fmtTime(p.createdAt)} · {m(p.amountCents)} · <strong>{p.status}</strong> · {p.providerOrderId}
               </li>
             ))}
           </ul>
-          <div className="space-y-1 border-t border-line pt-2">
-            <p className="flex justify-between">
-              <span>Subtotal</span>
-              <span>{formatMoney(o.subtotalCents)}</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Delivery</span>
-              <span>{formatMoney(o.deliveryFeeCents)}</span>
-            </p>
-            <p className="flex justify-between font-bold">
-              <span>Total</span>
-              <span>{formatMoney(o.totalCents)}</span>
-            </p>
-            {o.refundedCents > 0 && (
-              <p className="flex justify-between text-muted">
-                <span>Refunded</span>
-                <span>{formatMoney(o.refundedCents)}</span>
-              </p>
-            )}
-          </div>
-        </Card>
-        <Card className="space-y-2 p-5 text-sm">
-          <h2 className="font-semibold">Payment</h2>
-          {payment ? (
-            <>
-              <p>
-                Status: <PaymentBadge s={payment.status} sepa={!!o.sepaInitiatedAt} />
-                {payment.paidAt ? ` · ${fmt(payment.paidAt)}` : ""}
-              </p>
-              <p className="break-all text-muted">
-                Provider: {payment.provider}
-                <br />
-                Session: {payment.stripeCheckoutSessionId ?? "—"}
-                <br />
-                Intent: {payment.stripePaymentIntentId ?? "—"}
-                <br />
-                Balance txn: {payment.balanceTransactionId ?? "—"}
-                <br />
-                Stripe fee: {payment.stripeFeeCents != null ? formatMoney(payment.stripeFeeCents) : "n/a"}
-              </p>
-              {payment.refunds.map((r) => (
-                <p key={r.id} className="text-muted">
-                  Refund {formatMoney(r.amountCents)} ({r.status}) · {fmt(r.createdAt)}
-                </p>
-              ))}
-            </>
-          ) : (
-            <p>—</p>
-          )}
-          {paid && o.totalCents - o.refundedCents > 0 && (
-            <div className="border-t border-line pt-3">
-              <p className="mb-2 font-medium">Refund</p>
-              <RefundForm orderId={o.id} remainingCents={o.totalCents - o.refundedCents} />
-            </div>
-          )}
-        </Card>
-        <Card className="space-y-3 p-5">
-          <h2 className="font-semibold">Fulfillment</h2>
-          <StatusButtons orderId={o.id} options={options} />
-          <h3 className="pt-2 text-sm font-semibold">Internal notes</h3>
-          <NoteForm orderId={o.id} initial={o.adminNotes ?? ""} />
-        </Card>
-      </div>
-      <Card className="p-5">
-        <h2 className="mb-3 font-semibold">Timeline</h2>
-        <ol className="space-y-2 text-sm">
+        )}
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Verlauf</h2>
+        <ol className="t-small space-y-2">
           {o.events.map((e) => (
-            <li key={e.id} className="flex gap-3">
-              <span className="w-32 shrink-0 text-muted">{fmt(e.createdAt)}</span>
-              <span>
-                {e.type.replace(/_/g, " ").toLowerCase()}
-                {e.toStatus ? ` → ${e.toStatus}` : ""}
-                {e.note ? ` · ${e.note}` : ""}
-                <span className="text-muted"> · {e.actor}</span>
-              </span>
+            <li key={e.id} className="border-l-2 border-border pl-3">
+              <span className="tabular text-text-muted">{fmtTime(e.createdAt)}</span> · {e.fromStatus ?? "–"} → <strong>{e.toStatus ?? "–"}</strong> · {e.actor}
+              {e.reason ? ` · ${e.reason}` : ""}
             </li>
           ))}
         </ol>
+      </Card>
+
+      <Card className="space-y-2 p-4">
+        <h2 className="text-lg font-semibold">Benachrichtigungen</h2>
+        {o.notifications.length === 0 ? (
+          <p className="t-small text-text-muted">Keine.</p>
+        ) : (
+          <ul className="t-small space-y-1">
+            {o.notifications.map((n) => (
+              <li key={n.id} className="tabular">
+                {fmtTime(n.createdAt)} · {n.channel} · {n.template} · {n.recipient} · <strong>{n.status}</strong>{n.error ? ` (${n.error})` : ""}
+              </li>
+            ))}
+          </ul>
+        )}
+        {resend && <ResendButton orderId={o.id} template={resend} />}
+      </Card>
+
+      <Card className="p-4">
+        <NoteForm orderId={o.id} initial={o.adminNotes ?? ""} />
       </Card>
     </div>
   );

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
-import { createCheckout } from "@/server/checkout";
+import { createOrder } from "@/server/checkout";
 import { AppError } from "@/server/errors";
 import { cartView } from "@/server/cart-view";
 import { getProductBySlug as storefrontBySlug, listProducts as storefrontList } from "@/server/catalog";
@@ -146,7 +146,7 @@ describe("storefront and checkout enforce the same rules on the server", () => {
     // Corrupt the row the way a bad script could: available + active but price 0.
     await db.product.update({ where: { id: unpriced.id }, data: { pricePerKgCents: 0 } });
     for (const p of [archived, draft, unavailable, unpriced]) {
-      expect(await code(createCheckout(checkoutBody(ctx, { lines: [{ productId: p.id, grams: 8000 }] })))).toBe("PRODUCT_UNAVAILABLE");
+      expect(await code(createOrder(checkoutBody(ctx, { lines: [{ productId: p.id, grams: 8000 }] })))).toBe("PRODUCT_UNAVAILABLE");
       const view = await cartView([{ productId: p.id, grams: 8000 }], "en");
       expect(view.lines[0].issue).toBeDefined();
       expect(view.totals.subtotalCents).toBe(0);
@@ -154,21 +154,21 @@ describe("storefront and checkout enforce the same rules on the server", () => {
   });
 
   it("prices from the database, never from the client, and keeps orders intact after archiving", async () => {
-    const { orderToken } = await createCheckout(checkoutBody(ctx, { lines: [{ productId: ctx.beef.id, grams: 8000 }], unitPriceCents: 1 }));
-    const order = await db.order.findUniqueOrThrow({ where: { accessToken: orderToken }, include: { items: true } });
-    expect(order.subtotalCents).toBe(16000);
+    const { token: orderToken } = await createOrder(checkoutBody(ctx, { lines: [{ productId: ctx.beef.id, grams: 8000 }], unitPriceCents: 1 }));
+    const order = await db.order.findUniqueOrThrow({ where: { publicToken: orderToken }, include: { items: true } });
+    expect(order.estimatedTotalCents).toBe(16000);
     await archiveProduct(ctx.beef.id, "a");
     await updatePrice(ctx.beef.id, 99999, true, "a");
     const again = await db.order.findUniqueOrThrow({ where: { id: order.id }, include: { items: true } });
-    expect(again.items[0]).toMatchObject({ productId: ctx.beef.id, productName: "Beef Cubes", lineTotalCents: 16000, quantityGrams: 8000 });
-    expect(again.subtotalCents).toBe(16000);
+    expect(again.items[0]).toMatchObject({ productId: ctx.beef.id, productName: "Beef Cubes", estimatedCents: 16000, requestedGrams: 8000 });
+    expect(again.estimatedTotalCents).toBe(16000);
   });
 
   it("calculates mixed unit carts with integer cents", async () => {
     const pkg = await createProduct(input({ slug: "box", name: "Box", sellingUnit: "PACKAGE", stepGrams: 1000, minGrams: 1000, maxGrams: 5000, priceCents: 9999 }), "a");
     const view = await cartView([{ productId: pkg.id, grams: 2000 }, { productId: ctx.beef.id, grams: 1500 }], "en");
     expect(view.lines.map((l) => l.lineTotalCents)).toEqual([19998, 3000]);
-    expect(await code(createCheckout(checkoutBody(ctx, { lines: [{ productId: pkg.id, grams: 1500 }] })))).not.toBe("ok");
+    expect(await code(createOrder(checkoutBody(ctx, { lines: [{ productId: pkg.id, grams: 1500 }] })))).not.toBe("ok");
   });
 });
 

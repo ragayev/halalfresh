@@ -43,7 +43,7 @@ export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale:
         <div className="mt-auto pt-3">
           {p.isAvailable ? (
             <AddToCart
-              product={{ id: p.id, name: p.name, stepGrams: p.stepGrams, minGrams: p.minGrams, maxGrams: p.maxGrams, bundle: true }}
+              product={{ id: p.id, name: p.name, stepGrams: p.stepGrams, minGrams: p.minGrams, maxGrams: p.maxGrams, bundle: true, bundleSlug: p.slug }}
             />
           ) : (
             <p className="grid h-10 place-items-center rounded-[var(--radius-button)] bg-sage-soft text-sm font-medium text-muted">{d.common.unavailable}</p>

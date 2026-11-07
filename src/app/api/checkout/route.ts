@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createCheckout } from "@/server/checkout";
+import { createOrder } from "@/server/checkout";
 import { errorBody } from "@/server/errors";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { log } from "@/lib/logger";
@@ -18,7 +18,8 @@ export async function POST(req: Request) {
         { status: 429 },
       );
     const json = await req.json().catch(() => null);
-    return NextResponse.json(await createCheckout(json));
+    const r = await createOrder(json);
+    return NextResponse.json({ token: r.token, url: `/${r.locale}/b/${r.token}` });
   } catch (e) {
     const { status, body } = errorBody(e);
     if (status >= 500) log.error("checkout.unhandled", { error: e });

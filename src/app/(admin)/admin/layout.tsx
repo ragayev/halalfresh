@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <>
                 <nav className="flex gap-1 text-sm font-medium">
                   {[
-                    ["Dashboard", "/admin"],
+                    ["Kennzahlen", "/admin"],
                     ["Bestellungen", "/admin/orders"],
                     ["Produkte", "/admin/products"],
                     ["Lieferung", "/admin/delivery"],

@@ -13,7 +13,10 @@ export type AppErrorCode =
   | "NOT_FOUND"
   | "UNAUTHORIZED"
   | "CONFLICT"
-  | "PAYMENT_ERROR";
+  | "PAYMENT_ERROR"
+  | "PAYMENT_METHOD_UNAVAILABLE"
+  | "INVALID_TRANSITION"
+  | "NOT_PAYABLE";
 
 export class AppError extends Error {
   constructor(
