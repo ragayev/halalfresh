@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Prisma } from "@prisma/client";
 import { hash } from "bcryptjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -191,7 +191,7 @@ async function seedSupplierArticles(merchantId: string) {
       if (!numbers.includes(sku)) {
         await db.product.update({
           where: { id: existing.id },
-          data: { translations: { ...current, supplierArticleNumbers: [...numbers, sku] } },
+          data: { translations: { ...current, supplierArticleNumbers: [...numbers, sku] } as Prisma.InputJsonObject },
         });
       }
       linked++;
