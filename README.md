@@ -24,6 +24,31 @@ npm run dev                     # http://localhost:3000   admin: /admin
 - Before the first order, in **Admin → Settings** set the butcher's WhatsApp number (international format).
 - Product images are generated demo artwork (`npm run gen:images`). Upload real photos in Admin → Products (stored in Postgres, served by `/api/images/[id]`).
 
+## Kevser supplier article list (2026-11-07)
+
+The 8 photographed sheets supplied by the merchant have been transcribed into
+`prisma/data/kevser-articles.json` (**140 article codes**). The importer in
+`prisma/seed.ts` links exact matches to existing products and creates missing cuts and
+packaged variants using `kevser-<article-number>` slugs. Original article codes are
+preserved in the products' translation metadata and displayed under **Admin → Products**;
+the shop search also accepts supplier article codes.
+
+Every newly created item is **unavailable with €0 placeholder price** until the
+butcher confirms the actual price, weight/packaging and stock. Most items remain
+visible as *price coming soon*. The industrial equipment and two ambiguous entries
+are hidden; supplier names/translations still require merchant review. No halal
+certification or price is inferred from these sheets.
+
+Missing photos use existing category-specific stock images or
+`/images/products/default-product.svg`. These are placeholders, not photos of the
+specific SKU. The storefront also has a visual fallback when a product has no image.
+
+**Important:** Pushing this repository does **not** populate a deployed database.
+Run `npm run db:seed` against the intended database after deployment (with the
+correct `DATABASE_URL`), and check the products in the admin before enabling
+availability. The importer is create-only for new products and preserves later
+admin edits. Re-running it safely adds missing article metadata.
+
 ## Tests
 
 ```bash
