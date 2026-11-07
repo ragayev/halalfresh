@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { BadgeCheck, ChevronLeft, Leaf, Info } from "lucide-react";
+import { BadgeCheck, ChevronLeft, Leaf } from "lucide-react";
 import { isLocale, LOCALES } from "@/i18n/config";
 import { getDictionary, t } from "@/i18n/get-dictionary";
 import { getProductBySlug, listProducts } from "@/server/catalog";
@@ -13,6 +13,8 @@ import { ProductBuyBox } from "@/components/product-buy-box";
 import { ProductCard } from "@/components/product-card";
 import { Container } from "@/components/ui";
 import { siteUrl } from "@/lib/env";
+import { getSetting } from "@/server/app-settings";
+import { Notice } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function ProductPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  const [d, p] = await Promise.all([getDictionary(locale), getProductBySlug(slug, locale)]);
+  const [d, p, halalVerified] = await Promise.all([getDictionary(locale), getProductBySlug(slug, locale), getSetting("halalCertificateVerified")]);
   if (!p) notFound();
   const related = (
     await listProducts(locale, {
@@ -132,18 +134,21 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
             </section>
           )}
 
-          <div className="rounded-2xl bg-sage p-4">
-            <div className="flex gap-3">
-              {p.halalCertification ? (
-                <BadgeCheck className="mt-0.5 size-6 shrink-0 text-forest" aria-hidden />
-              ) : (
-                <Info className="mt-0.5 size-6 shrink-0 text-forest" aria-hidden />
-              )}
-              <div>
-                <p className="font-semibold text-forest-dark">{d.product.halal}</p>
-                <p className="text-sm text-forest-dark/80">{p.halalCertification ?? d.product.halalUnverified}</p>
-              </div>
-            </div>
+          <div className="space-y-3">
+            {/* Origin is required product information; the halal certificate text only appears once the operator has verified it. */}
+            <p className="text-sm">
+              <span className="font-semibold">{locale === "tr" ? "Menşei" : "Herkunft"}:</span> {p.origin ?? (locale === "tr" ? "Bilgi yakında" : "Angabe folgt")}
+            </p>
+            {halalVerified && p.halalCertification && (
+              <p className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-fresh-soft px-2 py-1 text-sm font-medium text-fresh">
+                <BadgeCheck className="size-5" strokeWidth={1.75} aria-hidden />
+                {locale === "tr" ? "Helal sertifikalı" : "Halal-zertifiziert"}: {p.halalCertification}
+              </p>
+            )}
+            <p className="text-sm text-text-muted">{locale === "tr" ? "Satıcı: Kevser Fleischerei" : "Verkauf durch Kevser Fleischerei"}</p>
+            {!p.bundle && (
+              <Notice tone="info">{locale === "tr" ? "Gerçek ağırlığa göre ücretlendirilir (±%10)." : "Abrechnung nach tatsächlichem Gewicht (±10 %)."}</Notice>
+            )}
           </div>
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-2xl bg-white p-4 ring-1 ring-line">

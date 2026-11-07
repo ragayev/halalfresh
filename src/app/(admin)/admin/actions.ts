@@ -24,8 +24,8 @@ const fail = (e: unknown): ActionResult => ({
 
 export async function loginAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
   try {
-    const ok = await login(String(fd.get("email") ?? ""), String(fd.get("password") ?? ""));
-    if (!ok) return { ok: false, message: "Invalid email or password" };
+    const ok = await login(String(fd.get("email") ?? ""), String(fd.get("password") ?? ""), String(fd.get("totp") ?? ""));
+    if (!ok) return { ok: false, message: "E-Mail, Passwort oder Code ungültig" };
   } catch (e) {
     return fail(e);
   }

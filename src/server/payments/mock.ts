@@ -1,40 +1,33 @@
+import { createHash } from "node:crypto";
 import { assertMockAllowed } from "@/lib/env";
 import type { CaptureResult, PaymentProvider } from "./provider";
 
 /**
- * Local stand-in for PayPal (dev and tests). Behaviour is controlled by `mockControl`.
- * Refused when NODE_ENV=production.
+ * Local stand-in for PayPal (dev, tests, e2e). Stateless so it behaves the same across separately bundled routes:
+ * the order id encodes the amount and is derived from the request id, which also makes create idempotent like
+ * `PayPal-Request-Id`. `mockControl` lets unit tests steer outcomes. Refused when NODE_ENV=production.
  */
 export const mockControl = {
   nextCapture: "COMPLETED" as CaptureResult["status"],
   webhookValid: true,
   created: [] as { id: string; amountCents: number; requestId: string }[],
-  captured: new Map<string, number>(),
 };
 
-let seq = 0;
-const requestIds = new Map<string, string>();
+const idFor = (amountCents: number, requestId: string) => `MOCK-${amountCents}-${createHash("sha1").update(requestId).digest("hex").slice(0, 12)}`;
 
 export const mockProvider: PaymentProvider = {
   name: "mock",
   async createOrder(a) {
     assertMockAllowed();
-    // Idempotent on the request id, like PayPal-Request-Id.
-    const existing = requestIds.get(a.requestId);
-    const links = (id: string) => [{ rel: "payer-action", href: `${a.returnUrl}?token=${id}` }];
-    if (existing) return { providerOrderId: existing, raw: { id: existing, mock: true, links: links(existing) } };
-    const id = `MOCK-ORDER-${++seq}`;
-    requestIds.set(a.requestId, id);
-    mockControl.created.push({ id, amountCents: a.amountCents, requestId: a.requestId });
-    return { providerOrderId: id, raw: { id, mock: true, links: links(id) } };
+    const id = idFor(a.amountCents, a.requestId);
+    if (!mockControl.created.some((c) => c.id === id)) mockControl.created.push({ id, amountCents: a.amountCents, requestId: a.requestId });
+    return { providerOrderId: id, raw: { id, mock: true, links: [{ rel: "payer-action", href: `${a.returnUrl}?token=${id}` }] } };
   },
   async captureOrder(providerOrderId) {
     assertMockAllowed();
-    const order = mockControl.created.find((c) => c.id === providerOrderId);
-    if (!order) throw new Error("unknown mock order");
-    const n = (mockControl.captured.get(providerOrderId) ?? 0) + 1;
-    mockControl.captured.set(providerOrderId, n);
-    return { status: mockControl.nextCapture, captureId: `MOCK-CAP-${providerOrderId}`, amountCents: order.amountCents, raw: { mock: true } };
+    const m = /^MOCK-(\d+)-/.exec(providerOrderId);
+    if (!m) throw new Error("unknown mock order");
+    return { status: mockControl.nextCapture, captureId: `MOCK-CAP-${providerOrderId}`, amountCents: Number(m[1]), raw: { mock: true } };
   },
   async verifyWebhook() {
     assertMockAllowed();

@@ -6,10 +6,7 @@ import { Barn, Bird, Cow, Fire, Heart, Knife, Package, SquaresFour } from "@phos
 import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { cookies } from "next/headers";
 import { listCategories, listProducts, type Sort } from "@/server/catalog";
-import { resolveDelivery } from "@/server/delivery-service";
-import { isValidPostcode } from "@/domain/delivery";
 import { BUNDLE_CATEGORY } from "@/domain/bundles";
 import { ProductCard } from "@/components/product-card";
 import { ShopControls } from "@/components/shop-controls";
@@ -65,9 +62,8 @@ export default async function Shop({
   const sp = await searchParams;
   const d = await getDictionary(locale);
   // Preorder-only areas (and the unsupported-postcode offer) only see preorder-eligible products.
-  const pc = (await cookies()).get("hf_postcode")?.value ?? "";
-  const mode = isValidPostcode(pc) ? (await resolveDelivery(pc)).check.mode : null;
-  const preorderOnly = mode === "PREORDER_ONLY" || sp.preorder === "1";
+  // No cookie: the preorder filter is opt-in via ?preorder=1; the cart flags non-preorder lines for preorder-only areas.
+  const preorderOnly = sp.preorder === "1";
   const sort = (SORTS.has(sp.sort ?? "") ? sp.sort : "popular") as Sort;
   const [cats, products] = await Promise.all([
     listCategories(locale),

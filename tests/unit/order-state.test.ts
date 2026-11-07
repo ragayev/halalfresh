@@ -88,3 +88,22 @@ describe("phone normalisation", () => {
     expect(normalizePhone("0151/12345678")).toBe(normalizePhone("+49 151 12345678"));
   });
 });
+
+import { totpAt, verifyTotp, base32Decode } from "@/lib/totp";
+describe("TOTP", () => {
+  // RFC 6238 appendix B test vector (SHA1, secret "12345678901234567890"), 8 digits -> last 6 compared here.
+  const secret = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ";
+  it("matches the RFC 6238 vector", () => {
+    expect(base32Decode(secret).toString()).toBe("12345678901234567890");
+    expect(totpAt(secret, 59_000, 8)).toBe("94287082");
+    expect(totpAt(secret, 1111111109_000, 8)).toBe("07081804");
+  });
+  it("accepts adjacent step, rejects wrong/old/non-numeric codes", () => {
+    const now = 1_700_000_000_000;
+    expect(verifyTotp(secret, totpAt(secret, now), now)).toBe(true);
+    expect(verifyTotp(secret, totpAt(secret, now - 30_000), now)).toBe(true);
+    expect(verifyTotp(secret, totpAt(secret, now - 120_000), now)).toBe(false);
+    expect(verifyTotp(secret, "abcdef", now)).toBe(false);
+    expect(verifyTotp(secret, "", now)).toBe(false);
+  });
+});

@@ -25,7 +25,7 @@ export function ProductBuyBox({
   };
 }) {
   const { d, locale, t } = useI18n();
-  const { add, gramsOf, addBundle } = useCart();
+  const { add, gramsOf, addBundle, ready } = useCart();
   const [bundleFailed, setBundleFailed] = useState(false);
   const { check } = useDelivery();
   // Kg-sold cuts: customer picks half a kilo or a full kilo.
@@ -109,8 +109,8 @@ export function ProductBuyBox({
         )}
       </p>
       {/* sticky on mobile, inline on desktop */}
-      <div className="fixed inset-x-0 bottom-16 z-30 border-t border-line bg-cream/95 p-3 backdrop-blur lg:static lg:border-0 lg:bg-transparent lg:p-0">
-        <Button size="lg" full onClick={async () => (isBundle && p.slug ? setBundleFailed(!(await addBundle(p.slug, grams / 1000))) : add(p, Math.min(p.maxGrams, inCart + grams)))} data-testid="add-to-cart">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-cream/95 p-3 backdrop-blur lg:static lg:border-0 lg:bg-transparent lg:p-0">
+        <Button size="lg" full disabled={!ready} onClick={async () => (isBundle && p.slug ? setBundleFailed(!(await addBundle(p.slug, grams / 1000))) : add(p, Math.min(p.maxGrams, inCart + grams)))} data-testid="add-to-cart">
           <ShoppingBag className="size-5" aria-hidden />
           {t(d.product.addFor, { amount: total })}
         </Button>

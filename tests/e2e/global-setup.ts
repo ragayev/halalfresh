@@ -9,7 +9,7 @@ export default async function globalSetup() {
     ADMIN_PASSWORD: "e2e-password-123",
   };
   execSync(
-    `psql ${env.DATABASE_URL} -c 'TRUNCATE "OrderEvent","Refund","Payment","CommissionRecord","OrderItem","Order","Address","Customer","WaitlistEntry","DeliveryBlackoutDate","PostcodeRoute","RouteSchedule","DeliveryRoute","DeliveryZone","ProductImage","SupplierArticle","Product","Category","MerchantSettings","Merchant","AdminUser","AuditLog","ProcessedWebhookEvent","RateLimit" RESTART IDENTITY CASCADE'`,
+    `psql ${env.DATABASE_URL} -c 'TRUNCATE "OrderEvent","Notification","Consent","Payment","OrderItem","Order","Address","Customer","Setting","WaitlistEntry","DeliveryBlackoutDate","PostcodeRoute","RouteSchedule","DeliveryRoute","DeliveryZone","ProductImage","SupplierArticle","Product","Category","MerchantSettings","Merchant","AdminUser","AuditLog","ProcessedWebhookEvent","RateLimit" RESTART IDENTITY CASCADE'`,
     { stdio: "ignore" },
   );
   execSync("npx tsx prisma/seed.ts", { env, stdio: "inherit" });

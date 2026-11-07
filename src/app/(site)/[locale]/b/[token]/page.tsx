@@ -61,7 +61,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
       {payable && (
         <Card className="space-y-3 border-primary p-4">
           <p className="t-price-lg">{c.payNow(m(o.finalTotalCents!))}</p>
-          <PayButton token={token} c={c} returnedOrderId={sp.token} />
+          <PayButton token={token} label={c.payWithPaypal} returnedOrderId={sp.token} />
         </Card>
       )}
       {o.paymentMethod === "CASH" && weighed && ["WEIGHED", "OUT_FOR_DELIVERY", "DELIVERED_UNPAID"].includes(o.status) && (
@@ -146,7 +146,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
         </p>
       </SellerBox>
 
-      {(o.status === "NEW" || o.status === "ACCEPTED") && <CancelButton token={token} c={c} />}
+      {(o.status === "NEW" || o.status === "ACCEPTED") && <CancelButton token={token} labels={{ cancel: c.cancel, confirm: c.cancelConfirm, yes: c.cancelYes, back: c.back }} />}
     </Container>
   );
 }

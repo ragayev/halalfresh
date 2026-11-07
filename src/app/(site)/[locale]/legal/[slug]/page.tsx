@@ -10,6 +10,7 @@ const TITLES = {
   privacy: "privacyTitle",
   imprint: "imprintTitle",
   terms: "termsTitle",
+  agb: "agbTitle",
 } as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
@@ -26,12 +27,13 @@ export default async function Legal({ params }: { params: Promise<{ locale: stri
   if (!isLocale(locale) || !(slug in legalContent)) notFound();
   const d = await getDictionary(locale);
   return (
-    <Container className="max-w-3xl py-10">
+    <Container className="max-w-[720px] py-10">
       <h1 className="font-display text-4xl font-normal">{d.legal[TITLES[slug as LegalSlug]]}</h1>
       <p className="mt-4 flex gap-2 rounded-xl bg-warn p-3 text-sm text-warn-ink">
         <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
         {d.legal.placeholder}
       </p>
+      {locale === "tr" && <p className="mt-3 text-sm text-text-muted">Yasal metinler yalnızca Almanca olarak geçerlidir.</p>}
       <div className="mt-6 space-y-6">
         {legalContent[slug as LegalSlug].map((s) => (
           <section key={s.heading}>

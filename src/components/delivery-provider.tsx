@@ -7,7 +7,7 @@ export const POSTCODE_KEY = "hf_postcode";
 
 type Status = "idle" | "loading" | "ready" | "error";
 interface Ctx {
-  /** false until localStorage/cookie were read (avoid flashing the gate). */
+  /** false until localStorage/cookie were read (avoid flashing the gate). The MVP sets no cookies: postcode lives in localStorage only.. */
   hydrated: boolean;
   postcode: string | null;
   check: DeliveryCheck | null;
@@ -24,8 +24,6 @@ function persist(pc: string) {
   try {
     localStorage.setItem(POSTCODE_KEY, pc);
   } catch {}
-  // Cookie lets server-rendered pages (shop) hide products a preorder-only area cannot order. Not used for tracking.
-  document.cookie = `${POSTCODE_KEY}=${pc}; path=/; max-age=31536000; samesite=lax`;
 }
 
 function readStored(): string | null {
@@ -33,8 +31,7 @@ function readStored(): string | null {
     const v = localStorage.getItem(POSTCODE_KEY);
     if (v && isValidPostcode(v)) return v;
   } catch {}
-  const m = document.cookie.match(new RegExp(`(?:^|; )${POSTCODE_KEY}=(\\d{5})`));
-  return m ? m[1] : null;
+  return null;
 }
 
 export async function fetchCheck(pc: string, signal?: AbortSignal): Promise<DeliveryCheck> {

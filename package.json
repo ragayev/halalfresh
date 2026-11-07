@@ -16,6 +16,7 @@
     "catalog:import": "tsx scripts/catalog-import.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "admin:totp": "tsx scripts/admin-totp.ts",
     "gen:images": "tsx scripts/gen-images.ts",
     "postinstall": "prisma generate"
   },

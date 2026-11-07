@@ -3,6 +3,7 @@ import Link from "next/link";
 import "../../globals.css";
 import { getAdmin } from "@/server/auth";
 import { logoutAction } from "./actions";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 export const metadata: Metadata = {
   title: "Halal Fresh Admin",
@@ -13,36 +14,25 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const admin = await getAdmin();
   return (
     <html lang="de">
-      <body className="min-h-dvh bg-[#f7f7f8]">
-        <header className="border-b border-line bg-white">
-          <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
-            <Link href="/admin" className="flex items-center gap-2 font-semibold text-forest-dark">
-              <span className="wordmark text-lg">Halal Fresh Admin</span>
+      <body className="min-h-dvh bg-[#f7f7f8] pb-16 lg:pb-0">
+        <header className="border-b border-border bg-surface">
+          <div className="flex h-14 items-center gap-4 px-4">
+            <Link href="/admin/orders" className="wordmark text-lg">
+              Halal Fresh Admin
             </Link>
             {admin && (
-              <>
-                <nav className="flex gap-1 text-sm font-medium">
-                  {[
-                    ["Kennzahlen", "/admin"],
-                    ["Bestellungen", "/admin/orders"],
-                    ["Produkte", "/admin/products"],
-                    ["Lieferung", "/admin/delivery"],
-                    ["Einstellungen", "/admin/settings"],
-                  ].map(([l, h]) => (
-                    <Link key={h} href={h} className="rounded-full px-3 py-1.5 hover:bg-sage">
-                      {l}
-                    </Link>
-                  ))}
-                </nav>
-                <form action={logoutAction} className="ml-auto flex items-center gap-3 text-sm text-muted">
-                  <span className="hidden sm:inline">{admin.email}</span>
-                  <button className="font-medium text-forest hover:underline">Abmelden</button>
-                </form>
-              </>
+              <form action={logoutAction} className="ml-auto flex items-center gap-3 text-sm text-text-muted">
+                <span className="hidden sm:inline">{admin.email}</span>
+                <button className="inline-flex min-h-11 items-center font-medium text-primary hover:underline">Abmelden</button>
+              </form>
             )}
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+        <div className="flex">
+          {admin && <AdminNav variant="side" />}
+          <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">{children}</main>
+        </div>
+        {admin && <AdminNav variant="bottom" />}
       </body>
     </html>
   );

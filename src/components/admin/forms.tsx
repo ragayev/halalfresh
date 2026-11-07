@@ -42,7 +42,7 @@ export function LoginForm({ action }: { action: (p: ActionResult | null, fd: For
     <form action={formAction} className="space-y-4">
       <div>
         <label htmlFor="email" className="mb-1 block text-sm font-medium">
-          Email
+          E-Mail
         </label>
         <Input
           id="email"
@@ -56,13 +56,19 @@ export function LoginForm({ action }: { action: (p: ActionResult | null, fd: For
       </div>
       <div>
         <label htmlFor="password" className="mb-1 block text-sm font-medium">
-          Password
+          Passwort
         </label>
         <Input id="password" name="password" type="password" autoComplete="current-password" required />
       </div>
+      <div>
+        <label htmlFor="totp" className="mb-1 block text-sm font-medium">
+          Authenticator-Code (falls eingerichtet)
+        </label>
+        <Input id="totp" name="totp" inputMode="numeric" autoComplete="one-time-code" maxLength={7} />
+      </div>
       <Msg r={r} />
       <Button type="submit" full loading={pending}>
-        Sign in
+        Anmelden
       </Button>
     </form>
   );

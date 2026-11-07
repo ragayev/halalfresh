@@ -22,13 +22,13 @@ export default defineConfig({
   ],
   webServer: {
     command: `npx next dev -p ${PORT}`,
-    url: `http://localhost:${PORT}/en`,
+    url: `http://localhost:${PORT}/de`,
     reuseExistingServer: false,
     timeout: 120_000,
     env: {
       DATABASE_URL: "postgresql://raghayev@localhost:5432/halalfresh_test",
       NEXT_DIST_DIR: ".next-e2e",
-      PAYMENT_GATEWAY: "mock",
+      PAYMENT_PROVIDER: "mock",
       NEXT_PUBLIC_SITE_URL: `http://localhost:${PORT}`,
       AUTH_SECRET: "e2e-secret-e2e-secret-e2e-secret-12345",
     },
