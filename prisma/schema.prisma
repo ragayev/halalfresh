@@ -45,6 +45,24 @@ enum ScheduleKind {
   NTH_WEEKDAY_OF_MONTH
 }
 
+enum ProductStatus {
+  /// Not listed in the storefront (work in progress or temporarily unpublished).
+  DRAFT
+  /// Listed in the storefront. Purchasable only when also available with a confirmed price.
+  ACTIVE
+  /// Retired. Kept because old orders reference it; never listed or sold.
+  ARCHIVED
+}
+
+enum SellingUnit {
+  /// Quantity in grams; `pricePerKgCents` is the price per kilogram.
+  KG
+  /// Quantity unit is 1000 per piece; `pricePerKgCents` is the price of ONE piece.
+  PIECE
+  /// Quantity unit is 1000 per package (bundles, boxes); `pricePerKgCents` is the price of ONE package.
+  PACKAGE
+}
+
 /// A partner butcher. MVP has exactly one row; every order points at its merchant
 /// so multi-merchant can be added later without reshaping orders.
 model Merchant {
@@ -63,6 +81,7 @@ model Merchant {
 
   settings      MerchantSettings?
   products      Product[]
+  supplierArticles SupplierArticle[]
   deliveryZones DeliveryZone[]
   blackoutDates DeliveryBlackoutDate[]
   orders        Order[]
@@ -113,8 +132,12 @@ model Product {
   allergenInfo   String?
   isAvailable    Boolean  @default(true)
   isFeatured     Boolean  @default(false)
-  /// Hidden products are not listed or reachable in the storefront.
+  /// LEGACY MIRROR of `status <> ACTIVE` (enforced by the product_hidden_matches_status CHECK). Decide with `status`.
   isHidden       Boolean  @default(false)
+  /// Canonical publishing state. Written only by src/server/product-service.ts.
+  status         ProductStatus @default(ACTIVE)
+  /// How the product is sold. Quantities stay integers; see src/domain/product-rules.ts for the unit convention.
+  sellingUnit    SellingUnit @default(KG)
   /// Can be ordered from preorder-only zones (Ramadan box, Kurban/aqiqah shares).
   preorderEligible Boolean @default(false)
   /// Fleischpaket: [{ grams, names: { de, tr, en }, productSlug? }]. Non-null = bundle sold per package;
@@ -128,7 +151,9 @@ model Product {
 
   images     ProductImage[]
   orderItems OrderItem[]
+  supplierArticles SupplierArticle[]
 
+  @@index([status, categoryId])
   @@index([categoryId, isAvailable])
   @@index([merchantId])
   @@index([isFeatured])
@@ -144,8 +169,29 @@ model ProductImage {
   mimeType  String?
   alt       String  @default("")
   position  Int     @default(0)
+  /// Generic or illustrative stand-in (not a photo of this exact product). Shown with a notice; flagged in the admin.
+  isPlaceholder Boolean @default(false)
 
   @@index([productId, position])
+}
+
+/// A supplier's article number mapped to a product. A product may have several; a number belongs to one product per merchant.
+model SupplierArticle {
+  id           String   @id @default(cuid())
+  merchantId   String
+  merchant     Merchant @relation(fields: [merchantId], references: [id])
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  supplierSku  String
+  /// Name exactly as printed on the supplier list (German).
+  originalName String?
+  /// Where the mapping came from: "kevser-list", "admin", "csv".
+  source       String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([merchantId, supplierSku])
+  @@index([productId])
 }
 
 model DeliveryZone {
