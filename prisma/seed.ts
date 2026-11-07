@@ -26,6 +26,7 @@ async function main() {
 
   await hideDemoCatalogue();
   await seedCatalog(merchant.id);
+  await seedSupplierArticles(merchant.id);
   await seedBundles(merchant.id);
   await seedPreorderProducts(merchant.id);
   await seedDelivery(merchant.id);
@@ -111,6 +112,124 @@ async function seedCatalog(merchantId: string) {
     await db.productImage.create({ data: { productId: created.id, url: p.image, alt: p.name.en } });
   }
   console.log(`Catalogue ready: ${cat.products.length} products (all unavailable until priced).`);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Supplier's printed article list (8 photos / 140 SKUs, prisma/data/kevser-articles.json).
+// Preserve original SKUs, merge exact existing catalogue matches and create missing variants.
+// Supplier list proves neither prices nor availability, so new food products are visible for
+// discovery but cannot be ordered until a price and availability are set by the operator.
+// Re-running only creates missing rows or appends SKU metadata; it never resets admin edits.
+// ---------------------------------------------------------------------------------------------
+interface SupplierArticle {
+  sku: string;
+  de: string;
+  tr: string;
+  en: string;
+  category: string;
+  existingSlug?: string;
+}
+
+const SUPPLIER_CATEGORY_META: Record<string, { tr: string; de: string; en: string }> = {
+  hazir: { tr: "Hazır Ürünler", de: "Fertiggerichte", en: "Prepared Foods" },
+  icecek: { tr: "İçecekler", de: "Getränke", en: "Drinks" },
+  ekipman: { tr: "Ekipman", de: "Ausstattung", en: "Equipment" },
+};
+
+const SUPPLIER_FALLBACK_IMAGES: Record<string, string> = {
+  dana: "/images/products/dana/dana-haslamalik.webp",
+  kuzu: "/images/products/kuzu/kuzu-but.webp",
+  tavuk: "/images/products/tavuk/butun-tavuk.webp",
+  sakatat: "/images/products/sakatat/iskembe.webp",
+  mangal: "/images/products/mangal/izgara-kofte.webp",
+  sarkuteri: "/images/products/sarkuteri/sucuk.webp",
+  hazir: "/images/products/default-product.svg",
+  icecek: "/images/products/default-product.svg",
+  ekipman: "/images/products/default-product.svg",
+};
+
+// Some source labels are ambiguous or refer to industrial equipment, not consumer food.
+const SUPPLIER_HIDDEN_SKUS = new Set(["032016075", "32016128"]);
+
+async function seedSupplierArticles(merchantId: string) {
+  const source = JSON.parse(readFileSync(join(__dirname, "data/kevser-articles.json"), "utf8")) as {
+    items: SupplierArticle[];
+  };
+  const extraIds = new Map<string, string>();
+  for (const [i, [slug, names]] of Object.entries(SUPPLIER_CATEGORY_META).entries()) {
+    const c = await db.category.upsert({
+      where: { slug },
+      update: {},
+      create: {
+        slug,
+        name: names.en,
+        sortOrder: 30 + i,
+        translations: Object.fromEntries(
+          (["tr", "de", "en"] as const).map((locale) => [locale, { name: names[locale] }]),
+        ),
+      },
+    });
+    extraIds.set(slug, c.id);
+  }
+  const categories = await db.category.findMany({ select: { id: true, slug: true } });
+  const categoryIds = new Map(categories.map((c) => [c.slug, c.id]));
+  let created = 0;
+  let linked = 0;
+  for (const [i, a] of source.items.entries()) {
+    const sku = a.sku.trim();
+    const slug = `kevser-${sku}`;
+    if (!/^\\d{8,9}$/.test(sku)) throw new Error(`Unexpected supplier article number: ${sku}`);
+    if (!categoryIds.has(a.category)) throw new Error(`Unknown supplier category: ${a.category}`);
+
+    if (a.existingSlug) {
+      const existing = await db.product.findUnique({ where: { slug: a.existingSlug } });
+      if (!existing) throw new Error(`Missing mapped catalogue item: ${a.existingSlug}`);
+      const current = (existing.translations && typeof existing.translations === "object" && !Array.isArray(existing.translations)
+        ? existing.translations
+        : {}) as Record<string, unknown>;
+      const numbers = Array.isArray(current.supplierArticleNumbers)
+        ? current.supplierArticleNumbers.filter((n): n is string => typeof n === "string")
+        : [];
+      if (!numbers.includes(sku)) {
+        await db.product.update({
+          where: { id: existing.id },
+          data: { translations: { ...current, supplierArticleNumbers: [...numbers, sku] } },
+        });
+      }
+      linked++;
+      continue;
+    }
+
+    if (await db.product.findUnique({ where: { slug } })) continue;
+    const hidden = a.category === "ekipman" || SUPPLIER_HIDDEN_SKUS.has(sku);
+    const image = SUPPLIER_FALLBACK_IMAGES[a.category] ?? "/images/products/default-product.svg";
+    await db.product.create({
+      data: {
+        merchantId,
+        categoryId: categoryIds.get(a.category)!,
+        slug,
+        name: a.en,
+        description: "Price, product details and availability to be confirmed by the butcher.",
+        pricePerKgCents: 0,
+        stepGrams: 500,
+        minGrams: 500,
+        maxGrams: 20000,
+        isAvailable: false,
+        isHidden: hidden,
+        sortOrder: 200 + i,
+        translations: {
+          en: { name: a.en, description: "Price and availability to be confirmed." },
+          de: { name: a.de, description: "Preis und Verfügbarkeit werden noch bestätigt." },
+          tr: { name: a.tr, description: "Fiyat ve stok durumu henüz doğrulanmadı." },
+          supplierArticleNumbers: [sku],
+          supplierOriginalName: a.de,
+        },
+        images: { create: { url: image, alt: a.de } },
+      },
+    });
+    created++;
+  }
+  console.log(`Supplier catalogue: ${source.items.length} SKUs, ${linked} matched, ${created} newly seeded.`);
 }
 
 // ---------------------------------------------------------------------------------------------
