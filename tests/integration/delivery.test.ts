@@ -116,7 +116,7 @@ describe("postcode lookup", () => {
     const c = await checkDelivery("80331", NOW);
     expect(c).toMatchObject({ supported: false, zone: null, mode: null, nextSlot: null });
     expect(c.preorderProductsAvailable).toBe(true);
-    await db.product.update({ where: { id: preorder.id }, data: { isHidden: true } });
+    await db.product.update({ where: { id: preorder.id }, data: { status: "DRAFT", isHidden: true } });
     expect((await checkDelivery("80331", NOW)).preorderProductsAvailable).toBe(false);
   });
   it("inactive zone/route is unsupported; blackout dates are skipped", async () => {
@@ -273,7 +273,7 @@ describe("checkout validation", () => {
   });
   it("rejects unsupported postcodes and hidden products", async () => {
     expect(await code(createCheckout(put({ address: addr("80331") }), NOW))).toBe("POSTCODE_UNSUPPORTED");
-    await db.product.update({ where: { id: ctx.beef.id }, data: { isHidden: true } });
+    await db.product.update({ where: { id: ctx.beef.id }, data: { status: "DRAFT", isHidden: true } });
     expect(await code(createCheckout(put({ address: addr("10115") }), NOW))).toBe("PRODUCT_UNAVAILABLE");
   });
 });

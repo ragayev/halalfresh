@@ -217,4 +217,24 @@ test.describe("admin", () => {
     await page.getByTestId("status-CONFIRMED_BY_BUTCHER").click();
     await expect(page.getByTestId("status-PREPARING")).toBeVisible();
   });
+  test("product admin: database-derived stats, SKU search and status filter", async ({ page }) => {
+    await page.goto("/admin/login");
+    await page.getByLabel("Email").fill("e2e-admin@example.com");
+    await page.getByLabel("Password").fill("e2e-password-123");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+
+    await page.goto("/admin/products");
+    await expect(page.getByRole("heading", { name: "Products" })).toBeVisible();
+    await expect(page.getByText("Purchasable")).toBeVisible();
+    await page.goto("/admin/products?sku=032016001");
+    await expect(page.getByRole("row")).toHaveCount(2); // header + the one mapped product
+    await page.goto("/admin/products?q=Lamb+Chops&status=ACTIVE&availability=available");
+    await expect(page.getByRole("row", { name: /Lamb Chops/ })).toBeVisible();
+    await page.goto("/admin/products?status=ARCHIVED");
+    await expect(page.getByText("No products match these filters.")).toBeVisible();
+    const csv = await page.request.get("/admin/products/export");
+    expect(csv.headers()["content-type"]).toContain("text/csv");
+    expect(await csv.text()).toContain("lamb-chops");
+  });
 });

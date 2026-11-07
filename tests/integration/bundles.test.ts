@@ -96,11 +96,11 @@ describe("bundles in checkout", () => {
 
 describe("draft bundles (price not confirmed)", () => {
   it("are invisible in the storefront and cannot be ordered even if the flags are flipped", async () => {
-    await db.product.update({ where: { id: family.id }, data: { isHidden: true, isAvailable: false, priceConfirmed: false } });
+    await db.product.update({ where: { id: family.id }, data: { status: "DRAFT", isHidden: true, isAvailable: false, priceConfirmed: false } });
     expect(await getProductBySlug("aile-paketi", "de")).toBeNull();
     expect((await listProducts("de", { category: "paketler" })).length).toBe(0);
     // Someone un-hides it without confirming the price: checkout must still refuse.
-    await db.product.update({ where: { id: family.id }, data: { isHidden: false, isAvailable: true } });
+    await db.product.update({ where: { id: family.id }, data: { status: "ACTIVE", isHidden: false, isAvailable: true } });
     expect(await code(createCheckout(checkoutBody(ctx, { lines: [{ productId: family.id, grams: 1000 }] })))).toBe("PRODUCT_UNAVAILABLE");
     const view = await cartView([{ productId: family.id, grams: 1000 }], "de");
     expect(view.lines[0].issue).toBe("UNAVAILABLE");
@@ -113,6 +113,7 @@ describe("draft bundles (price not confirmed)", () => {
     expect(p?.categoryName).toBe("Fleischpakete");
     expect(p?.bundle?.totalGrams).toBe(9500);
     expect(p?.bundle?.items[0]).toEqual({ name: "Rinderhackfleisch", grams: 2000 });
-    expect(p?.images).toEqual([]);
+    // No image rows: the view falls back to the generic placeholder and says so.
+    expect(p?.images).toEqual([{ src: "/images/products/default-product.svg", alt: "Familienpaket", placeholder: true }]);
   });
 });
