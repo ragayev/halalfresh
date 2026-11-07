@@ -1,3 +1,4 @@
+import { purchaseBlocker, type ProductStatus } from "@/domain/product-rules";
 import { db } from "@/lib/db";
 import { computeTotals, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
 import { getProductsByIds } from "./catalog";
@@ -57,7 +58,7 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
       };
     let issue: LineIssue | undefined;
     if (delivery.mode === "PREORDER_ONLY" && !r.preorderEligible) issue = "NOT_PREORDER";
-    if (r.bundleItems != null && !r.priceConfirmed && !issue) issue = "UNAVAILABLE";
+    if (!issue && purchaseBlocker({ ...r, status: r.status as ProductStatus })) issue = "UNAVAILABLE";
     try {
       validateQuantity(r, l.grams);
     } catch (e) {

@@ -34,7 +34,7 @@ export async function resolveDelivery(rawPostcode: string, now = new Date()): Pr
 
   const merchant = await getMerchant();
   const preorderProductsAvailable =
-    (await db.product.count({ where: { merchantId: merchant.id, preorderEligible: true, isHidden: false, isAvailable: true } })) > 0;
+    (await db.product.count({ where: { merchantId: merchant.id, preorderEligible: true, status: "ACTIVE", isAvailable: true, priceConfirmed: true, pricePerKgCents: { gt: 0 } } })) > 0;
   const pr = await db.postcodeRoute.findUnique({
     where: { postcode },
     include: { route: { include: { zone: true, schedules: true } } },

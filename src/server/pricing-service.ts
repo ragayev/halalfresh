@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { BUNDLE_UNIT_GRAMS, parseBundleItems, snapshotBundle, type BundleSnapshot } from "@/domain/bundles";
+import { purchaseBlocker, UNIT_QUANTITY, type ProductStatus, type SellingUnit } from "@/domain/product-rules";
 import { computeTotals, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
 import { AppError } from "./errors";
 import { getMerchant } from "./settings";
@@ -39,13 +40,17 @@ export async function priceCart(lines: CartLineInput[], terms: DeliveryTerms) {
 
   const priced: PricedLine[] = lines.map((l) => {
     const p = byId.get(l.productId);
-    if (!p || p.isHidden)
+    // Only published products exist for customers; drafts and archived records behave as deleted.
+    if (!p || p.status !== "ACTIVE")
       throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart no longer exists", 409, { productId: l.productId });
     if (terms.mode === "PREORDER_ONLY" && !p.preorderEligible)
       throw new AppError("PREORDER_ONLY", "This delivery area only accepts preorder products", 422, {
         productId: p.id,
         productName: p.name,
       });
+    // Server-side truth: listed + available + confirmed price (+ valid bundle). Client flags are never consulted.
+    if (purchaseBlocker({ ...p, status: p.status as ProductStatus }))
+      throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart is not available", 409, { productId: p.id, productName: p.name });
     try {
       validateQuantity(p, l.grams);
     } catch (e) {
@@ -61,7 +66,7 @@ export async function priceCart(lines: CartLineInput[], terms: DeliveryTerms) {
     // A bundle that is still awaiting price approval can never be sold, whatever the flags say.
     if (p.bundleItems != null && (!items || !p.priceConfirmed))
       throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart is not available yet", 409, { productId: p.id, productName: p.name });
-    if (items && l.grams % BUNDLE_UNIT_GRAMS !== 0)
+    if ((items || (p.sellingUnit as SellingUnit) !== "KG") && l.grams % Math.max(BUNDLE_UNIT_GRAMS, UNIT_QUANTITY) !== 0)
       throw new AppError("INVALID_QUANTITY", "Invalid bundle quantity", 409, { productId: p.id, productName: p.name });
     return {
       bundleSnapshot: items ? snapshotBundle(items) : null,
