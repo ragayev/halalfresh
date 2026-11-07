@@ -24,6 +24,8 @@ export interface ProductView {
   /** Fleischpaket: localized contents; null for regular products. */
   bundle: { totalGrams: number; items: { name: string; grams: number }[] } | null;
   images: { src: string; alt: string }[];
+  /** Original supplier article codes, when linked to the product. */
+  supplierArticleNumbers: string[];
 }
 
 export interface CategoryView {
@@ -46,6 +48,10 @@ export function toProductView(p: ProductRow, locale: string): ProductView {
   const tr = (p.translations as Tr)[locale] ?? {};
   const ctr = (p.category.translations as Tr)[locale] ?? {};
   const bundleItems = parseBundleItems(p.bundleItems);
+  const metadata = p.translations as { supplierArticleNumbers?: unknown };
+  const supplierArticleNumbers = Array.isArray(metadata.supplierArticleNumbers)
+    ? metadata.supplierArticleNumbers.filter((v): v is string => typeof v === "string")
+    : [];
   return {
     id: p.id,
     slug: p.slug,
@@ -69,10 +75,13 @@ export function toProductView(p: ProductRow, locale: string): ProductView {
           items: bundleItems.map((i) => ({ name: bundleItemName(i, locale), grams: i.grams })),
         }
       : null,
-    images: p.images.map((i) => ({
-      src: imageSrc(i),
-      alt: i.alt || (bundleItems ? `${tr.name || p.name}: ${bundleItems.map((b) => bundleItemName(b, locale)).join(", ")}` : tr.name || p.name),
-    })),
+    supplierArticleNumbers,
+    images: p.images.length
+      ? p.images.map((i) => ({
+          src: imageSrc(i),
+          alt: i.alt || (bundleItems ? `${tr.name || p.name}: ${bundleItems.map((b) => bundleItemName(b, locale)).join(", ")}` : tr.name || p.name),
+        }))
+      : [{ src: "/images/products/default-product.svg", alt: tr.name || p.name }],
   };
 }
 
@@ -143,7 +152,7 @@ export async function listProducts(
   let views = rows.map((r) => toProductView(r, locale));
   if (opts.q?.trim()) {
     const needle = opts.q.trim().toLowerCase();
-    views = views.filter((v) => `${v.name} ${v.categoryName} ${v.description}`.toLowerCase().includes(needle));
+    views = views.filter((v) => `${v.name} ${v.categoryName} ${v.description} ${v.supplierArticleNumbers.join(" ")}`.toLowerCase().includes(needle));
   }
   return views;
 }
