@@ -37,6 +37,11 @@ export default async function Products() {
               <tr key={p.id}>
                 <td className="px-4 py-3 font-medium">
                   {p.name}
+                  {Array.isArray((p.translations as { supplierArticleNumbers?: unknown }).supplierArticleNumbers) && (
+                    <div className="mt-1 text-xs font-normal text-muted">
+                      Kevser SKU: {((p.translations as { supplierArticleNumbers: string[] }).supplierArticleNumbers).join(", ")}
+                    </div>
+                  )}
                   {p.bundleItems != null && (
                     <Badge tone={p.priceConfirmed ? "green" : "amber"} className="ms-2">
                       {p.priceConfirmed ? "Bundle" : "Bundle · draft price"}
