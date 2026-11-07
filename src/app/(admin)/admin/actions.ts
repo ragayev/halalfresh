@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { FulfillmentStatus } from "@prisma/client";
+import { FulfillmentStatus, type Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { login, logout, requireAdmin } from "@/server/auth";
 import { AppError } from "@/server/errors";
@@ -202,7 +202,7 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
         en: { ...previousLocale("en"), name: v.name, description: v.description },
         de: { ...previousLocale("de"), name: v.nameDe, description: v.descDe },
         tr: { ...previousLocale("tr"), name: v.nameTr, description: v.descTr },
-      },
+      } as Prisma.InputJsonObject,
     };
     const p =
       id === "new"
