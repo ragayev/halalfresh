@@ -89,12 +89,22 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div className={`relative overflow-hidden rounded-[var(--radius-card)] ${p.bundle ? "aspect-square" : "aspect-[4/3]"} bg-sage ring-1 ring-line`}>
             {p.images[0] && <ProductImage src={p.images[0].src} alt={p.images[0].alt} priority sizes="(min-width:1024px) 50vw, 100vw" />}
+            {p.slug.startsWith("kevser-") && p.images[0]?.src.startsWith("/images/products/") && (
+              <span className="absolute bottom-3 left-3 rounded-lg bg-white/90 px-2.5 py-1 text-xs font-semibold text-forest-dark">
+                {locale === "tr" ? "Temsili görsel" : locale === "de" ? "Beispielbild" : "Illustrative photo"}
+              </span>
+            )}
           </div>
         </div>
         <div className="space-y-6">
           <div>
             <p className="text-sm font-medium text-forest">{p.categoryName}</p>
             <h1 className="mt-1 text-3xl font-semibold leading-tight text-heading sm:text-[2rem]">{p.name}</h1>
+            {p.supplierArticleNumbers.length > 0 && (
+              <p className="mt-1 text-xs text-muted">
+                {locale === "tr" ? "Ürün kodu" : locale === "de" ? "Artikel-Nr." : "Article no."}: {p.supplierArticleNumbers.join(", ")}
+              </p>
+            )}
             <p className="mt-2 text-[1.625rem] font-bold text-forest" data-testid="price">
               {p.pricePerKgCents > 0 ? (
                 <>
