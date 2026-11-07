@@ -169,6 +169,17 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
   }
   try {
     const merchant = await getMerchant();
+    // Keep importer metadata (supplier article numbers) and existing EN data on admin edits.
+    const previous = id === "new"
+      ? null
+      : await db.product.findUnique({ where: { id }, select: { translations: true } });
+    const translations = previous?.translations && typeof previous.translations === "object" && !Array.isArray(previous.translations)
+      ? (previous.translations as Record<string, unknown>)
+      : {};
+    const previousLocale = (locale: string): Record<string, unknown> => {
+      const value = translations[locale];
+      return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+    };
     const data = {
       ...(bundleData ?? {}),
       name: v.name,
@@ -187,8 +198,10 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
       isHidden: fd.get("isHidden") === "on",
       preorderEligible: fd.get("preorderEligible") === "on",
       translations: {
-        de: { name: v.nameDe, description: v.descDe },
-        tr: { name: v.nameTr, description: v.descTr },
+        ...translations,
+        en: { ...previousLocale("en"), name: v.name, description: v.description },
+        de: { ...previousLocale("de"), name: v.nameDe, description: v.descDe },
+        tr: { ...previousLocale("tr"), name: v.nameTr, description: v.descTr },
       },
     };
     const p =
