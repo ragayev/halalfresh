@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
 import "../../globals.css";
 import { getAdmin } from "@/server/auth";
 import { logoutAction } from "./actions";
-import { Leaf } from "lucide-react";
+import { AdminNav } from "@/components/admin/admin-nav";
 
-const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-sans-body", display: "swap" });
 export const metadata: Metadata = {
   title: "Halal Fresh Admin",
   robots: { index: false, follow: false },
@@ -15,38 +14,27 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await getAdmin();
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-dvh bg-cream">
-        <header className="border-b border-line bg-white">
-          <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
-            <Link href="/admin" className="flex items-center gap-2 font-semibold text-forest-dark">
-              <Leaf className="size-5" aria-hidden />
-              Halal Fresh Admin
+    <html lang="de">
+      <body className="min-h-dvh bg-[#f7f7f8] pb-16 lg:pb-0">
+        <header className="border-b border-border bg-surface">
+          <div className="flex h-14 items-center gap-4 px-4">
+            <Link href="/admin/orders" className="inline-flex min-h-11 items-center gap-2" aria-label="Halal Fresh Admin">
+              <Image src="/brand/halal-fresh-logo.svg" alt="Halal Fresh" width={1035} height={372} className="h-9 w-auto" />
+              <span className="text-sm font-semibold text-text-muted">Admin</span>
             </Link>
             {admin && (
-              <>
-                <nav className="flex gap-1 text-sm font-medium">
-                  {[
-                    ["Dashboard", "/admin"],
-                    ["Orders", "/admin/orders"],
-                    ["Products", "/admin/products"],
-                    ["Delivery", "/admin/delivery"],
-                    ["Settings", "/admin/settings"],
-                  ].map(([l, h]) => (
-                    <Link key={h} href={h} className="rounded-full px-3 py-1.5 hover:bg-sage">
-                      {l}
-                    </Link>
-                  ))}
-                </nav>
-                <form action={logoutAction} className="ml-auto flex items-center gap-3 text-sm text-muted">
-                  <span className="hidden sm:inline">{admin.email}</span>
-                  <button className="font-medium text-forest hover:underline">Sign out</button>
-                </form>
-              </>
+              <form action={logoutAction} className="ml-auto flex items-center gap-3 text-sm text-text-muted">
+                <span className="hidden sm:inline">{admin.email}</span>
+                <button className="inline-flex min-h-11 items-center font-medium text-primary hover:underline">Abmelden</button>
+              </form>
             )}
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+        <div className="flex">
+          {admin && <AdminNav variant="side" />}
+          <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">{children}</main>
+        </div>
+        {admin && <AdminNav variant="bottom" />}
       </body>
     </html>
   );

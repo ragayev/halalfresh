@@ -260,23 +260,22 @@ export function PostcodePanel({ onResolved, autoFocus }: { onResolved?: (c: Deli
   );
 }
 
-/** First-open modal. Required until a postcode exists; afterwards it doubles as "change postcode". */
+/** Optional postcode dialog, opened from the header. Browsing does not require a postcode. */
 export function PostcodeGate() {
   const { d } = useI18n();
-  const { hydrated, gateOpen, postcode, closeGate } = useDelivery();
-  const closable = !!postcode;
+  const { hydrated, gateOpen, closeGate } = useDelivery();
 
   useEffect(() => {
     if (!gateOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closable && closeGate();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeGate();
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [gateOpen, closable, closeGate]);
+  }, [gateOpen, closeGate]);
 
   if (!hydrated || !gateOpen) return null;
   return (
@@ -294,23 +293,19 @@ export function PostcodeGate() {
             </h2>
             <p className="mt-1 text-sm text-muted">{d.delivery.gateText}</p>
           </div>
-          {closable && (
-            <button
-              type="button"
-              onClick={closeGate}
-              aria-label={d.delivery.close}
-              className="grid size-10 shrink-0 place-items-center rounded-full hover:bg-sage"
-            >
-              <X className="size-5" aria-hidden />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={closeGate}
+            aria-label={d.delivery.close}
+            className="grid size-10 shrink-0 place-items-center rounded-full hover:bg-sage"
+          >
+            <X className="size-5" aria-hidden />
+          </button>
         </div>
         <PostcodePanel autoFocus />
-        {closable && (
-          <Button type="button" full className="mt-4" onClick={closeGate}>
-            {d.delivery.continue}
-          </Button>
-        )}
+        <Button type="button" full className="mt-4" onClick={closeGate}>
+          {d.delivery.continue}
+        </Button>
       </div>
     </div>
   );

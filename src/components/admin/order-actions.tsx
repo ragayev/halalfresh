@@ -1,196 +1,172 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { MessageCircle, AlertTriangle } from "lucide-react";
-import { Button, Textarea } from "@/components/ui";
-import { RunButton, Msg } from "./forms";
-import {
-  authorizeEarlyFulfillmentAction,
-  cancelAction,
-  refundAction,
-  saveNoteAction,
-  setFulfillmentAction,
-  whatsappAction,
-  type ActionResult,
-} from "@/app/(admin)/admin/actions";
+import { useState, useTransition } from "react";
+import { MessageCircle } from "lucide-react";
+import type { OrderStatus, PaymentMethod } from "@prisma/client";
+import { Button, Notice, Textarea } from "@/components/ui";
+import { kevserWhatsappAction, resendNotificationAction, saveNoteAction, transitionAction, type ActionResult } from "@/app/(admin)/admin/actions";
 
-export function WhatsappPanel({
-  orderId,
-  openCount,
-  forwardedAt,
-  canForward,
-  message,
-}: {
-  orderId: string;
-  openCount: number;
-  forwardedAt: string | null;
-  canForward: boolean;
-  message: string;
-}) {
-  const router = useRouter();
-  const [showMsg, setShowMsg] = useState(false);
+interface Next {
+  to: OrderStatus;
+  label: string;
+  primary?: boolean;
+  /** Destructive: needs a confirmation sheet with a reason. */
+  confirm?: boolean;
+}
+
+export function nextActions(status: OrderStatus, method: PaymentMethod): Next[] {
+  const cash = method === "CASH";
+  const cancel: Next = { to: "CANCELLED", label: "Stornieren", confirm: true };
+  switch (status) {
+    case "NEW":
+      return [{ to: "ACCEPTED", label: "Annehmen", primary: true }, cancel];
+    case "ACCEPTED":
+      return [{ to: "PREPARING", label: "In Vorbereitung", primary: true }, cancel];
+    case "PREPARING":
+      return [cancel]; // primary action is the weight form
+    case "WEIGHED":
+      return cash ? [{ to: "OUT_FOR_DELIVERY", label: "Unterwegs", primary: true }, cancel] : [{ to: "PAYMENT_OVERDUE", label: "Als überfällig markieren + erinnern" }, cancel];
+    case "PAYMENT_OVERDUE":
+      return [cancel];
+    case "PAID":
+      return [{ to: "OUT_FOR_DELIVERY", label: "Unterwegs", primary: true }, cancel];
+    case "OUT_FOR_DELIVERY":
+      return [
+        cash ? { to: "DELIVERED_UNPAID", label: "Geliefert (Bargeld offen)", primary: true } : { to: "DELIVERED", label: "Geliefert", primary: true },
+        { to: "REFUSED_AT_DOOR", label: "An der Tür verweigert", confirm: true },
+        cancel,
+      ];
+    case "DELIVERED_UNPAID":
+      return [{ to: "CASH_COLLECTED", label: "Bar kassiert", primary: true }, cancel];
+    default:
+      return [];
+  }
+}
+
+export function OrderActions({ orderId, status, method, scrollToWeights }: { orderId: string; status: OrderStatus; method: PaymentMethod; scrollToWeights: boolean }) {
+  const [pending, start] = useTransition();
+  const [msg, setMsg] = useState<ActionResult | null>(null);
+  const [confirming, setConfirming] = useState<Next | null>(null);
+  const [reason, setReason] = useState("");
+  const actions = nextActions(status, method);
+
+  const run = (to: OrderStatus, why?: string) =>
+    start(async () => {
+      const r = await transitionAction(orderId, to, why);
+      setMsg(r.ok ? null : r);
+      if (r.ok) {
+        setConfirming(null);
+        setReason("");
+      }
+    });
+
   return (
     <div className="space-y-3">
-      {forwardedAt && (
-        <p className="flex items-center gap-2 rounded-xl bg-sage p-3 text-sm font-medium text-forest-dark">
-          <AlertTriangle className="size-4" aria-hidden />
-          Already marked as forwarded on {forwardedAt}. Check WhatsApp before sending again.
-        </p>
+      {scrollToWeights && (
+        <a href="#gewichte" className="inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] bg-primary font-semibold text-text-inverse hover:bg-primary-hover">
+          Gewichte eingeben
+        </a>
       )}
-      {!forwardedAt && openCount > 0 && (
-        <p className="rounded-xl bg-warn p-3 text-sm font-medium text-warn-ink">
-          WhatsApp was opened {openCount}× but not marked as forwarded yet.
-        </p>
-      )}
-      <div className="flex flex-wrap items-start gap-2">
-        <RunButton
-          variant="primary"
-          size="lg"
-          disabled={!canForward}
-          data-testid="send-whatsapp"
-          run={async () => whatsappAction(orderId)}
-          onDone={(r) => {
-            if (r.ok && r.url) {
-              window.open(r.url, "_blank", "noopener");
-              router.refresh();
-            }
-          }}
-        >
-          <MessageCircle className="size-5" aria-hidden />
-          Send to Butcher via WhatsApp
-        </RunButton>
-        {canForward && !forwardedAt && (
-          <RunButton
-            variant="secondary"
-            size="lg"
-            data-testid="mark-forwarded"
-            confirm="Confirm you actually sent the WhatsApp message?"
-            run={() => setFulfillmentAction(orderId, "FORWARDED")}
-            onDone={() => router.refresh()}
+      <div className="flex flex-wrap gap-2">
+        {actions.map((a) => (
+          <Button
+            key={a.to + a.label}
+            variant={a.primary ? "primary" : a.confirm ? "secondary" : "secondary"}
+            className={a.primary ? "w-full sm:w-auto" : a.confirm ? "text-danger" : ""}
+            loading={pending && !a.confirm}
+            onClick={() => (a.confirm ? setConfirming(a) : run(a.to))}
           >
-            Mark as forwarded
-          </RunButton>
-        )}
+            {a.label}
+          </Button>
+        ))}
       </div>
-      <button type="button" className="text-sm font-medium text-forest hover:underline" onClick={() => setShowMsg((s) => !s)}>
-        {showMsg ? "Hide" : "Preview"} message
-      </button>
-      {showMsg && <pre className="whitespace-pre-wrap rounded-xl bg-neutral-50 p-4 text-sm ring-1 ring-line">{message}</pre>}
+      {confirming && (
+        <div role="dialog" aria-label={confirming.label} className="space-y-3 rounded-[var(--radius-lg)] border border-danger bg-surface p-4 shadow-lg">
+          <p className="font-semibold">{confirming.label} — bitte Grund angeben</p>
+          <label className="block text-sm">
+            Grund (Pflicht)
+            <Textarea value={reason} onChange={(e) => setReason(e.target.value)} />
+          </label>
+          <div className="flex gap-2">
+            <Button variant="danger" loading={pending} disabled={!reason.trim()} onClick={() => run(confirming.to, reason)}>
+              {confirming.label}
+            </Button>
+            <Button variant="secondary" onClick={() => setConfirming(null)}>
+              Zurück
+            </Button>
+          </div>
+        </div>
+      )}
+      {msg && !msg.ok && <Notice tone="danger">{msg.message}</Notice>}
     </div>
   );
 }
 
-export function StatusButtons({ orderId, options }: { orderId: string; options: { value: string; label: string }[] }) {
-  const router = useRouter();
-  if (!options.length) return <p className="text-sm text-muted">No further status changes.</p>;
-  // Large, full-width tap targets on phones: the butcher updates delivery from the van.
+export function WhatsappButtons({ orderId, customerPhone }: { orderId: string; customerPhone: string }) {
+  const [pending, start] = useTransition();
+  const [err, setErr] = useState<string | null>(null);
   return (
-    <div className="grid gap-2 sm:flex sm:flex-wrap [&>span]:w-full sm:[&>span]:w-auto [&_button]:w-full sm:[&_button]:w-auto">
-      {options.map((o) => (
-        <RunButton
-          key={o.value}
-          variant={o.value === "CANCELLED" ? "danger" : "secondary"}
-          size="lg"
-          data-testid={`status-${o.value}`}
-          confirm={o.value === "CANCELLED" ? "Cancel this order? Paid orders are refunded in full." : undefined}
-          run={() => (o.value === "CANCELLED" ? cancelAction(orderId) : setFulfillmentAction(orderId, o.value))}
-          onDone={(r) => r.ok && router.refresh()}
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="secondary"
+          loading={pending}
+          onClick={() =>
+            start(async () => {
+              const r = await kevserWhatsappAction(orderId);
+              if (r.ok && r.url) window.open(r.url, "_blank", "noopener");
+              else setErr(r.message ?? "Fehler");
+            })
+          }
         >
-          {o.label}
-        </RunButton>
-      ))}
+          <MessageCircle className="size-5" strokeWidth={1.75} aria-hidden /> An Kevser senden
+        </Button>
+        <a
+          href={`https://wa.me/${customerPhone.replace(/\D/g, "")}`}
+          target="_blank"
+          rel="noopener"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border-strong bg-surface px-5 font-semibold lg:h-11"
+        >
+          <MessageCircle className="size-5" strokeWidth={1.75} aria-hidden /> Kunde anschreiben
+        </a>
+      </div>
+      {err && <Notice tone="danger">{err}</Notice>}
     </div>
   );
 }
 
-/** Explicit, audited acceptance of the SEPA collection risk. Nothing is marked paid by this. */
-export function EarlyAuthorizePanel({ orderId, amountLabel }: { orderId: string; amountLabel: string }) {
-  const router = useRouter();
-  const [ack, setAck] = useState(false);
+export function ResendButton({ orderId, template }: { orderId: string; template: string }) {
+  const [pending, start] = useTransition();
+  const [done, setDone] = useState(false);
   return (
-    <div className="space-y-3 rounded-xl bg-warn p-4 text-sm text-warn-ink" data-testid="early-authorize">
-      <p className="flex items-start gap-2 font-semibold">
-        <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
-        <span>SEPA payment is still processing: {amountLabel} has NOT been collected.</span>
-      </p>
-      <p>
-        You can wait until Stripe confirms the payment, or authorize preparation and delivery now. A SEPA debit can still fail or be returned
-        for several days (insufficient funds, closed account, customer dispute). If it does, the goods are already delivered and the seller
-        bears the loss. Your name and the time are recorded.
-      </p>
-      <label className="flex items-start gap-3 font-medium">
-        <input
-          type="checkbox"
-          checked={ack}
-          onChange={(e) => setAck(e.target.checked)}
-          className="mt-0.5 size-5 shrink-0"
-          data-testid="early-ack"
-        />
-        <span>I understand the collection risk and authorize fulfilment before payment is confirmed.</span>
-      </label>
-      <RunButton
-        variant="primary"
-        size="lg"
-        disabled={!ack}
-        data-testid="early-authorize-btn"
-        run={() => authorizeEarlyFulfillmentAction(orderId, ack)}
-        onDone={(r) => r.ok && router.refresh()}
-      >
-        Authorize fulfilment now
-      </RunButton>
-    </div>
+    <Button
+      variant="ghost"
+      size="sm"
+      loading={pending}
+      onClick={() =>
+        start(async () => {
+          const r = await resendNotificationAction(orderId, template);
+          setDone(r.ok);
+        })
+      }
+    >
+      {done ? "Gesendet ✓" : "Benachrichtigung erneut senden"}
+    </Button>
   );
 }
 
 export function NoteForm({ orderId, initial }: { orderId: string; initial: string }) {
   const [v, setV] = useState(initial);
-  const [r, setR] = useState<ActionResult | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [pending, start] = useTransition();
+  const [saved, setSaved] = useState(false);
   return (
     <div className="space-y-2">
-      <Textarea value={v} onChange={(e) => setV(e.target.value)} aria-label="Internal notes" maxLength={4000} />
-      <div className="flex items-center gap-3">
-        <Button
-          size="sm"
-          variant="secondary"
-          loading={busy}
-          onClick={async () => {
-            setBusy(true);
-            setR(await saveNoteAction(orderId, v));
-            setBusy(false);
-          }}
-        >
-          Save note
-        </Button>
-        <Msg r={r} />
-      </div>
-    </div>
-  );
-}
-
-export function RefundForm({ orderId, remainingCents }: { orderId: string; remainingCents: number }) {
-  const router = useRouter();
-  const [amt, setAmt] = useState((remainingCents / 100).toFixed(2));
-  return (
-    <div className="flex flex-wrap items-end gap-3">
-      <label className="text-sm">
-        Amount (€)
-        <input
-          value={amt}
-          onChange={(e) => setAmt(e.target.value)}
-          inputMode="decimal"
-          className="mt-1 block h-11 w-32 rounded-xl border border-line px-3"
-        />
+      <label className="block text-sm font-medium">
+        Interne Notiz
+        <Textarea value={v} onChange={(e) => (setV(e.target.value), setSaved(false))} />
       </label>
-      <RunButton
-        variant="danger"
-        confirm="Issue this refund? This cannot be undone."
-        data-testid="refund-btn"
-        run={() => refundAction(orderId, Math.round(parseFloat(amt.replace(",", ".")) * 100))}
-        onDone={(r) => r.ok && router.refresh()}
-      >
-        Refund
-      </RunButton>
+      <Button variant="secondary" size="sm" loading={pending} onClick={() => start(async () => setSaved((await saveNoteAction(orderId, v)).ok))}>
+        {saved ? "Gespeichert ✓" : "Notiz speichern"}
+      </Button>
     </div>
   );
 }

@@ -3,9 +3,15 @@
  * Replace with counsel-reviewed text before launch (Impressum per §5 DDG, GDPR Art. 13 information,
  * consumer information per BGB/EGBGB, withdrawal rules for perishable food, LMIV food information).
  */
-export type LegalSlug = "privacy" | "imprint" | "terms";
+export type LegalSlug = "privacy" | "imprint" | "terms" | "agb";
 
 export const legalContent: Record<LegalSlug, { heading: string; body: string[] }[]> = {
+  agb: [
+    {
+      heading: "AGB & Widerruf der Kevser Fleischerei",
+      body: ["[PLATZHALTER: Die AGB und Widerrufsbelehrung der Kevser Fleischerei werden vom Inhaber geliefert und hier im Volltext angezeigt. Die PDF-Fassung wird jeder Bestellbestätigung beigefügt.]"],
+    },
+  ],
   privacy: [
     {
       heading: "1. Controller",
@@ -14,14 +20,14 @@ export const legalContent: Record<LegalSlug, { heading: string; body: string[] }
     {
       heading: "2. Data we process",
       body: [
-        "Order data (name, email, phone, delivery address, delivery instructions, order contents) to fulfil your order. Payment is handled by Stripe; we do not receive or store card details.",
+        "Order data (name, email, phone, delivery address, delivery instructions, order contents) to fulfil your order. Payment is handled by PayPal; we do not receive or store card details.",
         "[TODO: Server logs, retention periods, legal bases (Art. 6 GDPR).]",
       ],
     },
     {
       heading: "3. Recipients",
       body: [
-        "The partner butcher receives your name, address, phone number and order contents to prepare and deliver your order. Stripe processes payments. [TODO: hosting, email provider.]",
+        "The partner butcher receives your name, address, phone number and order contents to prepare and deliver your order. PayPal processes payments. [TODO: hosting, email provider.]",
       ],
     },
     {

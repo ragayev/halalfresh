@@ -1,39 +1,36 @@
-import { randomBytes } from "node:crypto";
-import { siteUrl } from "@/lib/env";
-import type { PaymentGateway } from "./gateway";
+import { createHash } from "node:crypto";
+import { assertMockAllowed } from "@/lib/env";
+import type { CaptureResult, PaymentProvider } from "./provider";
 
-/** Local/test-only gateway. Never selectable in production (see gateway.ts). */
-export const mockGateway: PaymentGateway = {
+/**
+ * Local stand-in for PayPal (dev, tests, e2e). Stateless so it behaves the same across separately bundled routes:
+ * the order id encodes the amount and is derived from the request id, which also makes create idempotent like
+ * `PayPal-Request-Id`. `mockControl` lets unit tests steer outcomes. Refused when NODE_ENV=production.
+ */
+export const mockControl = {
+  nextCapture: "COMPLETED" as CaptureResult["status"],
+  webhookValid: true,
+  created: [] as { id: string; amountCents: number; requestId: string }[],
+};
+
+const idFor = (amountCents: number, requestId: string) => `MOCK-${amountCents}-${createHash("sha1").update(requestId).digest("hex").slice(0, 12)}`;
+
+export const mockProvider: PaymentProvider = {
   name: "mock",
-  async createCheckout(a) {
-    const sessionId = `cs_mock_${randomBytes(8).toString("hex")}`;
-    const q = new URLSearchParams({
-      success: a.successUrl,
-      cancel: a.cancelUrl,
-    });
-    return {
-      sessionId,
-      url: `${siteUrl()}/en/dev/mock-pay/${sessionId}?${q}`,
-      expiresAt: new Date(Date.now() + 31 * 60_000),
-    };
+  async createOrder(a) {
+    assertMockAllowed();
+    const id = idFor(a.amountCents, a.requestId);
+    if (!mockControl.created.some((c) => c.id === id)) mockControl.created.push({ id, amountCents: a.amountCents, requestId: a.requestId });
+    return { providerOrderId: id, raw: { id, mock: true, links: [{ rel: "payer-action", href: `${a.returnUrl}?token=${id}` }] } };
   },
-  async expireCheckout() {},
-  async refund() {
-    return {
-      refundId: `re_mock_${randomBytes(8).toString("hex")}`,
-      status: "succeeded",
-    };
+  async captureOrder(providerOrderId) {
+    assertMockAllowed();
+    const m = /^MOCK-(\d+)-/.exec(providerOrderId);
+    if (!m) throw new Error("unknown mock order");
+    return { status: mockControl.nextCapture, captureId: `MOCK-CAP-${providerOrderId}`, amountCents: Number(m[1]), raw: { mock: true } };
   },
-  async getAccountStatus(accountId) {
-    return {
-      accountId: accountId ?? "acct_mock",
-      connected: true,
-      chargesEnabled: true,
-      payoutsEnabled: true,
-      sepaDebitEnabled: true,
-      detailsSubmitted: true,
-      requirementsDue: [],
-      mode: "mock",
-    };
+  async verifyWebhook() {
+    assertMockAllowed();
+    return mockControl.webhookValid;
   },
 };

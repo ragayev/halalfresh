@@ -51,11 +51,11 @@ describe("proxy gate", () => {
       ).headers.get("location"),
     ).toBe("http://localhost:3000/de"); // unsupported browser language -> German default
   });
-  it("honours q-values, and a saved choice wins", () => {
+  it("honours q-values and ignores any locale cookie", () => {
     const loc = (h: Record<string, string>) => proxy(new NextRequest("http://localhost:3000/shop", { headers: h })).headers.get("location");
     expect(loc({ "accept-language": "en;q=0.4,tr;q=0.9" })).toBe("http://localhost:3000/tr/shop"); // q beats order
     expect(loc({ "accept-language": "fr,es" })).toBe("http://localhost:3000/de/shop");
     expect(loc({})).toBe("http://localhost:3000/de/shop");
-    expect(loc({ "accept-language": "tr", cookie: "hf_locale=en" })).toBe("http://localhost:3000/en/shop");
+    expect(loc({ "accept-language": "tr", cookie: "hf_locale=de" })).toBe("http://localhost:3000/tr/shop");
   });
 });

@@ -1,11 +1,10 @@
 import type { Locale } from "./config";
-import type en from "./dictionaries/en.json";
+import type de from "./dictionaries/de.json";
 
-export type Dictionary = typeof en;
+export type Dictionary = typeof de;
 
 const loaders: Record<Locale, () => Promise<Dictionary>> = {
-  en: () => import("./dictionaries/en.json").then((m) => m.default),
-  de: () => import("./dictionaries/de.json").then((m) => m.default as Dictionary),
+  de: () => import("./dictionaries/de.json").then((m) => m.default),
   tr: () => import("./dictionaries/tr.json").then((m) => m.default as Dictionary),
 };
 

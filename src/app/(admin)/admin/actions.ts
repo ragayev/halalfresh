@@ -2,14 +2,19 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { FulfillmentStatus, type Prisma } from "@prisma/client";
+import { OrderStatus } from "@prisma/client";
 import { db } from "@/lib/db";
 import { login, logout, requireAdmin } from "@/server/auth";
 import { AppError } from "@/server/errors";
-import { addNote, audit, authorizeEarlyFulfillment, cancelOrder, prepareWhatsapp, refundOrder, transitionFulfillment } from "@/server/orders";
+import { addNote, audit, recordWeights, transitionOrder } from "@/server/orders";
+import { notifyCustomer } from "@/server/notifications/notify";
 import { getMerchant } from "@/server/settings";
-import { normalizeWhatsappNumber } from "@/domain/whatsapp";
+import { buildKevserMessage, normalizeWhatsappNumber, whatsappLink } from "@/domain/whatsapp";
 import type { BundleItem } from "@/domain/bundles";
+import { parsePriceToCents } from "@/domain/money";
+import { PRODUCT_STATUSES, SELLING_UNITS } from "@/domain/product-rules";
+import { applyCsvImport, planCsvImport, type CsvPlan } from "@/server/catalog-csv";
+import { createProduct, parseSkuList, setAvailability, setFlag, setStatus, setSupplierSkus, updateProduct, type ProductInput } from "@/server/product-service";
 
 export type ActionResult = { ok: boolean; message?: string; url?: string };
 const fail = (e: unknown): ActionResult => ({
@@ -19,8 +24,8 @@ const fail = (e: unknown): ActionResult => ({
 
 export async function loginAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
   try {
-    const ok = await login(String(fd.get("email") ?? ""), String(fd.get("password") ?? ""));
-    if (!ok) return { ok: false, message: "Invalid email or password" };
+    const ok = await login(String(fd.get("email") ?? ""), String(fd.get("password") ?? ""), String(fd.get("totp") ?? ""));
+    if (!ok) return { ok: false, message: "E-Mail, Passwort oder Code ungültig" };
   } catch (e) {
     return fail(e);
   }
@@ -33,36 +38,64 @@ export async function logoutAction() {
 }
 
 // ---- Orders ----
-export async function setFulfillmentAction(orderId: string, to: string): Promise<ActionResult> {
+const afterOrderChange = (orderId: string) => {
+  revalidatePath(`/admin/orders/${orderId}`);
+  revalidatePath("/admin/orders");
+};
+
+export async function transitionAction(orderId: string, to: string, reason?: string): Promise<ActionResult> {
   const a = await requireAdmin();
   try {
-    await transitionFulfillment(orderId, z.nativeEnum(FulfillmentStatus).parse(to), a.email);
-    revalidatePath(`/admin/orders/${orderId}`);
-    revalidatePath("/admin/orders");
+    const target = z.nativeEnum(OrderStatus).parse(to);
+    await transitionOrder(orderId, target, { actor: "admin", actorId: a.email, reason: reason?.trim() || null });
+    afterOrderChange(orderId);
     return { ok: true };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function authorizeEarlyFulfillmentAction(orderId: string, acknowledged: boolean): Promise<ActionResult> {
+export interface WeightsResult extends ActionResult {
+  finalTotalCents?: number;
+  cappedAmountCents?: number;
+}
+
+export async function weightsAction(orderId: string, weights: { itemId: string; actualGrams: number }[]): Promise<WeightsResult> {
   const a = await requireAdmin();
   try {
-    await authorizeEarlyFulfillment(orderId, a.email, acknowledged);
-    revalidatePath(`/admin/orders/${orderId}`);
-    revalidatePath("/admin/orders");
-    return { ok: true, message: "Fulfilment authorized on SEPA collection risk" };
+    const r = await recordWeights(orderId, weights, { actor: "admin", actorId: a.email });
+    afterOrderChange(orderId);
+    return { ok: true, finalTotalCents: r.finalTotalCents, cappedAmountCents: r.cappedAmountCents };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function whatsappAction(orderId: string): Promise<ActionResult> {
+/** Builds the wa.me link with Kevser's Turkish order template. Logged so the admin can see it was forwarded. */
+export async function kevserWhatsappAction(orderId: string): Promise<ActionResult> {
   const a = await requireAdmin();
   try {
-    const { url } = await prepareWhatsapp(orderId, a.email);
-    revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, url };
+    const o = await db.order.findUniqueOrThrow({ where: { id: orderId }, include: { items: { orderBy: { id: "asc" } }, customer: true, merchant: true } });
+    if (!o.merchant.whatsappNumber) throw new AppError("VALIDATION", "Set Kevser's WhatsApp number in Einstellungen first");
+    const message = buildKevserMessage({
+      number: o.number,
+      firstName: o.customer.firstName,
+      lastName: o.customer.lastName,
+      phone: o.customer.phoneE164,
+      street: o.street,
+      postalCode: o.postalCode,
+      city: o.city,
+      deliveryDate: o.deliveryDate.toISOString().slice(0, 10),
+      slotStartTime: o.slotStartTime,
+      slotEndTime: o.slotEndTime,
+      paymentMethod: o.paymentMethod,
+      items: o.items.map((i) => ({ productName: i.productName, requestedGrams: i.requestedGrams })),
+      estimatedTotalCents: o.estimatedTotalCents,
+      maxTotalCents: o.maxTotalCents,
+      notes: o.deliveryNotes,
+    });
+    await audit(a.email, "order.whatsapp_kevser", "Order", orderId);
+    return { ok: true, url: whatsappLink(o.merchant.whatsappNumber, message) };
   } catch (e) {
     return fail(e);
   }
@@ -73,39 +106,40 @@ export async function saveNoteAction(orderId: string, note: string): Promise<Act
   try {
     await addNote(orderId, note, a.email);
     revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, message: "Saved" };
+    return { ok: true, message: "Gespeichert" };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function refundAction(orderId: string, amountCents: number): Promise<ActionResult> {
+export async function resendNotificationAction(orderId: string, template: string): Promise<ActionResult> {
   const a = await requireAdmin();
   try {
-    await refundOrder(orderId, amountCents, { actor: a.email });
-    revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, message: "Refund issued" };
+    const t = z.enum(["order_created", "accepted", "weighed", "out_for_delivery", "cancelled", "payment_overdue"]).parse(template);
+    await notifyCustomer(orderId, t, { force: true });
+    await audit(a.email, "order.resend_notification", "Order", orderId, { template: t });
+    afterOrderChange(orderId);
+    return { ok: true, message: "Gesendet" };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function cancelAction(orderId: string): Promise<ActionResult> {
+export async function setBlockedCashAction(customerId: string, blocked: boolean): Promise<ActionResult> {
   const a = await requireAdmin();
-  try {
-    await cancelOrder(orderId, a.email);
-    revalidatePath(`/admin/orders/${orderId}`);
-    return { ok: true, message: "Order cancelled" };
-  } catch (e) {
-    return fail(e);
-  }
+  await db.customer.update({ where: { id: customerId }, data: { blockedCash: blocked } });
+  await audit(a.email, blocked ? "customer.block_cash" : "customer.unblock_cash", "Customer", customerId);
+  revalidatePath("/admin/customers");
+  return { ok: true };
 }
 
 // ---- Products ----
+// Validation lives here (shape of the form); business rules live in src/domain/product-rules.ts and are enforced by
+// src/server/product-service.ts, the only writer of product state.
 const euro = z
   .string()
-  .transform((s) => Math.round(parseFloat(s.replace(",", ".")) * 100))
-  .pipe(z.number().int().min(1).max(100000));
+  .transform((s) => parsePriceToCents(s))
+  .pipe(z.number().int().min(0).max(10_000_000));
 const grams = z.coerce.number().int().min(50).max(100000);
 const productSchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -118,6 +152,8 @@ const productSchema = z.object({
   description: z.string().trim().min(2).max(2000),
   categoryId: z.string().min(1),
   price: euro,
+  sellingUnit: z.enum(SELLING_UNITS),
+  status: z.enum(PRODUCT_STATUSES),
   stepGrams: grams,
   minGrams: grams,
   maxGrams: grams,
@@ -128,11 +164,11 @@ const productSchema = z.object({
   descDe: z.string().trim().max(2000).optional(),
   nameTr: z.string().trim().max(120).optional(),
   descTr: z.string().trim().max(2000).optional(),
+  /** Supplier article numbers, separated by comma, space or newline. Present on every edit form. */
+  supplierSkus: z.string().max(2000).optional(),
   /** Bundles only: one component per line, "grams | Deutsch | Türkçe | English | catalogue-slug (optional)". */
   bundleItems: z.string().max(4000).optional(),
 });
-
-const BUNDLE_NOT_CONFIRMED = "Confirm the butcher-approved price first (tick “Price confirmed”) before making a bundle visible or available.";
 
 function parseBundleLines(text: string): BundleItem[] | string {
   const out: BundleItem[] = [];
@@ -154,102 +190,112 @@ export async function saveProductAction(id: string, _: ActionResult | null, fd: 
       message: `Check fields: ${Object.keys(parsed.error.flatten().fieldErrors).join(", ")}`,
     };
   const v = parsed.data;
-  if (v.minGrams % v.stepGrams !== 0 || v.maxGrams < v.minGrams)
-    return {
-      ok: false,
-      message: "Min must be a multiple of the step, and max ≥ min",
-    };
-  let bundleData: { bundleItems: object; priceConfirmed: boolean } | null = null;
+  let bundleItems: BundleItem[] | undefined;
   if (v.bundleItems !== undefined) {
     const items = parseBundleLines(v.bundleItems);
     if (typeof items === "string") return { ok: false, message: items };
-    bundleData = { bundleItems: items as unknown as object, priceConfirmed: fd.get("priceConfirmed") === "on" };
-    if (!bundleData.priceConfirmed && (fd.get("isHidden") !== "on" || fd.get("isAvailable") === "on"))
-      return { ok: false, message: BUNDLE_NOT_CONFIRMED };
+    bundleItems = items;
   }
   try {
-    const merchant = await getMerchant();
-    // Keep importer metadata (supplier article numbers) and existing EN data on admin edits.
-    const previous = id === "new"
-      ? null
-      : await db.product.findUnique({ where: { id }, select: { translations: true } });
-    const translations = previous?.translations && typeof previous.translations === "object" && !Array.isArray(previous.translations)
-      ? (previous.translations as Record<string, unknown>)
-      : {};
-    const previousLocale = (locale: string): Record<string, unknown> => {
-      const value = translations[locale];
-      return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
-    };
-    const data = {
-      ...(bundleData ?? {}),
+    const skus = v.supplierSkus !== undefined ? parseSkuList(v.supplierSkus) : null;
+    const input: ProductInput = {
       name: v.name,
       slug: v.slug,
       description: v.description,
       categoryId: v.categoryId,
-      pricePerKgCents: v.price,
+      priceCents: v.price,
+      priceConfirmed: fd.get("priceConfirmed") === "on",
+      sellingUnit: v.sellingUnit,
       stepGrams: v.stepGrams,
       minGrams: v.minGrams,
       maxGrams: v.maxGrams,
-      origin: v.origin || null,
-      halalCertification: v.halalCertification || null,
-      allergenInfo: v.allergenInfo || null,
-      isAvailable: fd.get("isAvailable") === "on",
+      origin: v.origin,
+      halalCertification: v.halalCertification,
+      allergenInfo: v.allergenInfo,
       isFeatured: fd.get("isFeatured") === "on",
-      isHidden: fd.get("isHidden") === "on",
+      isAvailable: fd.get("isAvailable") === "on",
       preorderEligible: fd.get("preorderEligible") === "on",
-      translations: {
-        ...translations,
-        en: { ...previousLocale("en"), name: v.name, description: v.description },
-        de: { ...previousLocale("de"), name: v.nameDe, description: v.descDe },
-        tr: { ...previousLocale("tr"), name: v.nameTr, description: v.descTr },
-      } as Prisma.InputJsonObject,
+      status: v.status,
+      translations: { de: { name: v.nameDe, description: v.descDe }, tr: { name: v.nameTr, description: v.descTr } },
+      bundleItems,
     };
-    const p =
-      id === "new"
-        ? await db.product.create({
-            data: { ...data, merchantId: merchant.id },
-          })
-        : await db.product.update({ where: { id }, data });
+    const p = id === "new" ? await createProduct(input, a.email) : await updateProduct(id, input, a.email);
+    if (skus) await setSupplierSkus(p.id, skus, a.email);
     const file = fd.get("image");
     if (file instanceof File && file.size > 0) {
       if (file.size > 2_000_000) return { ok: false, message: "Image must be under 2 MB" };
       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return { ok: false, message: "Use JPEG, PNG or WebP" };
+      // Database-backed upload (the only runtime-writable storage on Vercel). Replaces the current image(s).
       await db.productImage.deleteMany({ where: { productId: p.id } });
       await db.productImage.create({
-        data: {
-          productId: p.id,
-          data: Buffer.from(await file.arrayBuffer()),
-          mimeType: file.type,
-          alt: v.name,
-        },
+        data: { productId: p.id, data: Buffer.from(await file.arrayBuffer()), mimeType: file.type, alt: v.name },
       });
+      await audit(a.email, "product.image.upload", "Product", p.id);
     }
-    await audit(a.email, id === "new" ? "product.create" : "product.update", "Product", p.id);
     revalidatePath("/admin/products");
   } catch (e) {
-    return {
-      ok: false,
-      message: e instanceof Error && e.message.includes("Unique") ? "Slug already in use" : "Could not save product",
-    };
+    return fail(e);
   }
   redirect("/admin/products");
 }
 
 export async function toggleProductAction(
   id: string,
-  field: "isAvailable" | "isFeatured" | "isHidden" | "preorderEligible",
+  field: "isAvailable" | "isFeatured" | "preorderEligible",
   value: boolean,
 ): Promise<ActionResult> {
   const a = await requireAdmin();
-  // A bundle with a placeholder price must not go live (visible = isHidden off; or purchasable = available on).
-  if ((field === "isHidden" && !value) || (field === "isAvailable" && value)) {
-    const cur = await db.product.findUnique({ where: { id }, select: { bundleItems: true, priceConfirmed: true } });
-    if (cur?.bundleItems != null && !cur.priceConfirmed) return { ok: false, message: BUNDLE_NOT_CONFIRMED };
+  try {
+    if (field === "isAvailable") await setAvailability(id, value, a.email);
+    else await setFlag(id, field, value, a.email);
+    revalidatePath("/admin/products");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
   }
-  await db.product.update({ where: { id }, data: { [field]: value } });
-  await audit(a.email, `product.${field}`, "Product", id, { value });
-  revalidatePath("/admin/products");
-  return { ok: true };
+}
+
+export async function setProductStatusAction(id: string, to: string): Promise<ActionResult> {
+  const a = await requireAdmin();
+  try {
+    await setStatus(id, z.enum(PRODUCT_STATUSES).parse(to), a.email);
+    revalidatePath("/admin/products");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+// ---- CSV price / availability import ----
+export type CsvPreview = ActionResult & { plan?: CsvPlan };
+
+async function readCsv(fd: FormData): Promise<string | null> {
+  const f = fd.get("file");
+  if (f instanceof File && f.size > 0) return f.size > 2_000_000 ? null : await f.text();
+  const t = fd.get("text");
+  return typeof t === "string" && t.trim() ? t : null;
+}
+
+export async function previewCsvAction(_: CsvPreview | null, fd: FormData): Promise<CsvPreview> {
+  await requireAdmin();
+  const text = await readCsv(fd);
+  if (!text) return { ok: false, message: "Choose a CSV file (UTF-8, up to 2 MB) or paste its content" };
+  const plan = await planCsvImport(text);
+  return { ok: !plan.errors.length && !plan.counts.reject, plan, message: plan.errors[0] };
+}
+
+/** Explicit second step: the server re-plans from the submitted text, so a stale or edited preview cannot widen the change. */
+export async function applyCsvAction(_: CsvPreview | null, fd: FormData): Promise<CsvPreview> {
+  const a = await requireAdmin();
+  const text = await readCsv(fd);
+  if (!text) return { ok: false, message: "Nothing to import" };
+  try {
+    const plan = await applyCsvImport(text, a.email);
+    revalidatePath("/admin/products");
+    return { ok: true, plan, message: `Applied: ${plan.counts.update} updated, ${plan.counts.skip} unchanged` };
+  } catch (e) {
+    return fail(e);
+  }
 }
 
 // ---- Settings ----
@@ -301,4 +347,25 @@ export async function saveMerchantAction(_: ActionResult | null, fd: FormData): 
   await audit(a.email, "merchant.update", "Merchant", m.id);
   revalidatePath("/admin/settings");
   return { ok: true, message: "Saved" };
+}
+
+// ---- Operating settings ----
+const operatingSchema = z.object({
+  toleranceBps: z.coerce.number().int().min(0).max(5000),
+  paymentOverdueHours: z.coerce.number().int().min(1).max(240),
+  tokenExpiryDays: z.coerce.number().int().min(1).max(365),
+  telegramChatId: z.string().trim().max(64).optional(),
+});
+
+export async function saveOperatingSettingsAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  const a = await requireAdmin();
+  const p = operatingSchema.safeParse(Object.fromEntries(fd));
+  if (!p.success) return { ok: false, message: "Bitte Eingaben prüfen" };
+  const { setSetting } = await import("@/server/app-settings");
+  for (const [k, v] of Object.entries(p.data)) await setSetting(k as never, v ?? "");
+  // The halal badge is only ever shown after the operator explicitly verifies the certificate.
+  await setSetting("halalCertificateVerified", fd.get("halalCertificateVerified") === "on");
+  await audit(a.email, "settings.update", "Setting", undefined, p.data);
+  revalidatePath("/admin/settings");
+  return { ok: true, message: "Gespeichert" };
 }

@@ -4,6 +4,7 @@ import { compare } from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { db } from "@/lib/db";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { verifyTotp } from "@/lib/totp";
 import { AppError } from "./errors";
 
 export const SESSION_COOKIE = "hf_admin";
@@ -60,7 +61,8 @@ export async function requireAdminApi() {
   return a;
 }
 
-export async function login(email: string, password: string): Promise<boolean> {
+/** Password plus, for enrolled admins, a TOTP code. A missing/wrong code is indistinguishable from a wrong password. */
+export async function login(email: string, password: string, totp = ""): Promise<boolean> {
   const ip = clientIp(await headers());
   const [byIp, byEmail] = await Promise.all([
     rateLimit(`login:ip:${ip}`, 10, 900),
@@ -73,6 +75,7 @@ export async function login(email: string, password: string): Promise<boolean> {
   // Compare against a dummy hash when the user is unknown to keep timing similar.
   const ok = await compare(password, user?.passwordHash ?? "$2a$12$invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinva");
   if (!user || !ok) return false;
+  if (user.totpSecret && !verifyTotp(user.totpSecret, totp.replace(/\s/g, ""))) return false;
   const token = await signSession(user.id, user.email);
   (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,

@@ -11,7 +11,8 @@ export interface CartViewData {
   lines: CartViewLine[];
   totals: Totals | null;
   delivery?: DeliveryCheck;
-  merchant?: { name: string };
+  estimate?: { estimatedTotalCents: number; maxTotalCents: number; toleranceBps: number };
+  merchant?: { name: string; address: string; phone: string; email: string };
   hasIssues?: boolean;
 }
 

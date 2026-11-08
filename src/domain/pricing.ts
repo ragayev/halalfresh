@@ -71,3 +71,69 @@ export function computeTotals(i: TotalsInput): Totals {
     meetsMinimum: shortfallCents === 0 && i.subtotalCents > 0,
   };
 }
+
+// ---- Weight-based order pricing (MVP) ----
+// Meat is ordered by approximate grams and priced after weighing. All money is integer cents.
+
+export const DEFAULT_TOLERANCE_BPS = 1000;
+
+/** round_half_up(value * numerator / denominator) in integers. */
+function roundDiv(value: number, numerator: number, denominator: number): Cents {
+  return Math.floor((value * numerator + denominator / 2) / denominator);
+}
+
+export interface EstimateLine {
+  pricePerKgCents: Cents;
+  requestedGrams: number;
+}
+
+export interface OrderEstimate {
+  lineEstimates: Cents[];
+  itemsEstimatedCents: Cents;
+  maxItemsCents: Cents;
+  estimatedTotalCents: Cents;
+  maxTotalCents: Cents;
+}
+
+export function estimateOrder(lines: EstimateLine[], deliveryFeeCents: Cents, toleranceBps: number): OrderEstimate {
+  const lineEstimates = lines.map((l) => lineTotalCents(l.pricePerKgCents, l.requestedGrams));
+  const itemsEstimatedCents = lineEstimates.reduce((a, b) => a + b, 0);
+  const maxItemsCents = roundDiv(itemsEstimatedCents, 10000 + toleranceBps, 10000);
+  return {
+    lineEstimates,
+    itemsEstimatedCents,
+    maxItemsCents,
+    estimatedTotalCents: itemsEstimatedCents + deliveryFeeCents,
+    maxTotalCents: maxItemsCents + deliveryFeeCents,
+  };
+}
+
+export interface WeighedLine {
+  pricePerKgCents: Cents;
+  /** 0 = item unavailable. */
+  actualGrams: number;
+}
+
+export interface FinalPricing {
+  lineFinals: Cents[];
+  finalItemsCents: Cents;
+  finalTotalCents: Cents;
+  /** Amount above the cap that the seller absorbs; 0 when not capped. */
+  cappedAmountCents: Cents;
+}
+
+/** The customer never pays more than the maximum announced at checkout. */
+export function finalizeOrder(lines: WeighedLine[], maxItemsCents: Cents, deliveryFeeCents: Cents): FinalPricing {
+  const lineFinals = lines.map((l) => {
+    if (!Number.isInteger(l.actualGrams) || l.actualGrams < 0) throw new PricingError("INVALID_QUANTITY", "actual grams must be an integer >= 0");
+    return l.actualGrams === 0 ? 0 : lineTotalCents(l.pricePerKgCents, l.actualGrams);
+  });
+  const finalItemsCents = lineFinals.reduce((a, b) => a + b, 0);
+  const cappedAmountCents = Math.max(0, finalItemsCents - maxItemsCents);
+  return { lineFinals, finalItemsCents, finalTotalCents: Math.min(finalItemsCents, maxItemsCents) + deliveryFeeCents, cappedAmountCents };
+}
+
+/** Per-line admin warning: weighed more than requested plus tolerance. */
+export function exceedsTolerance(requestedGrams: number, actualGrams: number, toleranceBps: number): boolean {
+  return actualGrams * 10000 > requestedGrams * (10000 + toleranceBps);
+}

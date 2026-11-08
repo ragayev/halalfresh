@@ -1,14 +1,33 @@
 "use client";
+import { useState } from "react";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
 import { formatQuantity } from "@/domain/bundles";
 
-export function AddToCart({ product }: { product: { id: string; name: string; stepGrams: number; minGrams: number; maxGrams: number; bundle?: boolean } }) {
+/** `bundleSlug` set = a Paket: it expands into ordinary product lines (no package line ever exists in the cart). */
+export function AddToCart({ product }: { product: { id: string; name: string; stepGrams: number; minGrams: number; maxGrams: number; bundle?: boolean; bundleSlug?: string } }) {
   const { d } = useI18n();
-  const { gramsOf, add, change, ready } = useCart();
+  const { gramsOf, add, change, ready, addBundle } = useCart();
+  const [failed, setFailed] = useState(false);
   const grams = ready ? gramsOf(product.id) : 0;
 
+  if (product.bundleSlug) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={async () => setFailed(!(await addBundle(product.bundleSlug!)))}
+          data-testid="quick-add"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-primary text-sm font-semibold text-text-inverse transition hover:bg-primary-hover"
+        >
+          <ShoppingCart className="size-4" aria-hidden />
+          {d.common.addToCart}
+        </button>
+        {failed && <p role="alert" className="t-small mt-1 text-danger">{d.common.unavailable}</p>}
+      </div>
+    );
+  }
   if (grams === 0) {
     return (
       <button

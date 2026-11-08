@@ -1,25 +1,6 @@
 import { formatMoney } from "./money";
-import { orderItemLines } from "./bundles";
 
-export interface WhatsappOrder {
-  number: number;
-  customerName: string;
-  phone: string;
-  street: string;
-  postalCode: string;
-  city: string;
-  items: { productName: string; quantityGrams: number; bundleSnapshot?: unknown }[];
-  totalCents: number;
-  paymentStatus: string;
-  /** SEPA debit still processing, but the admin accepted the collection risk. */
-  sepaPendingAuthorized?: boolean;
-  deliveryDate: string; // YYYY-MM-DD
-  slotStartTime: string;
-  slotEndTime: string;
-  deliveryInstructions?: string | null;
-}
-
-export function deliveryLabel(date: string, start: string, end: string, locale = "en-GB"): string {
+export function deliveryLabel(date: string, start: string, end: string, locale = "de-DE"): string {
   const [y, m, d] = date.split("-").map(Number);
   const day = new Intl.DateTimeFormat(locale, {
     weekday: "long",
@@ -30,35 +11,41 @@ export function deliveryLabel(date: string, start: string, end: string, locale =
   return `${day}, ${start}–${end}`;
 }
 
-/** Plain-text message the admin reviews and sends manually. The butcher's team reads German/English. */
-export function buildWhatsappMessage(o: WhatsappOrder): string {
+export interface KevserOrder {
+  number: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  street: string;
+  postalCode: string;
+  city: string;
+  deliveryDate: string; // YYYY-MM-DD
+  slotStartTime: string;
+  slotEndTime: string;
+  paymentMethod: "PAYPAL" | "CASH";
+  items: { productName: string; requestedGrams: number }[];
+  estimatedTotalCents: number;
+  maxTotalCents: number;
+  notes?: string | null;
+}
+
+const kgTr = (g: number) => (g / 1000).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 3 });
+
+/** Turkish message the admin forwards to Kevser by WhatsApp (spec §6.1). Customers' last names are abbreviated to an initial. */
+export function buildKevserMessage(o: KevserOrder): string {
+  const [y, m, d] = o.deliveryDate.split("-").map(Number);
+  const day = new Intl.DateTimeFormat("tr-TR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
   const lines = [
-    "NEW HALAL FRESH ORDER",
+    `🟢 Sipariş #HF-${String(o.number).padStart(6, "0")}`,
+    `Müşteri: ${o.firstName} ${o.lastName.trim().charAt(0).toUpperCase()}. · ${o.phone}`,
+    `Adres: ${o.street}, ${o.postalCode} ${o.city}`,
+    `Teslimat: ${day}, ${o.slotStartTime}–${o.slotEndTime}`,
+    `Ödeme: ${o.paymentMethod === "PAYPAL" ? "PayPal" : "Nakit"}`,
     "",
-    `Order: #HF-${o.number}`,
-    "",
-    `Customer: ${o.customerName}`,
-    `Phone: ${o.phone}`,
-    "",
-    "Address:",
-    o.street,
-    `${o.postalCode} ${o.city}`,
-    "",
-    "Products:",
-    ...o.items.flatMap((i) => orderItemLines(i, "de")),
-    "",
-    `Total: ${formatMoney(o.totalCents, "de")}`,
-    `Payment: ${
-      o.paymentStatus === "PAID"
-        ? "PAID (confirmed via Stripe)"
-        : o.sepaPendingAuthorized
-          ? "SEPA DIRECT DEBIT PENDING (not yet collected, seller accepted the risk)"
-          : o.paymentStatus
-    }`,
-    "",
-    `Delivery: ${deliveryLabel(o.deliveryDate, o.slotStartTime, o.slotEndTime)}`,
+    ...o.items.map((i) => `- ${i.productName} · ${kgTr(i.requestedGrams)} kg`),
+    `Tahmini: ${formatMoney(o.estimatedTotalCents, "tr")} · Max: ${formatMoney(o.maxTotalCents, "tr")}`,
   ];
-  if (o.deliveryInstructions?.trim()) lines.push("", `Instructions: ${o.deliveryInstructions.trim()}`);
+  if (o.notes?.trim()) lines.push(`Not: ${o.notes.trim()}`);
   return lines.join("\n");
 }
 
@@ -71,4 +58,9 @@ export function normalizeWhatsappNumber(raw: string): string | null {
 
 export function whatsappLink(number: string, message: string): string {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
+
+/** wa.me link to message a customer directly (no prefilled text). */
+export function customerWhatsappLink(phoneE164: string): string {
+  return `https://wa.me/${phoneE164.replace(/\D/g, "")}`;
 }

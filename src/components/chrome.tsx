@@ -3,19 +3,29 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Home, LayoutGrid, Search, ShoppingBag, Globe, Check } from "lucide-react";
+import { Check, Menu, ShoppingBag, Store } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
-import { LOCALES, LOCALE_LABELS } from "@/i18n/config";
+import { LOCALES } from "@/i18n/config";
+import { formatMoney } from "@/domain/money";
 import { useCart } from "./cart-store";
-import { Container } from "./ui";
+import { useCartView } from "./use-cart-view";
+import { Container, ProgressBar } from "./ui";
 import { PostcodeChip } from "./delivery-ui";
 import { cn } from "@/lib/utils";
 
+/** Original Halal Fresh oxblood logo: H / negative-space bull and stacked wordmark. */
 export function Logo({ className }: { className?: string }) {
-  const { locale, d } = useI18n();
+  const { locale } = useI18n();
   return (
-    <Link href={`/${locale}`} className={cn("inline-flex items-center gap-2", className)} aria-label={d.brand.name}>
-      <Image src="/logo-crest.png" alt={d.brand.name} width={720} height={240} priority className="h-14 w-auto sm:h-16" />
+    <Link href={`/${locale}`} className={cn("inline-flex min-h-11 shrink-0 items-center", className)} aria-label="Halal Fresh">
+      <Image
+        src="/brand/halal-fresh-logo.svg"
+        alt=""
+        width={1035}
+        height={372}
+        priority
+        className="h-9 w-auto sm:h-11"
+      />
     </Link>
   );
 }
@@ -27,197 +37,166 @@ function CartButton() {
     <Link
       href={`/${locale}/cart`}
       aria-label={`${d.nav.cart}${ready && count ? ` (${count})` : ""}`}
-      className="relative grid size-11 place-items-center rounded-full text-ink transition hover:bg-sage"
+      className="relative grid size-11 place-items-center rounded-full text-text hover:bg-surface-alt"
     >
-      <ShoppingBag className="size-6" aria-hidden />
-      <span
-        key={count}
-        className="pop absolute end-0 top-0.5 grid min-w-5 place-items-center rounded-full bg-forest px-1 text-[11px] font-bold leading-5 text-white"
-        data-testid="cart-count"
-      >
-        {ready ? count : 0}
-      </span>
+      <ShoppingBag className="size-6" strokeWidth={1.75} aria-hidden />
+      {ready && count > 0 && (
+        <span className="pop absolute end-0 top-0.5 grid min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-semibold leading-5 text-text-inverse" data-testid="cart-count">
+          {count}
+        </span>
+      )}
     </Link>
   );
 }
 
-function LanguageSwitcher() {
+/** DE | TR segmented control. The language lives in the URL only: no cookie. */
+function LanguageToggle() {
   const { locale, d } = useI18n();
   const pathname = usePathname();
   const search = useSearchParams().toString();
-  const rest = pathname.replace(/^\/(en|de|tr)/, "") || "";
+  const rest = pathname.replace(/^\/(de|tr)/, "") || "";
   return (
-    <details className="group relative">
-      <summary
-        aria-label={d.nav.language}
-        className="grid h-11 cursor-pointer list-none place-items-center rounded-full px-3 text-sm font-semibold uppercase hover:bg-sage [&::-webkit-details-marker]:hidden"
-      >
-        <span className="inline-flex items-center gap-1.5">
-          <Globe className="size-4" aria-hidden />
-          {locale}
-        </span>
-      </summary>
-      <ul className="absolute end-0 z-50 mt-2 w-40 overflow-hidden rounded-2xl bg-white py-1 shadow-card ring-1 ring-line">
-        {LOCALES.map((l) => (
-          <li key={l}>
-            <Link
-              href={`/${l}${rest}${search ? `?${search}` : ""}`}
-              hrefLang={l}
-              lang={l}
-              className="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-sage-soft"
-            >
-              {LOCALE_LABELS[l]} {l === locale && <Check className="size-4 text-forest" aria-hidden />}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </details>
+    <div role="group" aria-label={d.nav.language} className="inline-flex h-8 overflow-hidden rounded-[var(--radius-sm)] border border-border-strong text-sm font-semibold">
+      {LOCALES.map((l) => (
+        <Link
+          key={l}
+          href={`/${l}${rest}${search ? `?${search}` : ""}`}
+          hrefLang={l}
+          lang={l}
+          aria-current={l === locale ? "true" : undefined}
+          className={cn("relative grid min-w-11 place-items-center px-2 uppercase after:absolute after:-inset-y-2 after:inset-x-0 after:content-['']", l === locale ? "bg-primary-soft text-primary" : "text-text hover:bg-surface-alt")}
+        >
+          {l}
+        </Link>
+      ))}
+    </div>
   );
 }
 
 export function Header() {
   const { locale, d } = useI18n();
   return (
-    <header className="sticky top-0 z-40 border-b border-line/60 bg-white/95 backdrop-blur">
-      <Container className="flex h-[80px] items-center gap-2 sm:gap-4 lg:gap-8">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface">
+      <Container className="flex h-16 items-center gap-3 lg:gap-6">
         <Logo />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
-          <Link href={`/${locale}/shop`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
+          <Link href={`/${locale}/shop`} className="rounded-[var(--radius-md)] px-3 py-2.5 font-medium hover:bg-surface-alt">
             {d.nav.shop}
           </Link>
-          <Link href={`/${locale}#standards`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
-            <span lang="ar" dir="rtl" className="text-[18px] font-semibold leading-none">
-              {d.nav.standards}
-            </span>
-          </Link>
-          <Link href={`/${locale}#how`} className="rounded-full px-4 py-2 text-[15px] font-medium hover:bg-sage-soft">
-            {d.nav.delivery}
+          <Link href={`/${locale}/how-it-works`} className="rounded-[var(--radius-md)] px-3 py-2.5 font-medium hover:bg-surface-alt">
+            {locale === "tr" ? "Nasıl çalışır" : "So funktioniert’s"}
           </Link>
         </nav>
-        <form action={`/${locale}/shop`} role="search" className="relative ms-auto hidden max-w-md flex-1 md:block">
-          <Search className="pointer-events-none absolute start-4 top-1/2 size-5 -translate-y-1/2 text-ink" aria-hidden />
-          <input
-            type="search"
-            name="q"
-            maxLength={80}
-            aria-label={d.nav.searchLabel}
-            placeholder={d.nav.searchPlaceholder}
-            className="h-12 w-full rounded-full bg-cream ps-12 pe-4 text-[15px] ring-1 ring-line placeholder:text-muted focus:bg-white focus:outline-none focus:ring-2 focus:ring-forest/40"
-          />
-        </form>
-        <div className="ms-auto flex items-center gap-1 md:ms-0">
-          <PostcodeChip />
+        <div className="ms-auto flex items-center gap-1 sm:gap-2">
+          <div className="hidden sm:block"><PostcodeChip /></div>
           <Suspense fallback={null}>
-            <LanguageSwitcher />
+            <LanguageToggle />
           </Suspense>
           <CartButton />
+          {/* Mobile menu: full-height sheet without JS (details). */}
+          <details className="group lg:hidden">
+            <summary aria-label={d.nav.menu} className="grid size-11 cursor-pointer list-none place-items-center rounded-full hover:bg-surface-alt [&::-webkit-details-marker]:hidden">
+              <Menu className="size-6" strokeWidth={1.75} aria-hidden />
+            </summary>
+            <div className="fixed inset-x-0 top-16 z-50 h-[calc(100dvh-4rem)] overflow-y-auto bg-surface p-4 shadow-lg">
+              <nav aria-label="Mobile" className="flex flex-col gap-1 text-lg">
+                <Link href={`/${locale}/shop`} className="flex min-h-12 items-center rounded-[var(--radius-md)] px-3 hover:bg-surface-alt">{d.nav.shop}</Link>
+                <Link href={`/${locale}/how-it-works`} className="flex min-h-12 items-center rounded-[var(--radius-md)] px-3 hover:bg-surface-alt">{locale === "tr" ? "Nasıl çalışır" : "So funktioniert’s"}</Link>
+                <Link href={`/${locale}/cart`} className="flex min-h-12 items-center rounded-[var(--radius-md)] px-3 hover:bg-surface-alt">{d.nav.cart}</Link>
+                <div className="px-3 pt-4"><PostcodeChip /></div>
+              </nav>
+            </div>
+          </details>
         </div>
       </Container>
     </header>
   );
 }
 
+/** Mobile sticky cart bar: item count, estimated total, min-order progress. Shown only while the cart has items. */
 export function BottomNav() {
   const { locale, d } = useI18n();
   const pathname = usePathname();
   const { count, ready } = useCart();
-  const items = [
-    {
-      href: `/${locale}`,
-      label: d.nav.home,
-      icon: Home,
-      match: (p: string) => p === `/${locale}`,
-    },
-    {
-      href: `/${locale}/shop`,
-      label: d.nav.categories,
-      icon: LayoutGrid,
-      match: (p: string) => p.startsWith(`/${locale}/shop`) || p.startsWith(`/${locale}/products`),
-    },
-    {
-      href: `/${locale}/shop?focus=search`,
-      label: d.nav.search,
-      icon: Search,
-      match: () => false,
-    },
-    {
-      href: `/${locale}/cart`,
-      label: d.nav.cart,
-      icon: ShoppingBag,
-      match: (p: string) => p.startsWith(`/${locale}/cart`) || p.startsWith(`/${locale}/checkout`),
-    },
-  ];
+  const { data } = useCartView();
+  if (!ready || count === 0 || pathname.includes("/cart") || pathname.includes("/checkout") || pathname.includes("/b/") || pathname.includes("/products/")) return null;
+  const totals = data?.totals;
+  const est = data?.estimate?.estimatedTotalCents ?? totals?.totalCents;
   return (
-    <nav
-      aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
-    >
-      <ul className="mx-auto grid max-w-md grid-cols-4">
-        {items.map((it) => {
-          const active = it.match(pathname);
-          return (
-            <li key={it.label}>
-              <Link
-                href={it.href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "relative flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium",
-                  active ? "text-forest" : "text-muted",
-                )}
-              >
-                <it.icon className="size-6" aria-hidden />
-                {it.label}
-                {it.icon === ShoppingBag && ready && count > 0 && (
-                  <span className="absolute end-[28%] top-2 grid min-w-4 place-items-center rounded-full bg-forest px-1 text-[10px] font-bold leading-4 text-white">
-                    {count}
-                  </span>
-                )}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] shadow-lg lg:hidden" data-testid="sticky-cart">
+      {totals && totals.minOrderCents > 0 && (
+        <div className="px-4 pt-2">
+          <ProgressBar value={Math.min(totals.subtotalCents, totals.minOrderCents)} max={totals.minOrderCents} label={d.cart.title} />
+          <p className={cn("t-caption mt-1", totals.meetsMinimum ? "text-fresh" : "text-text-muted")}>
+            {totals.meetsMinimum ? (
+              <>
+                <Check className="mr-1 inline size-3" aria-hidden />
+                {locale === "tr" ? "Minimum sipariş tutarına ulaşıldı" : "Mindestbestellwert erreicht"}
+              </>
+            ) : locale === "tr" ? (
+              `Minimum sipariş tutarına ${formatMoney(totals.shortfallCents, locale)} kaldı`
+            ) : (
+              `Noch ${formatMoney(totals.shortfallCents, locale)} bis zum Mindestbestellwert`
+            )}
+          </p>
+        </div>
+      )}
+      <div className="flex items-center justify-between gap-3 p-3">
+        <p className="tabular font-semibold">
+          {count} {locale === "tr" ? "ürün" : count === 1 ? "Artikel" : "Artikel"}
+          {est != null && <> · ca. {formatMoney(est, locale)}</>}
+        </p>
+        <Link href={`/${locale}/cart`} className="inline-flex h-12 items-center rounded-[var(--radius-md)] bg-primary px-5 font-semibold text-text-inverse hover:bg-primary-hover">
+          {d.nav.cart}
+        </Link>
+      </div>
+    </div>
   );
 }
 
+const LEGAL: [string, string, string][] = [
+  ["imprint", "Impressum", "Impressum"],
+  ["privacy", "Datenschutz", "Datenschutz"],
+  ["terms", "Nutzungsbedingungen", "Nutzungsbedingungen"],
+  ["agb", "AGB & Widerruf Kevser Fleischerei", "AGB & Widerruf Kevser Fleischerei"],
+];
+
 export function Footer() {
-  const { locale, d, t } = useI18n();
+  const { locale, t, d } = useI18n();
   return (
-    <footer className="mt-20 border-t border-line bg-forest-dark text-white/85">
+    <footer className="mt-20 bg-ink text-text-inverse">
       <Container className="grid gap-8 py-12 md:grid-cols-3">
         <div className="space-y-3">
-          <p className="font-display text-2xl text-white">{d.brand.name}</p>
-          <p className="text-sm text-white/70">{d.footer.about}</p>
-          <p className="pt-2 text-sm text-white/70">
-            {d.footer.partnerTitle}:{" "}
-            <a
-              href="https://share.google/VmenJVKEgN1HV3exG"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-white underline underline-offset-4"
-            >
-              Kevser Fleischerei
-            </a>
+          <Image src="/brand/halal-fresh-logo-inverse.svg" alt="Halal Fresh" width={1035} height={372} className="h-14 w-auto" />
+          <p className="t-small flex gap-2 text-white/80">
+            <Store className="mt-0.5 size-5 shrink-0" strokeWidth={1.75} aria-hidden />
+            <span>
+              {locale === "tr" ? "Halal Fresh siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei'dir." : "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei."}
+            </span>
           </p>
+          <p className="t-small text-white/80">{locale === "tr" ? "Ödeme: PayPal · Nakit (2. siparişten itibaren)" : "Zahlung: PayPal · Bar (ab 2. Bestellung)"}</p>
         </div>
-        <div>
-          <p className="mb-3 text-sm font-semibold text-white">{d.footer.legal}</p>
-          <ul className="space-y-2 text-sm">
-            {(["privacy", "imprint", "terms"] as const).map((s) => (
-              <li key={s}>
-                <Link href={`/${locale}/legal/${s}`} className="hover:text-white hover:underline">
-                  {d.footer[s]}
+        <nav aria-label="Rechtliches">
+          <p className="mb-3 t-small font-semibold">{d.footer.legal}</p>
+          <ul className="t-small space-y-1">
+            {LEGAL.map(([slug, label]) => (
+              <li key={slug}>
+                <Link href={`/${locale}/legal/${slug}`} className="inline-flex min-h-11 items-center text-white/90 underline-offset-4 hover:underline">
+                  {label}
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href={`/${locale}/how-it-works`} className="inline-flex min-h-11 items-center text-white/90 underline-offset-4 hover:underline">
+                {locale === "tr" ? "Nasıl çalışır" : "So funktioniert’s"}
+              </Link>
+            </li>
           </ul>
-        </div>
-        <p className="text-sm text-white/60">{d.footer.storage}</p>
+          {locale === "tr" && <p className="t-small mt-2 text-white/80">Yasal metinler yalnızca Almanca olarak geçerlidir.</p>}
+        </nav>
+        <p className="t-small text-white/80">{d.footer.storage}</p>
       </Container>
-      <div className="border-t border-white/10 py-4 text-center text-xs text-white/50">
-        {t(d.footer.rights, { year: new Date().getFullYear() })}
-      </div>
+      <div className="border-t border-white/10 py-4 text-center t-caption text-white/70">{t(d.footer.rights, { year: new Date().getFullYear() })}</div>
     </footer>
   );
 }

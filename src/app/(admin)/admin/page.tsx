@@ -1,90 +1,66 @@
-import { db } from "@/lib/db";
 import { requireAdmin } from "@/server/auth";
-import { berlinToUtc, berlinToday, addDays } from "@/domain/delivery";
+import { computeMetrics } from "@/server/metrics";
 import { formatMoney } from "@/domain/money";
 import { Card } from "@/components/ui";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
-const PAID = ["PAID", "PARTIALLY_REFUNDED"] as const;
 
-export default async function Dashboard() {
+const num = (v: number | null, suffix = "") => (v == null ? "–" : `${v.toLocaleString("de-DE")}${suffix}`);
+
+export default async function Metrics() {
   await requireAdmin();
-  const today = berlinToday(new Date());
-  const start = berlinToUtc(today, "00:00"),
-    end = berlinToUtc(addDays(today, 1), "00:00");
-  const paidWhere = { paymentStatus: { in: [...PAID] } };
-  const [todayN, awaiting, revenue, inFlight, done, cancelled, refunded, sepaPending, payFailed] = await Promise.all([
-    db.order.count({
-      where: { createdAt: { gte: start, lt: end }, ...paidWhere },
-    }),
-    db.order.count({
-      where: { ...paidWhere, fulfillmentStatus: "AWAITING_FORWARDING" },
-    }),
-    db.order.aggregate({
-      _sum: { totalCents: true, refundedCents: true },
-      where: paidWhere,
-    }),
-    db.order.count({
-      where: {
-        ...paidWhere,
-        fulfillmentStatus: {
-          in: ["FORWARDED", "CONFIRMED_BY_BUTCHER", "PREPARING", "OUT_FOR_DELIVERY"],
-        },
-      },
-    }),
-    db.order.count({ where: { fulfillmentStatus: "DELIVERED" } }),
-    db.order.count({
-      where: {
-        fulfillmentStatus: "CANCELLED",
-        paymentStatus: { not: "PENDING_PAYMENT" },
-      },
-    }),
-    db.order.count({
-      where: { paymentStatus: { in: ["REFUNDED", "PARTIALLY_REFUNDED"] } },
-    }),
-    db.order.count({
-      where: { paymentStatus: "PENDING_PAYMENT", sepaInitiatedAt: { not: null }, fulfillmentStatus: { not: "CANCELLED" } },
-    }),
-    db.order.count({
-      where: { paymentStatus: "PAYMENT_FAILED", sepaInitiatedAt: { not: null }, fulfillmentStatus: { not: "CANCELLED" } },
-    }),
-  ]);
-  const rev = (revenue._sum.totalCents ?? 0) - (revenue._sum.refundedCents ?? 0);
-  const tiles: [string, string | number, string?][] = [
-    ["SEPA failed (action needed)", payFailed, "/admin/orders?payment=PAYMENT_FAILED"],
-    ["SEPA collecting (not yet paid)", sepaPending, "/admin/orders?payment=PENDING_PAYMENT"],
-    ["Today's paid orders", todayN],
-    ["Awaiting forwarding", awaiting, "/admin/orders?fulfillment=AWAITING_FORWARDING"],
-    ["Paid revenue (net of refunds)", formatMoney(rev)],
-    ["Awaiting delivery", inFlight, "/admin/orders?view=inflight"],
-    ["Completed", done, "/admin/orders?fulfillment=DELIVERED"],
-    ["Cancelled", cancelled],
-    ["Refunded / part-refunded", refunded],
+  const since = new Date();
+  since.setDate(since.getDate() - 90);
+  const m = await computeMetrics(since);
+  const tiles: [string, string][] = [
+    ["Bestellungen (90 Tage)", String(m.orders)],
+    ["Ø geschätzt", m.avgEstimatedCents == null ? "–" : formatMoney(m.avgEstimatedCents, "de")],
+    ["Ø Endbetrag", m.avgFinalCents == null ? "–" : formatMoney(m.avgFinalCents, "de")],
+    ["Gedeckelt", num(m.cappedPct, " %")],
+    ["Neu → Angenommen", num(m.avgMinutesNewToAccepted, " min")],
+    ["Vorbereitung → Gewogen", num(m.avgMinutesPreparingToWeighed, " min")],
+    ["Stornoquote", num(m.cancellationPct, " %")],
+    ["Verweigerungsquote", num(m.refusedPct, " %")],
+    ["Zahlung überfällig", num(m.overduePct, " %")],
+    ["Stammkunden", num(m.repeatCustomerPct, " %")],
   ];
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {tiles.map(([l, v, href]) => {
-          const inner = (
-            <Card className="p-5">
-              <p className="text-sm text-muted">{l}</p>
-              <p className="mt-1 text-3xl font-bold tabular-nums">{v}</p>
-            </Card>
-          );
-          return href ? (
-            <Link key={l} href={href}>
-              {inner}
-            </Link>
-          ) : (
-            <div key={l}>{inner}</div>
-          );
-        })}
-      </div>
-      <p className="text-sm text-muted">
-        Revenue is the gross amount paid to the butcher&apos;s Stripe account; it does not include Stripe fees or taxes.
-      </p>
+      <h1 className="text-2xl font-semibold">Kennzahlen</h1>
+      <dl className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        {tiles.map(([k, v]) => (
+          <Card key={k} className="p-4">
+            <dt className="t-small text-text-muted">{k}</dt>
+            <dd className="t-price-lg tabular">{v}</dd>
+          </Card>
+        ))}
+      </dl>
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Bestellungen pro Woche</h2>
+        <ul className="t-small tabular space-y-1">
+          {m.perWeek.map((w) => (
+            <li key={w.week}>{w.week}: <strong>{w.count}</strong></li>
+          ))}
+          {m.perWeek.length === 0 && <li className="text-text-muted">Noch keine Daten.</li>}
+        </ul>
+      </Card>
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Ø Abweichung Gewicht je Produkt</h2>
+        <ul className="t-small tabular space-y-1">
+          {m.perProductDeviation.map((p) => (
+            <li key={p.product}>{p.product}: <strong>{p.avgDeviationPct > 0 ? "+" : ""}{p.avgDeviationPct} %</strong> ({p.lines} Positionen)</li>
+          ))}
+          {m.perProductDeviation.length === 0 && <li className="text-text-muted">Noch keine Daten.</li>}
+        </ul>
+      </Card>
+      <Card className="p-4">
+        <h2 className="mb-2 text-lg font-semibold">Bestellungen pro Tag</h2>
+        <ul className="t-small tabular grid gap-1 sm:grid-cols-2">
+          {m.perDay.slice(-14).map((d) => (
+            <li key={d.day}>{d.day}: <strong>{d.count}</strong></li>
+          ))}
+        </ul>
+      </Card>
     </div>
   );
 }

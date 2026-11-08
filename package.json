@@ -12,12 +12,17 @@
     "db:migrate": "prisma migrate deploy",
     "db:dev": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
+    "catalog:audit": "tsx scripts/catalog-audit.ts",
+    "catalog:import": "tsx scripts/catalog-import.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "admin:totp": "tsx scripts/admin-totp.ts",
     "gen:images": "tsx scripts/gen-images.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "@prisma/client": "^6.19.3",
     "@tabler/icons-react": "^3.50.0",

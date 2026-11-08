@@ -1,33 +1,42 @@
 import Link from "next/link";
 import { requireAdmin } from "@/server/auth";
 import { getMerchant } from "@/server/settings";
-import { getGateway } from "@/server/payments/gateway";
-import { saveMerchantAction } from "../actions";
+import { saveMerchantAction, saveOperatingSettingsAction } from "../actions";
+import { getSettings } from "@/server/app-settings";
 import { ActionForm } from "@/components/admin/forms";
-import { StripePanel } from "@/components/admin/stripe-panel";
-import { Badge, Card, Field, Input } from "@/components/ui";
+import { Badge, Card, Checkbox, Field, Input } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
 export default async function Settings() {
   await requireAdmin();
   const m = await getMerchant();
-  let status = null,
-    statusError = "";
-  try {
-    status = await (await getGateway()).getAccountStatus(m.stripeAccountId);
-  } catch {
-    statusError = "Could not reach Stripe";
-  }
+  const st = await getSettings();
   return (
     <div className="max-w-3xl space-y-6">
-      <h1 className="text-2xl font-semibold">Settings</h1>
-      <Card className="space-y-3 p-6">
-        <h2 className="font-semibold">Payments (Stripe)</h2>
-        <StripePanel status={status} error={statusError} />
+      <h1 className="text-2xl font-semibold">Einstellungen</h1>
+      <Card className="p-6">
+        <h2 className="mb-4 font-semibold">Betrieb</h2>
+        <ActionForm action={saveOperatingSettingsAction}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Toleranz (Basispunkte, 1000 = 10 %)" htmlFor="toleranceBps" hint="Wird bei jeder Bestellung festgeschrieben.">
+              <Input id="toleranceBps" name="toleranceBps" inputMode="numeric" defaultValue={st.toleranceBps} />
+            </Field>
+            <Field label="Zahlung überfällig nach (Stunden)" htmlFor="paymentOverdueHours">
+              <Input id="paymentOverdueHours" name="paymentOverdueHours" inputMode="numeric" defaultValue={st.paymentOverdueHours} />
+            </Field>
+            <Field label="Bestelllink gültig nach Abschluss (Tage)" htmlFor="tokenExpiryDays">
+              <Input id="tokenExpiryDays" name="tokenExpiryDays" inputMode="numeric" defaultValue={st.tokenExpiryDays} />
+            </Field>
+            <Field label="Telegram Chat-ID (Admin-Benachrichtigungen)" htmlFor="telegramChatId">
+              <Input id="telegramChatId" name="telegramChatId" defaultValue={st.telegramChatId} />
+            </Field>
+          </div>
+          <Checkbox name="halalCertificateVerified" defaultChecked={st.halalCertificateVerified} label="Halal-Zertifikat geprüft (erst dann wird „zertifiziert“ im Shop angezeigt)" />
+        </ActionForm>
       </Card>
       <Card className="p-6">
-        <h2 className="mb-4 font-semibold">Merchant</h2>
+        <h2 className="mb-4 font-semibold">Verkäufer (Kevser Fleischerei)</h2>
         <ActionForm action={saveMerchantAction}>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Business name" htmlFor="name">

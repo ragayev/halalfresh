@@ -1,8 +1,10 @@
 export const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-export const gatewayName = () => (process.env.PAYMENT_GATEWAY === "mock" ? "mock" : "stripe");
+
+/** "paypal" talks to PayPal (sandbox or live per PAYPAL_ENV). "mock" is a local stand-in, refused in production. */
+export const paymentProviderName = () => (process.env.PAYMENT_PROVIDER === "mock" ? "mock" : "paypal");
 
 export function assertMockAllowed() {
-  if (process.env.NODE_ENV === "production" && process.env.PAYMENT_GATEWAY === "mock") {
-    throw new Error("PAYMENT_GATEWAY=mock is not allowed in production");
+  if (process.env.NODE_ENV === "production" && process.env.PAYMENT_PROVIDER === "mock") {
+    throw new Error("PAYMENT_PROVIDER=mock is not allowed in production");
   }
 }

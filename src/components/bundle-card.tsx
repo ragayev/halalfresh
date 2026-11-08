@@ -5,25 +5,24 @@ import { formatMoney } from "@/domain/money";
 import { formatWeight } from "@/domain/pricing";
 import { ProductImage } from "./product-image";
 import { AddToCart } from "./add-to-cart";
-import { PartnerTag } from "./partner-badge";
 
 /** Fleischpaket card: large image, name, total weight, price, short description, add-to-cart. Contents live on the detail page. */
 export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale: string; d: Dictionary; priority?: boolean }) {
   const href = `/${locale}/products/${p.slug}`;
   return (
     <article
-      className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-line/60 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(22_75_57/0.35)]"
+      className="group flex flex-col overflow-hidden rounded-[var(--radius-lg)] bg-surface ring-1 ring-border transition-shadow duration-200 hover:shadow-md"
       data-testid="bundle-card"
     >
       <Link href={href} className="block" aria-label={p.name}>
-        <div className="relative aspect-square overflow-hidden bg-sage">
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#FAF9F6]">
           {p.images[0] && (
             <ProductImage
               src={p.images[0].src}
               alt={p.images[0].alt}
               priority={priority}
               sizes="(min-width:1024px) 24vw, (min-width:640px) 48vw, 92vw"
-              className="transition duration-500 group-hover:scale-105"
+              className="object-contain p-2 transition-transform duration-300 group-hover:scale-[1.02]"
             />
           )}
         </div>
@@ -36,14 +35,13 @@ export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale:
             </Link>
             {p.bundle && <p className="mt-0.5 text-sm text-muted">{formatWeight(p.bundle.totalGrams)}</p>}
           </div>
-          <p className="shrink-0 text-xl font-bold leading-none text-forest">{formatMoney(p.pricePerKgCents, locale)}</p>
+          <p className="shrink-0 text-xl font-bold leading-none text-primary">{formatMoney(p.pricePerKgCents, locale)}<span className="ml-1 text-xs font-medium text-text-muted">{d.common.perPackage}</span></p>
         </div>
         <p className="line-clamp-3 text-sm text-muted">{p.description}</p>
-        <PartnerTag />
         <div className="mt-auto pt-3">
           {p.isAvailable ? (
             <AddToCart
-              product={{ id: p.id, name: p.name, stepGrams: p.stepGrams, minGrams: p.minGrams, maxGrams: p.maxGrams, bundle: true }}
+              product={{ id: p.id, name: p.name, stepGrams: p.stepGrams, minGrams: p.minGrams, maxGrams: p.maxGrams, bundle: true, bundleSlug: p.slug }}
             />
           ) : (
             <p className="grid h-10 place-items-center rounded-[var(--radius-button)] bg-sage-soft text-sm font-medium text-muted">{d.common.unavailable}</p>

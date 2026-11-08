@@ -1,6 +1,7 @@
 import type { Category, Product, ProductImage } from "@prisma/client";
 import { db } from "@/lib/db";
 import { bundleItemName, bundleTotalGrams, parseBundleItems } from "@/domain/bundles";
+import { DEFAULT_PRODUCT_IMAGE, hasConfirmedPrice, isPurchasable, type ProductStatus, type SellingUnit } from "@/domain/product-rules";
 
 type Tr = Record<string, { name?: string; description?: string }>;
 
@@ -17,13 +18,17 @@ export interface ProductView {
   halalCertification: string | null;
   allergenInfo: string | null;
   isAvailable: boolean;
+  /** Server-evaluated: listed, available and carrying a confirmed price. The only flag the UI may use to enable ordering. */
+  purchasable: boolean;
+  priceConfirmed: boolean;
+  sellingUnit: SellingUnit;
   isFeatured: boolean;
   preorderEligible: boolean;
   categorySlug: string;
   categoryName: string;
   /** Fleischpaket: localized contents; null for regular products. */
   bundle: { totalGrams: number; items: { name: string; grams: number }[] } | null;
-  images: { src: string; alt: string }[];
+  images: { src: string; alt: string; placeholder: boolean }[];
   /** Original supplier article codes, when linked to the product. */
   supplierArticleNumbers: string[];
 }
@@ -41,17 +46,15 @@ export function imageSrc(i: Pick<ProductImage, "id" | "url">): string {
 
 type ProductRow = Product & {
   category: Category;
-  images: Pick<ProductImage, "id" | "url" | "alt">[];
+  images: Pick<ProductImage, "id" | "url" | "alt" | "isPlaceholder">[];
+  supplierArticles: { supplierSku: string }[];
 };
 
 export function toProductView(p: ProductRow, locale: string): ProductView {
   const tr = (p.translations as Tr)[locale] ?? {};
   const ctr = (p.category.translations as Tr)[locale] ?? {};
   const bundleItems = parseBundleItems(p.bundleItems);
-  const metadata = p.translations as { supplierArticleNumbers?: unknown };
-  const supplierArticleNumbers = Array.isArray(metadata.supplierArticleNumbers)
-    ? metadata.supplierArticleNumbers.filter((v): v is string => typeof v === "string")
-    : [];
+  const supplierArticleNumbers = p.supplierArticles.map((a) => a.supplierSku);
   return {
     id: p.id,
     slug: p.slug,
@@ -64,7 +67,11 @@ export function toProductView(p: ProductRow, locale: string): ProductView {
     origin: p.origin,
     halalCertification: p.halalCertification,
     allergenInfo: p.allergenInfo,
-    isAvailable: p.isAvailable,
+    // Storefront components only know "available": it already folds in listing status and a confirmed price.
+    isAvailable: isPurchasable({ ...p, status: p.status as ProductStatus }),
+    purchasable: isPurchasable({ ...p, status: p.status as ProductStatus }),
+    priceConfirmed: hasConfirmedPrice(p),
+    sellingUnit: p.sellingUnit as SellingUnit,
     isFeatured: p.isFeatured,
     preorderEligible: p.preorderEligible,
     categorySlug: p.category.slug,
@@ -79,9 +86,10 @@ export function toProductView(p: ProductRow, locale: string): ProductView {
     images: p.images.length
       ? p.images.map((i) => ({
           src: imageSrc(i),
+          placeholder: i.isPlaceholder,
           alt: i.alt || (bundleItems ? `${tr.name || p.name}: ${bundleItems.map((b) => bundleItemName(b, locale)).join(", ")}` : tr.name || p.name),
         }))
-      : [{ src: "/images/products/default-product.svg", alt: tr.name || p.name }],
+      : [{ src: DEFAULT_PRODUCT_IMAGE, alt: tr.name || p.name, placeholder: true }],
   };
 }
 
@@ -89,17 +97,18 @@ const include = {
   category: true,
   images: {
     orderBy: { position: "asc" as const },
-    select: { id: true, url: true, alt: true },
+    select: { id: true, url: true, alt: true, isPlaceholder: true },
   },
+  supplierArticles: { select: { supplierSku: true }, orderBy: { supplierSku: "asc" as const } },
 };
 
 export async function listCategories(locale: string): Promise<CategoryView[]> {
   const cats = await db.category.findMany({
-    where: { products: { some: { isHidden: false } } },
+    where: { products: { some: { status: "ACTIVE" } } },
     orderBy: { sortOrder: "asc" },
     include: {
       products: {
-        where: { isHidden: false, images: { some: {} } },
+        where: { status: "ACTIVE", images: { some: {} } },
         orderBy: { createdAt: "asc" },
         take: 1,
         select: { images: { orderBy: { position: "asc" }, take: 1, select: { id: true, url: true } } },
@@ -132,7 +141,7 @@ export async function listProducts(
 ) {
   const rows = await db.product.findMany({
     where: {
-      isHidden: false,
+      status: "ACTIVE",
       ...(opts.preorderOnly ? { preorderEligible: true } : {}),
       ...(opts.category ? { category: { slug: opts.category } } : {}),
       ...(opts.availableOnly ? { isAvailable: true } : {}),
@@ -159,12 +168,12 @@ export async function listProducts(
 
 export async function getProductBySlug(slug: string, locale: string) {
   const row = await db.product.findUnique({ where: { slug }, include });
-  return row && !row.isHidden ? toProductView(row, locale) : null;
+  return row && row.status === "ACTIVE" ? toProductView(row, locale) : null;
 }
 
 export async function getProductsByIds(ids: string[], locale: string) {
   const rows = await db.product.findMany({
-    where: { id: { in: ids }, isHidden: false },
+    where: { id: { in: ids }, status: "ACTIVE" },
     include,
   });
   return rows.map((r) => toProductView(r, locale));

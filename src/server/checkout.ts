@@ -1,16 +1,16 @@
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
-import { log } from "@/lib/logger";
-import { siteUrl } from "@/lib/env";
 import { normalizePostcode, POSTCODE_RE } from "@/domain/delivery";
+import { cashEligibility, type CashReason } from "@/domain/payment-eligibility";
+import { normalizePhone } from "@/domain/phone";
+import { estimateOrder } from "@/domain/pricing";
 import { LOCALES } from "@/i18n/config";
 import { resolveDelivery } from "./delivery-service";
-import { formatQuantity } from "@/domain/bundles";
 import { AppError } from "./errors";
-import { getGateway } from "./payments/gateway";
-import { GatewayConfigError } from "./payments/stripe";
+import { getSettings } from "./app-settings";
+import { notifyAdmin, notifyCustomer } from "./notifications/notify";
 import { priceCart } from "./pricing-service";
 import { getMerchant } from "./settings";
 
@@ -18,209 +18,149 @@ export const checkoutInput = z.object({
   requestId: z.string().uuid(),
   locale: z.enum(LOCALES).default("de"),
   lines: z
-    .array(
-      z.object({
-        productId: z.string().min(1),
-        grams: z.number().int().positive(),
-      }),
-    )
+    .array(z.object({ productId: z.string().min(1), grams: z.number().int().positive(), bundleId: z.string().max(80).optional() }))
     .min(1)
     .max(50),
   customer: z.object({
-    name: z.string().trim().min(2).max(120),
+    firstName: z.string().trim().min(1).max(80),
+    lastName: z.string().trim().min(1).max(80),
     email: z.string().trim().toLowerCase().email().max(200),
-    phone: z
-      .string()
-      .trim()
-      .regex(/^\+?[\d\s()/-]{6,24}$/),
+    phone: z.string().trim().min(6).max(30),
   }),
   address: z.object({
     street: z.string().trim().min(3).max(160),
     postalCode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)),
     city: z.string().trim().min(2).max(80),
   }),
-  /** Postcode the customer saw delivery terms for. The server re-resolves; a different address postcode is rejected. */
   checkedPostcode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)).optional(),
-  deliveryInstructions: z.string().trim().max(500).optional(),
-  acceptTerms: z.literal(true),
+  deliveryNotes: z.string().trim().max(500).optional(),
+  paymentMethod: z.enum(["PAYPAL", "CASH"]),
+  consents: z.object({
+    terms: z.literal(true),
+    marketing: z.boolean().default(false),
+    dataTransfer: z.boolean().default(false),
+  }),
 });
 export type CheckoutInput = z.infer<typeof checkoutInput>;
 
-export async function createCheckout(raw: unknown, now = new Date()): Promise<{ url: string; orderToken: string }> {
+export interface CashStatus {
+  allowed: boolean;
+  reason?: CashReason;
+}
+
+/** Cash eligibility for a phone number (spec §7.1). Unknown phone = first order = not allowed. */
+export async function cashStatusForPhone(rawPhone: string): Promise<CashStatus> {
+  const phone = normalizePhone(rawPhone);
+  if (!phone) return { allowed: false, reason: "FIRST_ORDER" };
+  const c = await db.customer.findUnique({ where: { phoneE164: phone } });
+  if (!c) return { allowed: false, reason: "FIRST_ORDER" };
+  const completedOrders = await db.order.count({ where: { customerId: c.id, status: { in: ["DELIVERED", "CASH_COLLECTED"] } } });
+  const r = cashEligibility({ completedOrders, refusedCount: c.refusedCount, blockedCash: c.blockedCash });
+  return r.allowed ? { allowed: true } : { allowed: false, reason: r.reason };
+}
+
+/** Creates a NEW order. Prices are recomputed from the DB; nothing from the client is trusted for money. */
+export async function createOrder(raw: unknown, now = new Date()): Promise<{ token: string; locale: string; orderId: string }> {
   const parsed = checkoutInput.safeParse(raw);
   if (!parsed.success) throw new AppError("VALIDATION", "Please check the highlighted fields", 400, parsed.error.flatten().fieldErrors);
   const input = parsed.data;
 
-  // Double-submit protection: same requestId returns the same checkout.
-  const existing = await db.order.findUnique({
-    where: { requestId: input.requestId },
-    include: { payments: true },
-  });
-  if (existing) {
-    const pay = existing.payments[0];
-    if (pay?.checkoutUrl && existing.paymentStatus === "PENDING_PAYMENT" && !existing.sepaInitiatedAt) return { url: pay.checkoutUrl, orderToken: existing.accessToken };
-    throw new AppError("CONFLICT", "This order was already submitted", 409);
-  }
+  const dup = await db.order.findUnique({ where: { requestId: input.requestId }, select: { publicToken: true, locale: true, id: true } });
+  if (dup) return { token: dup.publicToken, locale: dup.locale, orderId: dup.id };
 
-  const gateway = await getGateway();
-  const merchant = await getMerchant();
-  const status = await gateway.getAccountStatus(merchant.stripeAccountId);
-  // Stripe: the seller's own connected account must take the money, and it must be able to accept SEPA debits.
-  const stripeNotReady = gateway.name === "stripe" && (!merchant.stripeAccountId || !status.sepaDebitEnabled);
-  if (!status.connected || !status.chargesEnabled || stripeNotReady) {
-    throw new AppError("CHECKOUT_UNAVAILABLE", "Online payment is not available yet. Please try again later.", 503);
-  }
+  const phone = normalizePhone(input.customer.phone);
+  if (!phone) throw new AppError("VALIDATION", "Please check the highlighted fields", 400, { "customer.phone": ["invalid"] });
 
-  // Never trust client terms: resolve zone, terms and slot from the address postcode, right now.
   if (input.checkedPostcode && input.checkedPostcode !== input.address.postalCode)
-    throw new AppError("POSTCODE_MISMATCH", "The delivery address postcode differs from the postcode you checked", 422, {
-      checkedPostcode: input.checkedPostcode,
-      addressPostcode: input.address.postalCode,
-    });
-  const resolved = await resolveDelivery(input.address.postalCode, now);
-  const { check, slot, zoneId, routeId } = resolved;
+    throw new AppError("POSTCODE_MISMATCH", "The delivery address postcode differs from the postcode you checked", 422);
+  const { check, slot, zoneId, routeId } = await resolveDelivery(input.address.postalCode, now);
   if (!check.supported || !zoneId || !routeId) throw new AppError("POSTCODE_UNSUPPORTED", "We don't deliver to this postcode yet", 422);
+  if (!slot) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
 
+  const merchant = await getMerchant();
+  const settings = await getSettings();
   const { lines, totals } = await priceCart(input.lines, {
     mode: check.mode!,
     minOrderCents: check.minOrderCents,
     deliveryFeeCents: check.deliveryFeeCents,
     freeDeliveryThresholdCents: check.freeDeliveryThresholdCents,
   });
-  if (!totals.meetsMinimum) {
-    throw new AppError("BELOW_MINIMUM", "Minimum order value not reached", 422, {
-      minOrderCents: totals.minOrderCents,
-      shortfallCents: totals.shortfallCents,
-    });
-  }
+  if (!totals.meetsMinimum)
+    throw new AppError("BELOW_MINIMUM", "Minimum order value not reached", 422, { minOrderCents: totals.minOrderCents, shortfallCents: totals.shortfallCents });
 
-  // No slot picking: the customer sees the next delivery date and we assign exactly that slot.
-  if (!slot) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
-  const applicationFeeCents = 0; // commission is settled outside the platform
-  const accessToken = randomBytes(24).toString("base64url");
-
-  const order = await db.$transaction(async (tx) => {
-    const customer = await tx.customer.create({
-      data: {
-        email: input.customer.email,
-        name: input.customer.name,
-        phone: input.customer.phone,
-        locale: input.locale,
-      },
-    });
-    const address = await tx.address.create({
-      data: { customerId: customer.id, ...input.address },
-    });
-    const o = await tx.order.create({
-      data: {
-        accessToken,
-        requestId: input.requestId,
-        merchantId: merchant.id,
-        customerId: customer.id,
-        addressId: address.id,
-        zoneId,
-        routeId,
-        zoneName: check.zone!.name,
-        deliveryMode: check.mode!,
-        minOrderCents: check.minOrderCents,
-        freeDeliveryThresholdCents: check.freeDeliveryThresholdCents,
-        deliveryDate: new Date(`${slot.date}T00:00:00.000Z`),
-        slotStartTime: slot.windowStart,
-        slotEndTime: slot.windowEnd,
-        deliveryInstructions: input.deliveryInstructions || null,
-        locale: input.locale,
-        subtotalCents: totals.subtotalCents,
-        deliveryFeeCents: totals.deliveryFeeCents,
-        totalCents: totals.totalCents,
-        commissionBps: 0,
-        applicationFeeCents,
-        items: {
-          create: lines.map((l) => ({
-            productId: l.productId,
-            productName: l.name,
-            productSlug: l.slug,
-            unitPricePerKgCents: l.pricePerKgCents,
-            quantityGrams: l.grams,
-            lineTotalCents: l.lineTotalCents,
-            ...(l.bundleSnapshot ? { bundleSnapshot: l.bundleSnapshot as unknown as Prisma.InputJsonValue } : {}),
-          })),
-        },
-        events: {
-          create: {
-            type: "ORDER_CREATED",
-            actor: "customer",
-            toStatus: "PENDING_PAYMENT",
-          },
-        },
-      },
-    });
-    await tx.payment.create({
-      data: {
-        orderId: o.id,
-        provider: gateway.name,
-        connectedAccountId: merchant.stripeAccountId,
-        idempotencyKey: `checkout_${o.id}`,
-        amountCents: o.totalCents,
-        applicationFeeCents,
-      },
-    });
-    return o;
-  });
+  const est = estimateOrder(lines.map((l) => ({ pricePerKgCents: l.pricePerKgCents, requestedGrams: l.grams })), totals.deliveryFeeCents, settings.toleranceBps);
+  const token = randomBytes(24).toString("base64url"); // 192 bit
 
   try {
-    const base = `${siteUrl()}/${input.locale}`;
-    const session = await gateway.createCheckout({
-      orderId: order.id,
-      orderNumber: order.number,
-      lines: [
-        ...lines.map((l) => ({
-          name: `${l.name} — ${formatQuantity(l.grams, !!l.bundleSnapshot)}`,
-          amountCents: l.lineTotalCents,
-        })),
-        ...(totals.deliveryFeeCents > 0 ? [{ name: "Delivery", amountCents: totals.deliveryFeeCents }] : []),
-      ],
-      totalCents: order.totalCents,
-      applicationFeeCents,
-      customerEmail: input.customer.email,
-      connectedAccountId: merchant.stripeAccountId,
-      successUrl: `${base}/checkout/success?t=${accessToken}`,
-      cancelUrl: `${base}/checkout/cancelled?t=${accessToken}`,
-      idempotencyKey: `checkout_${order.id}`,
-      locale: input.locale,
+    const order = await db.$transaction(async (tx) => {
+      const existing = await tx.customer.findUnique({ where: { phoneE164: phone } });
+      // Cash eligibility is decided inside the transaction against current data, never from the client.
+      if (input.paymentMethod === "CASH") {
+        const completed = existing ? await tx.order.count({ where: { customerId: existing.id, status: { in: ["DELIVERED", "CASH_COLLECTED"] } } }) : 0;
+        const r = cashEligibility({ completedOrders: completed, refusedCount: existing?.refusedCount ?? 0, blockedCash: existing?.blockedCash ?? false });
+        if (!r.allowed) throw new AppError("PAYMENT_METHOD_UNAVAILABLE", "Cash payment is not available for this customer", 422, { reason: r.reason });
+      }
+      const personal = { email: input.customer.email, firstName: input.customer.firstName, lastName: input.customer.lastName };
+      const customer = await tx.customer.upsert({ where: { phoneE164: phone }, update: personal, create: { phoneE164: phone, ...personal } });
+      await tx.address.create({ data: { customerId: customer.id, ...input.address, notes: input.deliveryNotes || null } });
+      const o = await tx.order.create({
+        data: {
+          publicToken: token,
+          requestId: input.requestId,
+          merchantId: merchant.id,
+          customerId: customer.id,
+          street: input.address.street,
+          postalCode: input.address.postalCode,
+          city: input.address.city,
+          deliveryNotes: input.deliveryNotes || null,
+          zoneId,
+          routeId,
+          zoneName: check.zone!.name,
+          deliveryMode: check.mode!,
+          deliveryDate: new Date(`${slot.date}T00:00:00.000Z`),
+          slotStartTime: slot.windowStart,
+          slotEndTime: slot.windowEnd,
+          locale: input.locale,
+          status: "NEW",
+          paymentMethod: input.paymentMethod,
+          paymentMode: "CAPTURE_AFTER_WEIGH",
+          toleranceBps: settings.toleranceBps,
+          minOrderCents: check.minOrderCents,
+          deliveryFeeCents: totals.deliveryFeeCents,
+          estimatedTotalCents: est.estimatedTotalCents,
+          maxTotalCents: est.maxTotalCents,
+          items: {
+            create: lines.map((l, i) => ({
+              productId: l.productId,
+              productName: l.name,
+              productSlug: l.slug,
+              unitPricePerKgCents: l.pricePerKgCents,
+              requestedGrams: l.grams,
+              estimatedCents: est.lineEstimates[i],
+              bundleId: l.bundleId,
+            })),
+          },
+          events: { create: { toStatus: "NEW", actor: "customer", reason: "created" } },
+        },
+      });
+      const w = settings.consentWording;
+      await tx.consent.createMany({
+        data: [
+          { customerId: customer.id, orderId: o.id, type: "TERMS", wordingVersion: w.terms.version, granted: true },
+          { customerId: customer.id, orderId: o.id, type: "MARKETING", wordingVersion: w.marketing.version, granted: input.consents.marketing },
+          { customerId: customer.id, orderId: o.id, type: "DATA_TRANSFER", wordingVersion: w.dataTransfer.version, granted: input.consents.dataTransfer },
+        ],
+      });
+      return o;
     });
-    await db.payment.update({
-      where: { idempotencyKey: `checkout_${order.id}` },
-      data: {
-        stripeCheckoutSessionId: session.sessionId,
-        checkoutUrl: session.url,
-      },
-    });
-    return { url: session.url, orderToken: accessToken };
+    await Promise.all([notifyCustomer(order.id, "order_created"), notifyAdmin(order.id, "new_order")]);
+    return { token, locale: input.locale, orderId: order.id };
   } catch (e) {
-    log.error("checkout.create_failed", { orderId: order.id, error: e });
-    await db.$transaction([
-      db.order.update({
-        where: { id: order.id },
-        data: { paymentStatus: "CANCELLED", fulfillmentStatus: "CANCELLED" },
-      }),
-      db.payment.updateMany({
-        where: { orderId: order.id },
-        data: {
-          status: "CANCELLED",
-          failureReason: "checkout_creation_failed",
-        },
-      }),
-      db.orderEvent.create({
-        data: {
-          orderId: order.id,
-          type: "PAYMENT_CANCELLED",
-          actor: "system",
-          note: "Checkout session could not be created",
-        },
-      }),
-    ]);
-    if (e instanceof GatewayConfigError)
-      throw new AppError("CHECKOUT_UNAVAILABLE", "Online payment is not available yet. Please try again later.", 503);
-    throw new AppError("PAYMENT_ERROR", "We couldn't start the payment. Please try again.", 502);
+    // Double submit racing past the first lookup: return the first order.
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      const again = await db.order.findUnique({ where: { requestId: input.requestId }, select: { publicToken: true, locale: true, id: true } });
+      if (again) return { token: again.publicToken, locale: again.locale, orderId: again.id };
+    }
+    throw e;
   }
 }

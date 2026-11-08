@@ -6,6 +6,8 @@ import { useI18n } from "@/i18n/provider";
 export interface CartLine {
   productId: string;
   grams: number;
+  /** Set when the line came from a bundle ("Paket"); analytics only. */
+  bundleId?: string;
 }
 interface Ctx {
   lines: CartLine[];
@@ -18,6 +20,8 @@ interface Ctx {
   change: (id: string, delta: number, minGrams: number, maxGrams: number) => void;
   remove: (id: string) => void;
   clear: () => void;
+  /** Expands a bundle into ordinary lines (server-side, at current prices). Resolves false when not orderable. */
+  addBundle: (slug: string, packages?: number) => Promise<boolean>;
 }
 
 const KEY = "hf_cart_v1";
@@ -27,7 +31,10 @@ function read(): CartLine[] {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) ?? "[]");
     if (!Array.isArray(raw)) return [];
-    return raw.filter((l) => l && typeof l.productId === "string" && Number.isInteger(l.grams) && l.grams > 0).slice(0, 50);
+    return raw
+      .filter((l) => l && typeof l.productId === "string" && Number.isInteger(l.grams) && l.grams > 0)
+      .map((l) => ({ productId: l.productId, grams: l.grams, ...(typeof l.bundleId === "string" ? { bundleId: l.bundleId } : {}) }))
+      .slice(0, 50);
   } catch {
     return [];
   }
@@ -94,6 +101,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
       },
       remove: (id) => commit(ref.current.filter((l) => l.productId !== id)),
       clear: () => commit([]),
+      addBundle: async (slug, packages = 1) => {
+        try {
+          const r = await fetch("/api/bundles/expand", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ slug, packages }) });
+          if (!r.ok) return false;
+          const j = (await r.json()) as { bundleId: string; lines: { productId: string; grams: number }[] };
+          const merged = [...ref.current];
+          for (const l of j.lines) {
+            const i = merged.findIndex((m) => m.productId === l.productId);
+            if (i >= 0) merged[i] = { ...merged[i], grams: merged[i].grams + l.grams };
+            else merged.push({ productId: l.productId, grams: l.grams, bundleId: j.bundleId });
+          }
+          commit(merged.slice(0, 50));
+          setToast((n) => n + 1);
+          clearTimeout(timer.current);
+          timer.current = setTimeout(() => setToast(0), 1800);
+          return true;
+        } catch {
+          return false;
+        }
+      },
     }),
     [lines, ready, commit],
   );

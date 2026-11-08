@@ -1,8 +1,10 @@
+import { purchaseBlocker, type ProductStatus } from "@/domain/product-rules";
 import { db } from "@/lib/db";
-import { computeTotals, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
+import { computeTotals, estimateOrder, lineTotalCents, PricingError, validateQuantity, type CartLineInput } from "@/domain/pricing";
 import { getProductsByIds } from "./catalog";
 import { getMerchant } from "./settings";
 import { resolveDelivery } from "./delivery-service";
+import { getSetting } from "./app-settings";
 
 export type LineIssue = "UNAVAILABLE" | "NOT_FOUND" | "QUANTITY" | "NOT_PREORDER";
 
@@ -57,7 +59,7 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
       };
     let issue: LineIssue | undefined;
     if (delivery.mode === "PREORDER_ONLY" && !r.preorderEligible) issue = "NOT_PREORDER";
-    if (r.bundleItems != null && !r.priceConfirmed && !issue) issue = "UNAVAILABLE";
+    if (!issue && purchaseBlocker({ ...r, status: r.status as ProductStatus })) issue = "UNAVAILABLE";
     try {
       validateQuantity(r, l.grams);
     } catch (e) {
@@ -87,11 +89,21 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
     deliveryFeeCents: delivery.deliveryFeeCents,
     freeDeliveryOverCents: delivery.freeDeliveryThresholdCents,
   });
+  const toleranceBps = await getSetting("toleranceBps");
+  const priced = out.filter((l) => !l.issue);
+  const est = estimateOrder(priced.map((l) => ({ pricePerKgCents: l.pricePerKgCents, requestedGrams: l.grams })), totals.deliveryFeeCents, toleranceBps);
+  const m = merchant;
   return {
     lines: out,
     totals,
     delivery,
-    merchant: { name: merchant.legalName ?? merchant.name },
+    estimate: { estimatedTotalCents: est.estimatedTotalCents, maxTotalCents: est.maxTotalCents, toleranceBps },
+    merchant: {
+      name: m.legalName ?? m.name,
+      address: [m.addressLine, [m.postalCode, m.city].filter(Boolean).join(" ")].filter(Boolean).join(", "),
+      phone: m.contactPhone ?? "",
+      email: m.contactEmail ?? "",
+    },
     hasIssues: out.some((l) => l.issue),
   };
 }
