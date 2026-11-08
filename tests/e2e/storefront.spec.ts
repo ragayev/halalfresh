@@ -36,6 +36,10 @@ test.describe.serial("MVP journey", () => {
       await firstVisit.goto("/de");
       await expect(firstVisit.getByTestId("postcode-gate")).toHaveCount(0);
       await expect(firstVisit.getByRole("heading", { level: 1 })).toBeVisible();
+      await firstVisit.getByTestId("postcode-chip").click();
+      await expect(firstVisit.getByTestId("postcode-gate")).toBeVisible();
+      await firstVisit.locator('[data-testid="postcode-gate"] button[aria-label]').first().click();
+      await expect(firstVisit.getByTestId("postcode-gate")).toHaveCount(0);
       await firstVisit.getByRole("link", { name: /Alle Produkte/ }).first().click();
       await expect(firstVisit).toHaveURL(/\/de\/shop/);
     } finally {
