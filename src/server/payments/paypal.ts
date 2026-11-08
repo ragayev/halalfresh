@@ -64,7 +64,7 @@ export const paypalProvider: PaymentProvider = {
           {
             reference_id: a.orderNumberLabel,
             description: `${a.orderNumberLabel} bei ${a.sellerName}`.slice(0, 127),
-            soft_descriptor: "ETAMICO",
+            soft_descriptor: "HALALFRESH",
             amount: {
               currency_code: "EUR",
               value: eur(a.amountCents),
@@ -73,7 +73,7 @@ export const paypalProvider: PaymentProvider = {
             items: lines.map((l) => ({ name: l.name.slice(0, 127), quantity: "1", unit_amount: { currency_code: "EUR", value: eur(l.amountCents) }, category: "PHYSICAL_GOODS" })),
           },
         ],
-        payment_source: { paypal: { experience_context: { brand_name: "Etamico", locale: "de-DE", user_action: "PAY_NOW", return_url: a.returnUrl, cancel_url: a.cancelUrl } } },
+        payment_source: { paypal: { experience_context: { brand_name: "Halal Fresh", locale: "de-DE", user_action: "PAY_NOW", return_url: a.returnUrl, cancel_url: a.cancelUrl } } },
       },
     });
     if (!r.ok || typeof r.json.id !== "string") throw new Error(`PayPal create order failed (${r.status})`);

@@ -15,7 +15,7 @@ export const legalContent: Record<LegalSlug, { heading: string; body: string[] }
   privacy: [
     {
       heading: "1. Controller",
-      body: ["[TODO: Operator of Etamico — legal name, address, contact email.]"],
+      body: ["[TODO: Operator of Halal Fresh — legal name, address, contact email.]"],
     },
     {
       heading: "2. Data we process",
@@ -59,7 +59,7 @@ export const legalContent: Record<LegalSlug, { heading: string; body: string[] }
     {
       heading: "1. Scope & roles",
       body: [
-        "Etamico operates the online marketplace and order handling. The contract of sale is concluded with the partner butcher named at checkout. [TODO: confirm contractual structure with counsel.]",
+        "Halal Fresh operates the online marketplace and order handling. The contract of sale is concluded with the partner butcher named at checkout. [TODO: confirm contractual structure with counsel.]",
       ],
     },
     {

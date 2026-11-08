@@ -23,7 +23,7 @@ export async function sendEmail(to: string, subject: string, text: string, attac
   }
   transport ??= nodemailer.createTransport(url);
   const info = await transport.sendMail({
-    from: process.env.EMAIL_FROM ?? "Etamico <orders@halalfresh.de>",
+    from: process.env.EMAIL_FROM ?? "Halal Fresh <orders@halalfresh.de>",
     to,
     subject,
     text,
@@ -32,7 +32,7 @@ export async function sendEmail(to: string, subject: string, text: string, attac
   return { status: "sent", providerMessageId: info.messageId };
 }
 
-/** seven.io SMS. Sender name "Etamico". Without SEVEN_API_KEY the send is skipped and logged. */
+/** seven.io SMS. Sender name "HalalFresh". Without SEVEN_API_KEY the send is skipped and logged. */
 export async function sendSms(to: string, text: string): Promise<SendResult> {
   const key = process.env.SEVEN_API_KEY;
   if (!key) {
@@ -42,7 +42,7 @@ export async function sendSms(to: string, text: string): Promise<SendResult> {
   const res = await fetch("https://gateway.seven.io/api/sms", {
     method: "POST",
     headers: { "X-Api-Key": key, "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ to, text, from: process.env.SMS_SENDER ?? "Etamico" }),
+    body: JSON.stringify({ to, text, from: process.env.SMS_SENDER ?? "HalalFresh" }),
   });
   if (!res.ok) throw new Error(`SMS provider HTTP ${res.status}`);
   const body = (await res.json().catch(() => ({}))) as { messages?: { id?: string }[] };

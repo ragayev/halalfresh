@@ -6,12 +6,8 @@ import { logoutAction } from "./actions";
 import { AdminNav } from "@/components/admin/admin-nav";
 
 export const metadata: Metadata = {
-  title: "Etamico Admin",
+  title: "Halal Fresh Admin",
   robots: { index: false, follow: false },
-  icons: {
-    icon: [{ url: "/favicon.ico", sizes: "48x48" }, { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
-  },
 };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -22,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <header className="border-b border-border bg-surface">
           <div className="flex h-14 items-center gap-4 px-4">
             <Link href="/admin/orders" className="wordmark text-lg">
-              Etamico Admin
+              Halal Fresh Admin
             </Link>
             {admin && (
               <form action={logoutAction} className="ml-auto flex items-center gap-3 text-sm text-text-muted">

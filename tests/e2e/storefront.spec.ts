@@ -17,7 +17,7 @@ test.describe.serial("MVP journey", () => {
   test("browse the catalogue; German is the default and language lives in the URL", async ({ page }) => {
     await page.goto("/de");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Frisches Halal-Fleisch");
-    await expect(page.getByText("Etamico vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.").first()).toBeVisible();
+    await expect(page.getByText("Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.").first()).toBeVisible();
     await page.goto("/de/shop?category=lamb");
     await expect(page.getByTestId("product-card")).toHaveCount(3);
     // Turkish via the header toggle keeps the page

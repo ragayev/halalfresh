@@ -18,7 +18,7 @@ const COPY = {
     sub: "Bestellen Sie nach ungefährem Gewicht. Sie zahlen, was tatsächlich gewogen wurde.",
     cta: "Jetzt bestellen",
     how: "So funktioniert’s",
-    notice: "Etamico vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.",
+    notice: "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.",
     trust: [
       [Store, "Von Kevser Fleischerei", "Zubereitet und geliefert vom Metzger in Berlin."],
       [Truck, "Lieferung in 1–3 Tagen", "Termin je nach Postleitzahl."],
@@ -44,7 +44,7 @@ const COPY = {
     sub: "Yaklaşık ağırlığa göre sipariş verin. Gerçekten tartılan kadarını ödersiniz.",
     cta: "Hemen sipariş ver",
     how: "Nasıl çalışır",
-    notice: "Etamico siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei’dir.",
+    notice: "Halal Fresh siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei’dir.",
     trust: [
       [Store, "Kevser Fleischerei’dan", "Berlin’deki kasap tarafından hazırlanır ve teslim edilir."],
       [Truck, "1–3 günde teslimat", "Gün, posta kodunuza göre değişir."],
@@ -84,7 +84,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <Image src="/hero-spread.jpg" alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
         <Container className="flex min-h-[560px] flex-col justify-end gap-6 pb-10 pt-24 lg:min-h-[600px] lg:pb-16">
-          <p className="t-caption uppercase tracking-wider text-white/90">{d.brand.tagline}</p>
           <h1 className="t-display max-w-3xl !text-text-inverse">{c.title}</h1>
           <p className="t-body-lg max-w-xl text-white/90">{c.sub}</p>
           <div className="flex flex-wrap items-center gap-4">

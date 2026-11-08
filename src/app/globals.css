@@ -35,13 +35,13 @@
 
 /* Design tokens (brief §17). Components use tokens only. Light mode only. */
 :root {
-  --color-primary: #8b1a1f;
-  --color-primary-hover: #6f1519;
-  --color-primary-soft: #f8e6e7;
+  --color-primary: #7a1f2b;
+  --color-primary-hover: #63181f;
+  --color-primary-soft: #f6e9ea;
   --color-fresh: #2f6b4f;
   --color-fresh-soft: #e7f1eb;
 
-  --color-bg: #fff5e6;
+  --color-bg: #faf6f0;
   --color-surface: #ffffff;
   --color-surface-alt: #f3ede4;
   --color-border: #e5ddd2;
@@ -50,9 +50,6 @@
   --color-text-muted: #6b625b;
   --color-text-inverse: #ffffff;
   --color-ink: #2a2420;
-  /* Etamico brand */
-  --color-brand: #8b1a1f;
-  --color-cream: #fff5e6;
 
   --color-warning: #8a5a12;
   --color-warning-bg: #fdf3e1;
@@ -101,13 +98,12 @@
   --color-info-bg: var(--color-info-bg);
 
   /* Legacy aliases so pre-MVP components pick up the new palette until they are rewritten. */
-  --color-brand: var(--color-brand);
   --color-forest: var(--color-primary);
   --color-forest-dark: var(--color-primary-hover);
   --color-heading: var(--color-text);
   --color-sage: var(--color-primary-soft);
   --color-sage-soft: var(--color-surface-alt);
-  --color-cream: var(--color-cream);
+  --color-cream: var(--color-bg);
   --color-muted: var(--color-text-muted);
   --color-line: var(--color-border);
   --color-gold: var(--color-primary);

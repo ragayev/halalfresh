@@ -1,7 +1,7 @@
 {
   "brand": {
-    "name": "Etamico",
-    "tagline": "Halal-Fleisch vom Berliner Metzger"
+    "name": "Halal Fresh",
+    "tagline": "Frisches Halal-Fleisch, geliefert."
   },
   "nav": {
     "home": "Start",
@@ -63,7 +63,7 @@
     "minOrderText": "Bestellen Sie Produkte im Wert von mindestens {amount}. Liefergebühren zählen nicht mit.",
     "shopByCategory": "Nach Kategorie einkaufen",
     "featured": "Beliebt diese Woche",
-    "trustTitle": "Warum Etamico",
+    "trustTitle": "Warum Halal Fresh",
     "trust1Title": "Von Kevser Fleischerei",
     "trust1Text": "Zubereitet und geliefert von Ihrem Metzger in Berlin.",
     "trust2Title": "Lieferung in 1–3 Tagen",
@@ -207,7 +207,7 @@
     "postcodeUnsupported": "Nach dieser Postleitzahl liefern wir noch nicht.",
     "summary": "Bestellübersicht",
     "seller": "Verkäufer & Erfüllung",
-    "sellerText": "Ihre Bestellung wird von {merchant} verkauft und erfüllt. Etamico betreibt den Marktplatz und die Bestellabwicklung.",
+    "sellerText": "Ihre Bestellung wird von {merchant} verkauft und erfüllt. Halal Fresh betreibt den Marktplatz und die Bestellabwicklung.",
     "terms": "Ich habe die {terms} und die {privacy} gelesen und akzeptiere sie.",
     "termsLink": "AGB",
     "privacyLink": "Datenschutzerklärung",
@@ -319,12 +319,12 @@
     "CANCELLED": "Storniert"
   },
   "footer": {
-    "about": "Etamico vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.",
+    "about": "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.",
     "legal": "Rechtliches",
     "privacy": "Datenschutzerklärung",
     "imprint": "Impressum",
     "terms": "Nutzungsbedingungen",
-    "rights": "© {year} Etamico",
+    "rights": "© {year} Halal Fresh",
     "storage": "Wir nutzen nur notwendigen Speicher (Warenkorb, Postleitzahl und Sprachwahl). Keine Tracking- oder Werbe-Cookies.",
     "partnerTitle": "Unser Partner in Berlin",
     "partnerText": "Deine Bestellung wird von der Kevser Fleischerei zubereitet, unserem Partner-Metzger in Berlin."
@@ -345,16 +345,16 @@
   },
   "email": {
     "hello": "Hallo",
-    "confirmationSubject": "Ihre Etamico-Bestellung",
+    "confirmationSubject": "Ihre Halal-Fresh-Bestellung",
     "confirmationIntro": "Vielen Dank! Ihre Zahlung ist eingegangen. Der Metzger bereitet Ihre Bestellung zu.",
-    "statusSubject": "Neuigkeiten zu Ihrer Etamico-Bestellung",
+    "statusSubject": "Neuigkeiten zu Ihrer Halal-Fresh-Bestellung",
     "statusIntro": "Der Status Ihrer Bestellung lautet jetzt: {status}.",
     "order": "Bestellung",
     "total": "Gesamt",
     "delivery": "Lieferung",
     "seller": "Verkäufer",
     "viewOrder": "Bestellung ansehen",
-    "sepaAckSubject": "Ihre Etamico-Bestellung ist eingegangen",
+    "sepaAckSubject": "Ihre Halal-Fresh-Bestellung ist eingegangen",
     "sepaAckIntro": "Vielen Dank! Ihre Bestellung ist eingegangen und Ihr SEPA-Lastschriftmandat ist erteilt. Der Betrag wurde noch nicht eingezogen; Ihre Bank braucht dafür meist einige Bankarbeitstage. Wir halten Sie auf dem Laufenden."
   },
   "delivery": {
@@ -384,7 +384,7 @@
     "waitlistName": "Name",
     "waitlistContact": "Telefon oder E-Mail",
     "waitlistLanguage": "Bevorzugte Sprache",
-    "waitlistConsent": "Ich willige ein, dass Etamico meinen Namen, meine Kontaktdaten und meine Postleitzahl speichert, um mich zu informieren, wenn die Lieferung in meiner Gegend startet. Ich kann diese Einwilligung jederzeit widerrufen. Siehe {privacy}.",
+    "waitlistConsent": "Ich willige ein, dass Halal Fresh meinen Namen, meine Kontaktdaten und meine Postleitzahl speichert, um mich zu informieren, wenn die Lieferung in meiner Gegend startet. Ich kann diese Einwilligung jederzeit widerrufen. Siehe {privacy}.",
     "waitlistPrivacy": "Datenschutzerklärung",
     "waitlistConsentRequired": "Bitte bestätige deine Einwilligung.",
     "waitlistInvalid": "Bitte Name und Telefon/E-Mail prüfen.",

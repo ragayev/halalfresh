@@ -426,8 +426,8 @@ export function CheckoutForm() {
 function TermsLabel() {
   const { locale } = useI18n();
   const parts = (locale === "tr"
-    ? "Kevser Fleischerei {agb} ve Etamico {terms} metinlerini kabul ediyorum."
-    : "Ich akzeptiere die {agb} der Kevser Fleischerei und die {terms} von Etamico."
+    ? "Kevser Fleischerei {agb} ve Halal Fresh {terms} metinlerini kabul ediyorum."
+    : "Ich akzeptiere die {agb} der Kevser Fleischerei und die {terms} von Halal Fresh."
   ).split(/(\{agb\}|\{terms\})/);
   return (
     <span>

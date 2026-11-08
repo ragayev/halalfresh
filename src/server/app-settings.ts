@@ -19,7 +19,7 @@ export const SETTING_DEFAULTS = {
   telegramChatId: "",
   /** Wording shown beside the optional checkboxes; the version is stored with each consent. */
   consentWording: {
-    terms: { version: "2026-11-draft", de: "Ich akzeptiere die AGB der Kevser Fleischerei und die Nutzungsbedingungen von Etamico.", tr: "Kevser Fleischerei AGB'sini ve Etamico kullanım koşullarını kabul ediyorum." },
+    terms: { version: "2026-11-draft", de: "Ich akzeptiere die AGB der Kevser Fleischerei und die Nutzungsbedingungen von Halal Fresh.", tr: "Kevser Fleischerei AGB'sini ve Halal Fresh kullanım koşullarını kabul ediyorum." },
     marketing: { version: "2026-11-draft", de: "Ich möchte Angebote und Neuigkeiten per E-Mail/SMS erhalten (jederzeit widerrufbar).", tr: "Kampanya ve haberleri e-posta/SMS ile almak istiyorum (her zaman geri alınabilir)." },
     dataTransfer: { version: "PENDING-LEGAL-REVIEW", required: false, de: "[Wortlaut folgt nach anwaltlicher Prüfung]", tr: "[Hukuki inceleme sonrası eklenecek]" },
   },

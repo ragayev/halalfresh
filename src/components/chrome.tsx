@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Check, Menu, ShoppingBag, Store } from "lucide-react";
@@ -13,13 +12,12 @@ import { Container, ProgressBar } from "./ui";
 import { PostcodeChip } from "./delivery-ui";
 import { cn } from "@/lib/utils";
 
-/** Etamico icon + wordmark (the SVG logo files were not supplied; swap this for etamico-logo.svg when they are). */
-export function Logo({ className, inverse }: { className?: string; inverse?: boolean }) {
+/** Text wordmark until a real logo exists (brief §17.4). */
+export function Logo({ className }: { className?: string }) {
   const { locale } = useI18n();
   return (
-    <Link href={`/${locale}`} className={cn("inline-flex min-h-11 items-center gap-2", className)} aria-label="Etamico">
-      <Image src="/icons/etamico-icon-192.png" alt="" width={36} height={36} priority className="size-9 rounded-[10px]" />
-      <span className={cn("wordmark text-2xl", inverse && "!text-text-inverse")}>Etamico</span>
+    <Link href={`/${locale}`} className={cn("wordmark inline-flex min-h-11 items-center text-2xl", className)} aria-label="Halal Fresh">
+      Halal Fresh
     </Link>
   );
 }
@@ -161,12 +159,11 @@ export function Footer() {
     <footer className="mt-20 bg-ink text-text-inverse">
       <Container className="grid gap-8 py-12 md:grid-cols-3">
         <div className="space-y-3">
-          <Logo inverse />
-          <p className="t-small text-white/80">{d.brand.tagline}</p>
+          <p className="wordmark text-2xl !text-text-inverse">Halal Fresh</p>
           <p className="t-small flex gap-2 text-white/80">
             <Store className="mt-0.5 size-5 shrink-0" strokeWidth={1.75} aria-hidden />
             <span>
-              {locale === "tr" ? "Etamico siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei'dir." : "Etamico vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei."}
+              {locale === "tr" ? "Halal Fresh siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei'dir." : "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei."}
             </span>
           </p>
           <p className="t-small text-white/80">{locale === "tr" ? "Ödeme: PayPal · Nakit (2. siparişten itibaren)" : "Zahlung: PayPal · Bar (ab 2. Bestellung)"}</p>
