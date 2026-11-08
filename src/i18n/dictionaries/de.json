@@ -174,7 +174,7 @@
     "empty": "Ihr Warenkorb ist leer",
     "emptyText": "Fügen Sie Produkte hinzu, um zu starten.",
     "browse": "Produkte ansehen",
-    "addMore": "Noch {amount} bis zur Bestellung",
+    "addMore": "Es fehlen noch {amount} bis zum Mindestbestellwert.",
     "minimumIs": "Der Mindestbestellwert beträgt {amount}.",
     "almost": "Fast geschafft!",
     "reached": "Mindestbestellwert erreicht",
@@ -183,7 +183,7 @@
     "belowMin": "Noch {amount} bis zur Kasse",
     "clear": "Warenkorb leeren",
     "updated": "Einige Artikel haben sich geändert. Bitte prüfen.",
-    "deliveryCalc": "Die Liefergebühr wird an der Kasse bestätigt.",
+    "deliveryCalc": "Lieferung ist kostenlos. Geben Sie Ihre PLZ ein, um Termin und Mindestbestellwert zu sehen.",
     "weight": "Gewicht",
     "unit": "Einzelpreis"
   },
@@ -369,7 +369,7 @@
     "slotLine": "{day}, {start}–{end} Uhr an Ihrer Haustür",
     "orderBy": "Bestellen bis {cutoff}",
     "noSlot": "Aktuell ist kein Liefertermin frei. Bitte schau bald wieder vorbei.",
-    "minOrder": "Mindestbestellwert {amount}",
+    "minOrder": "Mindestbestellwert: {amount}",
     "minOrderLabel": "Mindestbestellwert",
     "feeLabel": "Liefergebühr",
     "freeFromLabel": "Kostenlos ab",
@@ -380,7 +380,7 @@
     "preorderTitle": "Liefergebiet nur für Vorbestellungen",
     "preorderText": "Wir liefern einmal im Monat in dein Gebiet. Hier sind nur Vorbestellprodukte bestellbar: Ramadan-Box, Kurban- und Aqiqa-Anteile.",
     "preorderShop": "Vorbestellprodukte ansehen",
-    "unsupportedTitle": "Wir liefern noch nicht nach {postcode}",
+    "unsupportedTitle": "Für Ihre Postleitzahl bieten wir derzeit noch keine Lieferung an.",
     "unsupportedText": "In Ihre Gegend liefern wir derzeit noch nicht. Tragen Sie sich in die Warteliste ein, wir melden uns, sobald es losgeht.",
     "preorderOffer": "In der Zwischenzeit kannst du trotzdem vorbestellen:",
     "waitlistTitle": "Sag uns, dass du Interesse hast",
@@ -412,6 +412,14 @@
     "tomorrow": "Morgen bei Ihnen",
     "nextDeliveryLine": "Nächste Lieferung: {day}",
     "slotLabel": "Zeitfenster",
-    "oclock": "Uhr"
+    "oclock": "Uhr",
+    "regionLine": "Lieferung in Ihre Region: {days}",
+    "everyDay": "jeden {day}",
+    "daysRange": "{from} bis {to}",
+    "and": "und",
+    "nextPossible": "Nächster möglicher Liefertermin: {day}",
+    "remaining": "Es fehlen noch {amount} bis zum Mindestbestellwert.",
+    "reviewNote": "Ob wir nach {postcode} liefern können, muss noch bestätigt werden. Wir melden uns nach Ihrer Bestellung bei Ihnen.",
+    "chooseDate": "Liefertermin wählen"
   }
 }

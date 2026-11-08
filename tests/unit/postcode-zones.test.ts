@@ -60,6 +60,20 @@ describe("classification", () => {
     expect(classify(row({ distanceKm: 20, bearingDeg: 120 }))).toMatchObject({ sector: "southeast", weekdays: [1] });
     expect(classify(row({ distanceKm: 20, bearingDeg: 220 }))).toMatchObject({ sector: "southwest", weekdays: [5] });
   });
+  it("exact boundary distances: 9 km core, 27 km tier_100, 42 km tier_150, beyond waitlist", () => {
+    expect(classify(row({ distanceKm: 9, bearingDeg: 290 })).tier).toBe("core");
+    expect(classify(row({ distanceKm: 27, bearingDeg: 290 })).tier).toBe("tier_100");
+    expect(classify(row({ distanceKm: 42, bearingDeg: 290 })).tier).toBe("tier_150");
+    expect(classify(row({ distanceKm: 42.0001, bearingDeg: 290 })).tier).toBe("waitlist");
+  });
+  it("overrides can set zone, minimum, weekdays and availability independently", () => {
+    const base = row({ distanceKm: 20, bearingDeg: 290 }); // tier_100 west Tuesday 100 EUR
+    expect(classify(base, { minOrderCents: 12000 })).toMatchObject({ tier: "tier_100", minOrderCents: 12000, weekdays: [2] });
+    expect(classify(base, { weekdays: [3, 5] })).toMatchObject({ minOrderCents: 10000, weekdays: [3, 5] });
+    expect(classify(base, { unavailable: true })).toMatchObject({ tier: "waitlist", weekdays: [], minOrderCents: 0 });
+    expect(classify(base, { tier: "core" })).toMatchObject({ tier: "core", minOrderCents: 6000, sector: null });
+    expect(classify(base, { status: "needs_review" })).toMatchObject({ needsReview: true, tier: "tier_100", minOrderCents: 10000, weekdays: [2] });
+  });
   it("waitlist has no sector and no delivery days", () => {
     expect(classify(row({ distanceKm: 60 }))).toMatchObject({ tier: "waitlist", sector: null, weekdays: [], minOrderCents: 0 });
   });

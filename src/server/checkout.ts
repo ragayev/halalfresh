@@ -33,6 +33,8 @@ export const checkoutInput = z.object({
     postalCode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)),
     city: z.string().trim().min(2).max(80),
   }),
+  /** Chosen delivery date (YYYY-MM-DD); must be one of the currently orderable dates. */
+  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   /** Start time of the chosen delivery slot (see SLOTS). */
   slotStart: z.string().refine((v) => SLOTS.some((x) => x.start === v)),
   checkedPostcode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)).optional(),
@@ -76,9 +78,12 @@ export async function createOrder(raw: unknown, now = new Date()): Promise<{ tok
 
   if (input.checkedPostcode && input.checkedPostcode !== input.address.postalCode)
     throw new AppError("POSTCODE_MISMATCH", "The delivery address postcode differs from the postcode you checked", 422);
-  const { check, zone, delivery } = resolveDelivery(input.address.postalCode, now);
+  const { check, zone, dates } = resolveDelivery(input.address.postalCode, now);
   if (!check.supported || !zone) throw new AppError("POSTCODE_UNSUPPORTED", "We don't deliver to this postcode yet", 422);
-  if (!delivery) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
+  if (!dates.length) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
+  // The cutoff is enforced here, not in the browser: a date that closed while the customer was typing is rejected.
+  const delivery = dates.find((d) => d.date === input.deliveryDate);
+  if (!delivery) throw new AppError("SLOT_INVALID", "This delivery date is no longer available", 422);
   const slot = SLOTS.find((x) => x.start === input.slotStart)!;
 
   const merchant = await getMerchant();

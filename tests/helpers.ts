@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { db } from "@/lib/db";
 import { addDays, berlinToday } from "@/domain/delivery";
+import { resolveDelivery } from "@/server/delivery-service";
 
 export async function resetDb() {
   await db.$executeRawUnsafe(
@@ -69,6 +70,7 @@ export function checkoutBody(ctx: Awaited<ReturnType<typeof seedBasics>>, over: 
     lines: [{ productId: ctx.beef.id, grams: 8000 }], // 8 kg * €20 = €160 estimated, €176 max
     customer: { firstName: "Example", lastName: "Customer", email: "customer@example.com", phone: "0151 12345678" },
     address: { street: "Example Street 12", postalCode: "10115", city: "Berlin" },
+    deliveryDate: resolveDelivery("10115").dates[0].date, // earliest orderable core date; tests of other postcodes pass their own
     slotStart: "10:00",
     deliveryNotes: "Ring twice",
     paymentMethod: "PAYPAL",

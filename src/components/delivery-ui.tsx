@@ -1,32 +1,46 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CalendarClock, CheckCircle2, MapPin, X } from "lucide-react";
+import { AlertTriangle, ArrowRight, CalendarClock, CheckCircle2, MapPin, X } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { LOCALES, LOCALE_LABELS, type Locale } from "@/i18n/config";
 import { isValidPostcode, normalizePostcode, type DeliveryCheck } from "@/domain/delivery";
 import { formatMoney } from "@/domain/money";
-import { formatCutoff, formatShortDay } from "@/lib/format-delivery";
+import { formatCutoff, formatDeliveryDays, formatSlotDay } from "@/lib/format-delivery";
 import { useDelivery } from "./delivery-provider";
 import { Spinner } from "./spinner";
 import { Button, Input } from "./ui";
 
-/** Minimum order value and next delivery date for a supported postcode. No zone or sector is ever shown. */
+/** Delivery days, minimum and next date for a supported postcode. No zone or sector is ever shown. */
 export function DeliveryInfo({ check }: { check: DeliveryCheck }) {
   const { d, locale, t } = useI18n();
   const slot = check.nextSlot;
+  const review = check.status === "review";
   return (
     <div className="space-y-2 border-t border-border pt-3 text-text" data-testid="delivery-info">
-      <p className="flex items-center gap-2 text-sm font-semibold text-primary">
-        <CheckCircle2 className="size-4 shrink-0" aria-hidden />
-        {t(d.delivery.supportedTitle, { postcode: check.postcode })}
+      {review ? (
+        <p className="flex items-start gap-2 text-sm font-semibold text-warn-ink" data-testid="review-note">
+          <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+          {t(d.delivery.reviewNote, { postcode: check.postcode })}
+        </p>
+      ) : (
+        <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+          <CheckCircle2 className="size-4 shrink-0" aria-hidden />
+          {t(d.delivery.supportedTitle, { postcode: check.postcode })}
+        </p>
+      )}
+      <p className="text-sm" data-testid="delivery-days">
+        {t(d.delivery.regionLine, { days: formatDeliveryDays(check.weekdays, locale, d.delivery) })}
+      </p>
+      <p className="text-sm font-medium" data-testid="min-order">
+        {t(d.delivery.minOrder, { amount: formatMoney(check.minOrderCents, locale) })}
       </p>
       {slot ? (
         <div className="flex items-start gap-2">
           <CalendarClock className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
           <div className="min-w-0">
             <p className="text-sm font-semibold leading-snug" data-testid="next-slot">
-              {slot.showTomorrow ? d.delivery.tomorrow : t(d.delivery.nextDeliveryLine, { day: formatShortDay(slot.date, locale) })}
+              {slot.showTomorrow ? d.delivery.tomorrow : t(d.delivery.nextPossible, { day: formatSlotDay(slot.date, locale) })}
             </p>
             <p className="text-xs text-text-muted">{t(d.delivery.orderBy, { cutoff: formatCutoff(slot.cutoffAt, locale) })}</p>
           </div>
@@ -34,9 +48,6 @@ export function DeliveryInfo({ check }: { check: DeliveryCheck }) {
       ) : (
         <p className="text-sm font-medium text-warn-ink">{d.delivery.noSlot}</p>
       )}
-      <p className="text-sm" data-testid="min-order">
-        {t(d.delivery.minOrder, { amount: formatMoney(check.minOrderCents, locale) })}
-      </p>
     </div>
   );
 }
@@ -144,7 +155,7 @@ export function UnsupportedNotice({ check }: { check: DeliveryCheck }) {
   return (
     <div className="space-y-4 rounded-2xl bg-warn p-4 text-warn-ink" data-testid="unsupported">
       <div>
-        <p className="font-semibold">{t(d.delivery.unsupportedTitle, { postcode: check.postcode })}</p>
+        <p className="font-semibold" data-testid="unsupported-title">{d.delivery.unsupportedTitle}</p>
         <p className="mt-1 text-sm">{d.delivery.unsupportedText}</p>
       </div>
       <div className="rounded-xl bg-white p-4 text-ink">

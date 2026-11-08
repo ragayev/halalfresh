@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { berlinToUtc, expandPostcodeRange, isoWeekdayOf, isValidPostcode, nthWeekdayOfMonth, parsePostcodeList } from "@/domain/delivery";
-import { berlinHolidays, easterSunday, isWorkingDay, nextDeliveryDate, orderCutoffFor, previousWorkingDay } from "@/domain/delivery-dates";
+import { berlinHolidays, easterSunday, eligibleDeliveryDates, isDeliveryDateEligible, isWorkingDay, nextDeliveryDate, orderCutoffFor, previousWorkingDay } from "@/domain/delivery-dates";
 
 const CORE = [1, 2, 3, 4, 5, 6];
 const MON = [1]; // southeast tour
@@ -128,7 +128,36 @@ describe("next delivery date: weekly tours", () => {
   });
 });
 
+describe("eligible delivery dates", () => {
+  const list = (weekdays: number[], date: string, time: string, limit = 4) =>
+    eligibleDeliveryDates({ weekdays, now: berlinToUtc(date, time) }, limit).map((d) => d.date);
+  it("lists upcoming dates, never today", () => {
+    expect(list(CORE, "2026-11-04", "09:00")).toEqual(["2026-11-05", "2026-11-06", "2026-11-07", "2026-11-09"]);
+    expect(list(CORE, "2026-11-04", "18:01")).toEqual(["2026-11-06", "2026-11-07", "2026-11-09", "2026-11-10"]);
+  });
+  it("tour weekday repeats weekly", () => {
+    expect(list(TUE, "2026-11-04", "09:00", 3)).toEqual(["2026-11-10", "2026-11-17", "2026-11-24"]);
+  });
+  it("isDeliveryDateEligible agrees", () => {
+    const input = { weekdays: TUE, now: berlinToUtc("2026-11-09", "17:59") };
+    expect(isDeliveryDateEligible("2026-11-10", input)).toBe(true);
+    expect(isDeliveryDateEligible("2026-11-11", input)).toBe(false);
+    expect(isDeliveryDateEligible("2026-11-10", { ...input, now: berlinToUtc("2026-11-09", "18:00") })).toBe(false);
+  });
+});
+
 describe("DST", () => {
+  it("clock change weekend (spring): Saturday cutoff still 18:00 local for Monday", () => {
+    expect(next(CORE, "2026-03-28", "17:59")?.date).toBe("2026-03-30");
+    expect(next(CORE, "2026-03-28", "18:01")?.date).toBe("2026-03-31");
+  });
+  it("clock change weekend (autumn)", () => {
+    expect(next(CORE, "2026-10-24", "17:59")?.date).toBe("2026-10-26");
+    expect(next(CORE, "2026-10-24", "18:01")?.date).toBe("2026-10-27");
+  });
+  it("Friday before the spring change still reaches Saturday", () => {
+    expect(next(CORE, "2026-03-27", "17:59")?.date).toBe("2026-03-28");
+  });
   it("converts Berlin wall-clock to UTC on both sides of the change", () => {
     expect(berlinToUtc("2026-03-28", "14:00").toISOString()).toBe("2026-03-28T13:00:00.000Z"); // CET
     expect(berlinToUtc("2026-03-29", "14:00").toISOString()).toBe("2026-03-29T12:00:00.000Z"); // CEST

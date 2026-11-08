@@ -48,7 +48,7 @@ export function sectorForBearing(deg: number): Sector {
 }
 
 export function classify(row: GeneratedPostcode, override: PostcodeOverride | undefined = OVERRIDES[row.postcode]): ZoneInfo {
-  const tier = override?.tier ?? tierForDistance(row.distanceKm);
+  const tier = override?.unavailable ? "waitlist" : (override?.tier ?? tierForDistance(row.distanceKm));
   let sector: Sector | null = null;
   let weekdays: number[] = [];
   if (tier === "core") weekdays = CORE_WEEKDAYS;
@@ -61,8 +61,8 @@ export function classify(row: GeneratedPostcode, override: PostcodeOverride | un
     place: row.place,
     tier,
     sector,
-    minOrderCents: TIERS.find((t) => t.tier === tier)?.minOrderCents ?? 0,
-    weekdays,
+    minOrderCents: tier === "waitlist" ? 0 : (override?.minOrderCents ?? TIERS.find((t) => t.tier === tier)?.minOrderCents ?? 0),
+    weekdays: tier === "waitlist" ? [] : (override?.weekdays ?? weekdays),
     distanceKm: row.distanceKm,
     bearingDeg: row.bearingDeg,
     needsReview: override?.status === "needs_review",

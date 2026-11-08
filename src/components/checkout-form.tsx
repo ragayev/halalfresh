@@ -12,7 +12,7 @@ import { mvpCopy } from "@/content/mvp-copy";
 import { formatMoney } from "@/domain/money";
 import { formatQuantity } from "@/domain/bundles";
 import { isValidPostcode, normalizePostcode } from "@/domain/delivery";
-import { formatCutoff, formatShortDay } from "@/lib/format-delivery";
+import { formatCutoff, formatSlotDay } from "@/lib/format-delivery";
 import { useDelivery } from "./delivery-provider";
 type Errors = Partial<Record<"firstName" | "lastName" | "email" | "phone" | "street" | "postalCode" | "city" | "slot" | "terms", string>>;
 
@@ -83,7 +83,11 @@ export function CheckoutForm() {
   const current = check && check.postcode === pc ? check : null;
   const checking = isValidPostcode(pc) && (!current || status === "loading");
   const estimate = current?.nextSlot ?? null;
+  const [pickedDate, setDate] = useState<string | null>(null);
   const [pickedSlot, setSlotStart] = useState<string | null>(null);
+  // A picked date that is no longer offered (cutoff passed, postcode changed) falls back to the earliest one.
+  const dateOptions = current?.dates ?? [];
+  const chosenDate = dateOptions.find((o) => o.date === pickedDate) ?? dateOptions[0] ?? null;
   const slotStart = pickedSlot ?? estimate?.slots[0].start ?? null;
   const pricedFor = data?.delivery?.postcode === pc;
 
@@ -149,6 +153,7 @@ export function CheckoutForm() {
           })),
           customer: { firstName: f.firstName, lastName: f.lastName, email: f.email, phone: f.phone },
           address: { street: f.street, postalCode: pc, city: f.city },
+          deliveryDate: chosenDate!.date,
           slotStart: slotStart!,
           checkedPostcode: pc,
           deliveryNotes: f.instructions || undefined,
@@ -295,9 +300,23 @@ export function CheckoutForm() {
               <p className="font-semibold">{d.checkout.estimated}</p>
               {estimate ? (
                 <>
-                  <p className="text-base font-bold">
-                    {estimate.showTomorrow ? d.delivery.tomorrow : t(d.delivery.nextDeliveryLine, { day: formatShortDay(estimate.date, locale) })}
-                  </p>
+                  {current?.status === "review" && (
+                    <p className="font-medium text-warn-ink" data-testid="review-note">
+                      {t(d.delivery.reviewNote, { postcode: current.postcode })}
+                    </p>
+                  )}
+                  <fieldset className="mt-2 flex flex-wrap gap-2" data-testid="date-picker">
+                    <legend className="font-semibold">{d.delivery.chooseDate}</legend>
+                    {dateOptions.map((o) => (
+                      <label
+                        key={o.date}
+                        className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 ${chosenDate?.date === o.date ? "border-primary bg-white" : "border-transparent bg-white/60"}`}
+                      >
+                        <input type="radio" name="deliveryDate" value={o.date} checked={chosenDate?.date === o.date} onChange={() => setDate(o.date)} className="size-4 accent-[var(--color-primary)]" />
+                        {o.showTomorrow ? d.delivery.tomorrow : formatSlotDay(o.date, locale)}
+                      </label>
+                    ))}
+                  </fieldset>
                   <fieldset className="mt-2 flex flex-wrap gap-2" data-testid="slot-picker">
                     <legend className="sr-only">{d.delivery.slotLabel}</legend>
                     {estimate.slots.map((s) => (
@@ -310,7 +329,7 @@ export function CheckoutForm() {
                       </label>
                     ))}
                   </fieldset>
-                  <p className="text-xs opacity-80">{t(d.delivery.orderBy, { cutoff: formatCutoff(estimate.cutoffAt, locale) })}</p>
+                  {chosenDate && <p className="text-xs opacity-80">{t(d.delivery.orderBy, { cutoff: formatCutoff(chosenDate.cutoffAt, locale) })}</p>}
                 </>
               ) : checking ? (
                 <p>{d.checkout.slotLoading}</p>

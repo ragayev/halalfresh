@@ -4,7 +4,9 @@ import { berlinToUtc } from "@/domain/delivery";
 import { meetsMinimumAfterWeighing, buildDispatchMessage } from "@/domain/dispatch";
 import { createOrder } from "@/server/checkout";
 import { AppError } from "@/server/errors";
-import { checkDelivery } from "@/server/delivery-service";
+import { checkDelivery, resolveDelivery } from "@/server/delivery-service";
+import { OVERRIDES } from "@/data/delivery/overrides";
+import { groupOrdersForDispatch, paymentLabel } from "@/domain/dispatch";
 import { cartView } from "@/server/cart-view";
 import { GET as checkRoute } from "@/app/api/delivery/check/route";
 import { POST as waitlistRoute } from "@/app/api/waitlist/route";
@@ -25,7 +27,10 @@ const code = (p: Promise<unknown>) =>
     () => "ok",
     (e) => (e instanceof AppError ? e.code : String(e)),
   );
-const put = (over: Record<string, unknown>) => checkoutBody(ctx, over);
+const put = (over: Record<string, unknown>) => {
+  const pc = (over.address as { postalCode: string } | undefined)?.postalCode ?? "10115";
+  return checkoutBody(ctx, { deliveryDate: resolveDelivery(pc, NOW).dates[0]?.date, ...over });
+};
 const addr = (postalCode: string) => ({ street: "Example Street 12", postalCode, city: "Berlin" });
 const day = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -34,6 +39,8 @@ describe("postcode lookup", () => {
     const c = checkDelivery("10115", NOW);
     expect(c).toMatchObject({ status: "ok", supported: true, minOrderCents: 6000, deliveryFeeCents: 0 });
     expect(c.nextSlot).toMatchObject({ date: "2026-11-05", showTomorrow: true });
+    expect(c.weekdays).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(c.dates.slice(0, 3).map((d) => d.date)).toEqual(["2026-11-05", "2026-11-06", "2026-11-07"]);
     expect(c.nextSlot?.slots).toEqual([
       { start: "10:00", end: "14:00" },
       { start: "15:00", end: "19:00" },
@@ -98,7 +105,7 @@ describe("checkout", () => {
     expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 5000 }], address: addr("14467") }), NOW))).toBe("ok"); // 100
   });
   it("snapshots terms and slot; no delivery fee; ignores client-supplied terms", async () => {
-    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }], address: addr("10115"), slotStart: "15:00", deliveryFeeCents: 490, minOrderCents: 1, deliveryDate: "2030-01-01" }), NOW);
+    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }], address: addr("10115"), slotStart: "15:00", deliveryFeeCents: 490, minOrderCents: 1 }), NOW);
     await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 8000 }], address: addr("14467") }), NOW);
     const [core, tour] = await db.order.findMany({ orderBy: { createdAt: "asc" } });
     expect(core).toMatchObject({
@@ -116,9 +123,45 @@ describe("checkout", () => {
     expect(tour).toMatchObject({ tier: "tier_100", sector: "southwest", minOrderCents: 10000, slotStartTime: "10:00", slotEndTime: "14:00", zoneNeedsReview: false });
     expect(day(tour.deliveryDate)).toBe("2026-11-06");
   });
-  it("flags needs_review postcodes on the order", async () => {
+  it("needs_review: no silent promise, normal rules still apply, order is flagged", async () => {
+    const c = checkDelivery("14089", NOW);
+    expect(c).toMatchObject({ status: "review", supported: true, minOrderCents: 10000, weekdays: [2] });
+    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 4000 }], address: addr("14089") }), NOW))).toBe("BELOW_MINIMUM"); // 80 < 100
     await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 8000 }], address: addr("14089") }), NOW);
     expect(await db.order.findFirstOrThrow()).toMatchObject({ zoneNeedsReview: true, tier: "tier_100", sector: "west" });
+  });
+  it("needs_review does not rescue a waitlist postcode", () => {
+    OVERRIDES["14641"] = { status: "needs_review" };
+    try {
+      expect(checkDelivery("14641", NOW)).toMatchObject({ status: "waitlist", supported: false });
+    } finally {
+      delete OVERRIDES["14641"];
+    }
+  });
+  it("validates the chosen delivery date on the server", async () => {
+    const lines = [{ productId: ctx.beef.id, grams: 8000 }];
+    const bad = async (deliveryDate: string, pc = "10115") => code(createOrder(put({ lines, address: addr(pc), deliveryDate }), NOW));
+    expect(await bad("2026-11-04")).toBe("SLOT_INVALID"); // same day, never promised
+    expect(await bad("2026-11-08")).toBe("SLOT_INVALID"); // Sunday
+    expect(await bad("2026-11-13", "14467")).toBe("ok"); // later Friday for a southwest postcode
+    expect(await bad("2026-11-12", "14467")).toBe("SLOT_INVALID"); // Thursday is not a delivery day there
+    expect(await bad("not-a-date")).toBe("VALIDATION");
+    // Wednesday 18:01: tomorrow's cutoff has just passed.
+    const late = berlinToUtc("2026-11-04", "18:01");
+    expect(await code(createOrder(put({ lines, deliveryDate: "2026-11-05" }), late))).toBe("SLOT_INVALID");
+    expect(await code(createOrder(put({ lines, deliveryDate: "2026-11-06" }), late))).toBe("ok");
+  });
+  it("existing orders keep their confirmed date and rules when configuration changes later", async () => {
+    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }] }), NOW);
+    OVERRIDES["10115"] = { minOrderCents: 20000, weekdays: [3] };
+    try {
+      expect(checkDelivery("10115", NOW)).toMatchObject({ minOrderCents: 20000, weekdays: [3] });
+      const o = await db.order.findFirstOrThrow();
+      expect(o).toMatchObject({ minOrderCents: 6000, tier: "core" });
+      expect(day(o.deliveryDate)).toBe("2026-11-05");
+    } finally {
+      delete OVERRIDES["10115"];
+    }
   });
   it("rejects an unknown slot", async () => {
     expect(await code(createOrder(put({ slotStart: "12:00" }), NOW))).toBe("VALIDATION");
@@ -128,8 +171,9 @@ describe("checkout", () => {
     expect(await db.order.count()).toBe(0);
   });
   it("rejects waitlist/unknown postcodes and hidden products", async () => {
-    expect(await code(createOrder(put({ address: addr("14641") }), NOW))).toBe("POSTCODE_UNSUPPORTED");
-    expect(await code(createOrder(put({ address: addr("80331") }), NOW))).toBe("POSTCODE_UNSUPPORTED");
+    const deliveryDate = "2026-11-10";
+    expect(await code(createOrder(put({ address: addr("14641"), deliveryDate }), NOW))).toBe("POSTCODE_UNSUPPORTED");
+    expect(await code(createOrder(put({ address: addr("80331"), deliveryDate }), NOW))).toBe("POSTCODE_UNSUPPORTED");
     await db.product.update({ where: { id: ctx.beef.id }, data: { status: "DRAFT", isHidden: true } });
     expect(await code(createOrder(put({ address: addr("10115") }), NOW))).toBe("PRODUCT_UNAVAILABLE");
   });
@@ -142,6 +186,31 @@ describe("after weighing", () => {
     expect(meetsMinimumAfterWeighing(5399, 6000)).toBe(false);
     expect(meetsMinimumAfterWeighing(9000, 10000)).toBe(true);
     expect(meetsMinimumAfterWeighing(8999, 10000)).toBe(false);
+  });
+});
+
+describe("dispatch overview grouping", () => {
+  const o = (deliveryDate: string, tier: string, sector: string | null, postalCode: string, totalCents: number) => ({ deliveryDate, tier, sector, postalCode, totalCents });
+  it("groups by date, then core/sector, then postcode, with counts and totals", () => {
+    const days = groupOrdersForDispatch([
+      o("2026-11-10", "tier_100", "west", "14612", 15000),
+      o("2026-11-09", "core", null, "12049", 6000),
+      o("2026-11-10", "tier_100", "west", "13581", 10000),
+      o("2026-11-10", "tier_100", "west", "14612", 20000),
+      o("2026-11-10", "core", null, "12043", 7000),
+    ]);
+    expect(days.map((d) => d.date)).toEqual(["2026-11-09", "2026-11-10"]);
+    const tue = days[1];
+    expect(tue).toMatchObject({ orderCount: 4, totalCents: 52000 });
+    expect(tue.groups.map((g) => g.label)).toEqual(["Kern (Berlin)", "Westen"]);
+    const west = tue.groups[1];
+    expect(west).toMatchObject({ orderCount: 3, totalCents: 45000 });
+    expect(west.postcodes.map((p) => [p.postalCode, p.orders.length])).toEqual([["13581", 1], ["14612", 2]]);
+  });
+  it("describes the payment state", () => {
+    expect(paymentLabel({ paymentMethod: "PAYPAL", paidAt: null, status: "WEIGHED" })).toBe("PayPal offen");
+    expect(paymentLabel({ paymentMethod: "PAYPAL", paidAt: new Date(), status: "PAID" })).toBe("Bezahlt (PayPal)");
+    expect(paymentLabel({ paymentMethod: "CASH", paidAt: null, status: "CASH_COLLECTED" })).toBe("Bar kassiert");
   });
 });
 

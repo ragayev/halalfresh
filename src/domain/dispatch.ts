@@ -66,3 +66,63 @@ export function buildDispatchMessage(o: DispatchOrder): string {
   if (o.needsReview) lines.push("⚠️ PLZ kontrol edilmeli");
   return lines.join("\n");
 }
+
+// ---- Overview grouping: delivery date -> core/sector -> postcode ----
+
+export interface GroupableOrder {
+  deliveryDate: string; // YYYY-MM-DD
+  tier: string | null;
+  sector: string | null;
+  postalCode: string;
+  /** Final amount once weighed, otherwise the estimate. */
+  totalCents: number;
+}
+
+export interface PostcodeGroup<T> {
+  postalCode: string;
+  orders: T[];
+}
+export interface SectorGroup<T> {
+  key: string;
+  label: string;
+  orderCount: number;
+  totalCents: number;
+  postcodes: PostcodeGroup<T>[];
+}
+export interface DateGroup<T> {
+  date: string;
+  orderCount: number;
+  totalCents: number;
+  groups: SectorGroup<T>[];
+}
+
+/** Dates ascending, core before sectors (sectors alphabetical), postcodes ascending. Orders keep their input order. */
+export function groupOrdersForDispatch<T extends GroupableOrder>(orders: T[]): DateGroup<T>[] {
+  const dates = new Map<string, Map<string, SectorGroup<T>>>();
+  for (const o of orders) {
+    const sectors = dates.get(o.deliveryDate) ?? new Map<string, SectorGroup<T>>();
+    const key = groupSort(o.tier, o.sector);
+    const g = sectors.get(key) ?? { key, label: groupLabel(o.tier, o.sector), orderCount: 0, totalCents: 0, postcodes: [] };
+    g.orderCount++;
+    g.totalCents += o.totalCents;
+    let pc = g.postcodes.find((p) => p.postalCode === o.postalCode);
+    if (!pc) g.postcodes.push((pc = { postalCode: o.postalCode, orders: [] }));
+    pc.orders.push(o);
+    sectors.set(key, g);
+    dates.set(o.deliveryDate, sectors);
+  }
+  return [...dates.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, sectors]) => {
+      const groups = [...sectors.values()].sort((a, b) => a.key.localeCompare(b.key));
+      for (const g of groups) g.postcodes.sort((a, b) => a.postalCode.localeCompare(b.postalCode));
+      return { date, orderCount: groups.reduce((n, g) => n + g.orderCount, 0), totalCents: groups.reduce((n, g) => n + g.totalCents, 0), groups };
+    });
+}
+
+/** Payment state shown in the overview (the order status shows fulfilment). */
+export function paymentLabel(o: { paymentMethod: "PAYPAL" | "CASH"; paidAt: Date | null; status: string }): string {
+  if (o.paymentMethod === "CASH") return o.status === "CASH_COLLECTED" ? "Bar kassiert" : "Barzahlung bei Lieferung";
+  if (o.paidAt) return "Bezahlt (PayPal)";
+  return o.status === "PAYMENT_OVERDUE" ? "PayPal überfällig" : "PayPal offen";
+}

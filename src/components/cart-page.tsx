@@ -65,7 +65,7 @@ export function CartPage() {
         <div className="space-y-4">
           {unsupported ? (
             <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-warn p-4 text-warn-ink">
-              <p className="font-semibold">{postcode ? t(d.delivery.cartUnsupported, { postcode }) : d.delivery.needPostcode}</p>
+              <p className="font-semibold">{postcode ? d.delivery.unsupportedTitle : d.delivery.needPostcode}</p>
               <Button size="sm" onClick={openGate}>
                 {d.delivery.change}
               </Button>

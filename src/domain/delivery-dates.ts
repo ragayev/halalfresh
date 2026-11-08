@@ -75,20 +75,33 @@ export interface NextDeliveryInput {
   horizonDays?: number;
 }
 
+function option(date: string, today: string, cutoffAt: Date): NextDelivery {
+  return { date, weekday: isoWeekdayOf(date), cutoffAt, isTomorrow: date === addDays(today, 1), slots: SLOTS };
+}
+
 /**
- * Earliest delivery date D with: D a working day, D a delivery weekday, and now strictly before 18:00 Berlin time
- * on the working day before D. Null when nothing is available within the horizon (or the postcode has no weekdays).
+ * Delivery dates D that can still be ordered, earliest first. D must be a working day and a delivery weekday, and
+ * now must be strictly before CUTOFF_TIME Berlin time on the working day before D. Today is never offered.
  */
-export function nextDeliveryDate({ weekdays, now, blackoutDates = new Set(BLACKOUT_DATES), horizonDays = 60 }: NextDeliveryInput): NextDelivery | null {
-  if (!weekdays.length) return null;
+export function eligibleDeliveryDates({ weekdays, now, blackoutDates = new Set(BLACKOUT_DATES), horizonDays = 60 }: NextDeliveryInput, limit = Infinity): NextDelivery[] {
+  const out: NextDelivery[] = [];
+  if (!weekdays.length) return out;
   const today = berlinToday(now);
-  for (let i = 1; i <= horizonDays; i++) {
+  for (let i = 1; i <= horizonDays && out.length < limit; i++) {
     const date = addDays(today, i);
-    const weekday = isoWeekdayOf(date);
-    if (!weekdays.includes(weekday) || !isWorkingDay(date, blackoutDates)) continue;
+    if (!weekdays.includes(isoWeekdayOf(date)) || !isWorkingDay(date, blackoutDates)) continue;
     const cutoffAt = orderCutoffFor(date, blackoutDates);
-    if (now.getTime() >= cutoffAt.getTime()) continue;
-    return { date, weekday, cutoffAt, isTomorrow: date === addDays(today, 1), slots: SLOTS };
+    if (now.getTime() < cutoffAt.getTime()) out.push(option(date, today, cutoffAt));
   }
-  return null;
+  return out;
+}
+
+/** Earliest eligible delivery date; null when there is none within the horizon or the postcode has no delivery weekdays. */
+export function nextDeliveryDate(input: NextDeliveryInput): NextDelivery | null {
+  return eligibleDeliveryDates(input, 1)[0] ?? null;
+}
+
+/** Server-side check for a date the customer picked. */
+export function isDeliveryDateEligible(date: string, input: NextDeliveryInput): boolean {
+  return eligibleDeliveryDates(input).some((d) => d.date === date);
 }

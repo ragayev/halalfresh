@@ -99,12 +99,16 @@ export interface DeliverySlotWindow {
  */
 export interface DeliveryCheck {
   postcode: string;
-  /** "ok" = we deliver; "waitlist" = known postcode we do not serve yet; "unknown" = not in our data. */
-  status: "ok" | "waitlist" | "unknown";
+  /** "ok" = we deliver; "review" = we probably deliver but must confirm first (no date is promised); "waitlist" = known postcode we do not serve yet; "unknown" = not in our data. */
+  status: "ok" | "review" | "waitlist" | "unknown";
   supported: boolean;
   minOrderCents: number;
+  /** ISO weekdays of delivery for this postcode (empty when unsupported). */
+  weekdays: number[];
   /** Delivery is free; kept as 0 so totals math needs no special case. */
   deliveryFeeCents: 0;
   /** showTomorrow: the date really is tomorrow AND the postcode is on daily delivery ("Morgen bei Ihnen"). */
+  /** Orderable delivery dates, earliest first (a handful, for the date picker). */
+  dates: { date: string; showTomorrow: boolean; cutoffAt: string }[];
   nextSlot: { date: string; weekday: number; showTomorrow: boolean; cutoffAt: string; slots: DeliverySlotWindow[] } | null;
 }
