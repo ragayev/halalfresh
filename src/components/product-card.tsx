@@ -48,7 +48,7 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
             </>
           )}
         </p>
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-3">
           {p.pricePerKgCents > 0 ? (
             <p className="leading-none">
               <span className={cn("text-lg font-bold sm:text-xl", p.isAvailable ? "text-primary" : "text-muted")}>
