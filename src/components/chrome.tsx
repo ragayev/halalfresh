@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Check, Menu, ShoppingBag, Store } from "lucide-react";
@@ -12,12 +13,19 @@ import { Container, ProgressBar } from "./ui";
 import { PostcodeChip } from "./delivery-ui";
 import { cn } from "@/lib/utils";
 
-/** Text wordmark until a real logo exists (brief §17.4). */
+/** Original Halal Fresh oxblood logo: H / negative-space bull and stacked wordmark. */
 export function Logo({ className }: { className?: string }) {
   const { locale } = useI18n();
   return (
-    <Link href={`/${locale}`} className={cn("wordmark inline-flex min-h-11 items-center text-2xl", className)} aria-label="Halal Fresh">
-      Halal Fresh
+    <Link href={`/${locale}`} className={cn("inline-flex min-h-11 shrink-0 items-center", className)} aria-label="Halal Fresh">
+      <Image
+        src="/brand/halal-fresh-logo.svg"
+        alt=""
+        width={1035}
+        height={372}
+        priority
+        className="h-10 w-auto sm:h-11"
+      />
     </Link>
   );
 }
@@ -159,7 +167,7 @@ export function Footer() {
     <footer className="mt-20 bg-ink text-text-inverse">
       <Container className="grid gap-8 py-12 md:grid-cols-3">
         <div className="space-y-3">
-          <p className="wordmark text-2xl !text-text-inverse">Halal Fresh</p>
+          <Image src="/brand/halal-fresh-logo-inverse.svg" alt="Halal Fresh" width={1035} height={372} className="h-14 w-auto" />
           <p className="t-small flex gap-2 text-white/80">
             <Store className="mt-0.5 size-5 shrink-0" strokeWidth={1.75} aria-hidden />
             <span>

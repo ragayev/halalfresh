@@ -35,8 +35,8 @@
 
 /* Design tokens (brief §17). Components use tokens only. Light mode only. */
 :root {
-  --color-primary: #7a1f2b;
-  --color-primary-hover: #63181f;
+  --color-primary: #6B1E23;
+  --color-primary-hover: #54171C;
   --color-primary-soft: #f6e9ea;
   --color-fresh: #2f6b4f;
   --color-fresh-soft: #e7f1eb;
