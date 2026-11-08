@@ -35,7 +35,7 @@ export function BundleCard({ p, locale, d, priority }: { p: ProductView; locale:
             </Link>
             {p.bundle && <p className="mt-0.5 text-sm text-muted">{formatWeight(p.bundle.totalGrams)}</p>}
           </div>
-          <p className="shrink-0 text-xl font-bold leading-none text-primary">{formatMoney(p.pricePerKgCents, locale)}</p>
+          <p className="shrink-0 text-xl font-bold leading-none text-primary">{formatMoney(p.pricePerKgCents, locale)}<span className="ml-1 text-xs font-medium text-text-muted">{d.common.perPackage}</span></p>
         </div>
         <p className="line-clamp-3 text-sm text-muted">{p.description}</p>
         <div className="mt-auto pt-3">
