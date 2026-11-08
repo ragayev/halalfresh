@@ -16,21 +16,16 @@ export const dynamic = "force-dynamic";
 
 const COPY = {
   de: {
-    title: "Frisches Halal-Fleisch. Direkt nach Hause.",
+    title: ["Frisches Halal-Fleisch zum Ladenpreis.", "Kostenlos nach Hause."],
     heroLabel: "Von der Kevser Fleischerei in Berlin",
-    partnerLabel: "Ihr lokaler Metzger-Partner",
-    deliveryTerms: "Liefertermin, Mindestbestellwert und Lieferkosten hängen von Ihrer Postleitzahl ab.",
     imageDisclaimer: "Symbolbild – das Fleisch wird von Kevser Fleischerei vorbereitet.",
     categoriesSub: "Wählen Sie aus, was heute auf den Tisch kommt.",
     featured: "Fleisch für Ihren Einkauf",
     featuredSub: "Klare Kilopreise. Direkt in den Warenkorb.",
     allProducts: "Alle Produkte",
     deliveryTitle: "Liefern wir zu Ihnen?",
-    deliverySub: "Postleitzahl eingeben und die Konditionen direkt sehen.",
-    sub: "Frisch von Kevser Fleischerei vorbereitet. Sie zahlen nur, was tatsächlich gewogen wurde.",
     cta: "Fleisch entdecken",
     how: "So funktioniert’s",
-    notice: "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.",
     trust: [
       [Store, "Von Kevser Fleischerei", "Zubereitet und geliefert vom Metzger in Berlin."],
       [Truck, "Lieferung nach PLZ", "Termin und Konditionen direkt prüfen."],
@@ -52,21 +47,16 @@ const COPY = {
     ],
   },
   tr: {
-    title: "Taze helal et. Kapınıza kadar.",
+    title: ["Taze helal et, mağaza fiyatına.", "Kapınıza ücretsiz."],
     heroLabel: "Berlin'deki Kevser Fleischerei'den",
-    partnerLabel: "Yerel kasap iş ortağımız",
-    deliveryTerms: "Teslimat günü, minimum sipariş ve teslimat ücreti posta kodunuza göre belirlenir.",
     imageDisclaimer: "Temsili görsel – etler Kevser Fleischerei tarafından hazırlanır.",
     categoriesSub: "Sofranız için ihtiyacınız olanı seçin.",
     featured: "Alışverişiniz için etler",
     featuredSub: "Net kilogram fiyatları. Kolayca sepete ekleyin.",
     allProducts: "Tüm ürünler",
     deliveryTitle: "Adresinize teslimat var mı?",
-    deliverySub: "Posta kodunuzu yazın, teslimat koşullarını hemen görün.",
-    sub: "Kevser Fleischerei siparişinizi taze hazırlar. Yalnızca tartılan gerçek ağırlığın bedelini ödersiniz.",
     cta: "Etleri keşfet",
     how: "Nasıl çalışır",
-    notice: "Halal Fresh siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei’dir.",
     trust: [
       [Store, "Kevser Fleischerei’dan", "Berlin’deki kasap tarafından hazırlanır ve teslim edilir."],
       [Truck, "Bölgeye göre teslimat", "Günü ve koşulları posta kodunuzla öğrenin."],
@@ -116,37 +106,38 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       {/* Local-butcher trust, a clear price promise and a working delivery postcode check. */}
-      <section className="bg-[#F6EFE3]">
-        <Container className="grid items-start gap-7 py-7 sm:py-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:items-center lg:gap-9 lg:py-12">
-          <div className="min-w-0">
+      <section className="relative isolate overflow-hidden bg-[#F6EFE3]">
+        {/* Full-bleed photo; a blurred cream veil on the text side keeps copy readable. */}
+        <Image src="/hero-spread.jpg" alt="" fill priority sizes="100vw" className="-z-20 object-cover object-[75%_center]" />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-[#F6EFE3]/85 backdrop-blur-md lg:bg-transparent lg:bg-gradient-to-r lg:from-[#F6EFE3] lg:via-[#F6EFE3]/90 lg:via-45% lg:to-[#F6EFE3]/0 lg:[mask-image:linear-gradient(to_right,black_40%,transparent_72%)]"
+        />
+        <Container className="relative py-7 sm:py-10 lg:py-14">
+          <div className="min-w-0 lg:max-w-[40rem]">
             <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-white/85 px-3 py-2">
               <Image src="/kevser-logo.png" alt="" width={400} height={289} className="h-10 w-auto shrink-0 object-contain" />
               <div className="min-w-0">
                 <p className="text-sm font-semibold leading-snug text-primary">{c.heroLabel}</p>
-                <p className="mt-0.5 text-xs text-text-muted">{c.partnerLabel}</p>
               </div>
+              <span className="h-8 w-px shrink-0 bg-border" aria-hidden />
+              <Image src="/halal-logo.svg" alt="Halal" width={200} height={200} className="size-10 shrink-0" />
             </div>
-            <h1 className="text-balance font-display text-[2.125rem] font-semibold leading-[1.12] tracking-tight text-text sm:text-[2.75rem] lg:text-[3rem]">{c.title}</h1>
-            <p className="mt-3 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">{c.sub}</p>
+            <h1 className="font-display text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.02em] text-text sm:text-5xl lg:text-[3.5rem]">
+              <span className="block">{c.title[0]}</span>
+              <span className="block text-primary">{c.title[1]}</span>
+            </h1>
             <Link href={"/" + locale + "/shop"} className={buttonClasses({ size: "lg" }) + " mt-5"}>
               {c.cta}<ArrowRight className="size-5" aria-hidden />
             </Link>
-            <div id="delivery-check" className="mt-6 max-w-xl scroll-mt-24">
-              <h2 className="text-lg font-semibold text-text">{c.deliveryTitle}</h2>
-              <p className="mt-1 text-sm text-text-muted">{c.deliverySub}</p>
-              <div className="mt-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 sm:p-4" data-testid="hero-postcode">
-                <PostcodePanel />
+            <div id="delivery-check" className="mt-5 max-w-lg scroll-mt-24">
+              <h2 className="text-base font-semibold text-text">{c.deliveryTitle}</h2>
+              <div className="mt-2 rounded-[var(--radius-lg)] border border-border bg-surface p-3 shadow-sm" data-testid="hero-postcode">
+                <PostcodePanel hideLabel />
               </div>
-              <p className="mt-2 text-xs text-text-muted">{c.deliveryTerms}</p>
             </div>
-            <p className="mt-4 max-w-xl border-l-2 border-primary/30 pl-3 text-xs leading-relaxed text-text-muted">{c.notice}</p>
           </div>
-          <figure className="min-w-0">
-            <div className="relative h-52 overflow-hidden rounded-[var(--radius-lg)] bg-surface shadow-sm sm:h-72 lg:h-[390px]">
-              <Image src="/hero-spread.jpg" alt="" fill priority sizes="(min-width:1024px) 40vw, 100vw" className="object-cover" />
-            </div>
-            <figcaption className="mt-2 text-xs text-text-muted">{c.imageDisclaimer}</figcaption>
-          </figure>
+          <p className="mt-4 text-xs text-text-muted lg:absolute lg:bottom-3 lg:right-4 lg:mt-0 lg:rounded-full lg:bg-black/45 lg:px-3 lg:py-1 lg:text-white">{c.imageDisclaimer}</p>
         </Container>
       </section>
 

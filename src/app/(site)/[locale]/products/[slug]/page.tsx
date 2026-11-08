@@ -142,7 +142,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
             {halalVerified && p.halalCertification && (
               <p className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-fresh-soft px-2 py-1 text-sm font-medium text-fresh">
                 <BadgeCheck className="size-5" strokeWidth={1.75} aria-hidden />
-                {locale === "tr" ? "Helal sertifikalı" : "Halal-zertifiziert"}: {p.halalCertification}
+                {locale === "tr" ? "Helal kaynağı" : "Halal-Nachweis"}: {p.halalCertification}
               </p>
             )}
             <p className="text-sm text-text-muted">{locale === "tr" ? "Satıcı: Kevser Fleischerei" : "Verkauf durch Kevser Fleischerei"}</p>

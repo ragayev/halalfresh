@@ -14,7 +14,6 @@ import { formatQuantity } from "@/domain/bundles";
 import { isValidPostcode, normalizePostcode } from "@/domain/delivery";
 import { formatCutoff, formatSlotDay } from "@/lib/format-delivery";
 import { useDelivery } from "./delivery-provider";
-import { FreeDeliveryBar } from "./cart-progress";
 type Errors = Partial<Record<"firstName" | "lastName" | "email" | "phone" | "street" | "postalCode" | "city" | "slot" | "terms", string>>;
 
 export function CheckoutForm() {
@@ -84,6 +83,12 @@ export function CheckoutForm() {
   const current = check && check.postcode === pc ? check : null;
   const checking = isValidPostcode(pc) && (!current || status === "loading");
   const estimate = current?.nextSlot ?? null;
+  const [pickedDate, setDate] = useState<string | null>(null);
+  const [pickedSlot, setSlotStart] = useState<string | null>(null);
+  // A picked date that is no longer offered (cutoff passed, postcode changed) falls back to the earliest one.
+  const dateOptions = current?.dates ?? [];
+  const chosenDate = dateOptions.find((o) => o.date === pickedDate) ?? dateOptions[0] ?? null;
+  const slotStart = pickedSlot ?? estimate?.slots[0].start ?? null;
   const pricedFor = data?.delivery?.postcode === pc;
 
   if (!ready || (loading && !data))
@@ -104,7 +109,6 @@ export function CheckoutForm() {
   }
 
   const totals = data.totals!;
-  const hasNonPreorder = data.lines.some((l) => l.issue === "NOT_PREORDER");
 
   function validate(): Errors {
     const e: Errors = {};
@@ -117,7 +121,7 @@ export function CheckoutForm() {
     else if (current && !current.supported) e.postalCode = d.checkout.postcodeUnsupported;
     if (f.city.trim().length < 2) e.city = d.checkout.required;
     if (current?.supported && !estimate) e.slot = d.checkout.slotNone;
-    if (current?.supported && (!pricedFor || data!.hasIssues)) e.slot = hasNonPreorder ? d.delivery.cartPreorderOnly : d.cart.updated;
+    if (current?.supported && (!pricedFor || data!.hasIssues)) e.slot = d.cart.updated;
     if (current?.supported && !totals.meetsMinimum) e.slot = t(d.checkout.belowMin, { amount: formatMoney(totals.minOrderCents, locale) });
     if (!terms) e.terms = c.termsRequired;
     return e;
@@ -149,6 +153,8 @@ export function CheckoutForm() {
           })),
           customer: { firstName: f.firstName, lastName: f.lastName, email: f.email, phone: f.phone },
           address: { street: f.street, postalCode: pc, city: f.city },
+          deliveryDate: chosenDate!.date,
+          slotStart: slotStart!,
           checkedPostcode: pc,
           deliveryNotes: f.instructions || undefined,
           paymentMethod: method,
@@ -172,15 +178,13 @@ export function CheckoutForm() {
               ? d.checkout.postcodeUnsupported
               : code === "POSTCODE_MISMATCH"
                 ? d.delivery.postcodeUpdated.replace("{postcode}", pc)
-                : code === "PREORDER_ONLY"
-                  ? d.delivery.cartPreorderOnly
-                  : code === "CHECKOUT_UNAVAILABLE"
-                    ? d.checkout.unavailable
-                    : code === "SLOT_INVALID"
-                      ? d.checkout.slotNone
-                      : code === "RATE_LIMITED" || code === "PRODUCT_UNAVAILABLE" || code === "INVALID_QUANTITY"
-                        ? j.error.message
-                        : d.checkout.payError,
+                : code === "CHECKOUT_UNAVAILABLE"
+                  ? d.checkout.unavailable
+                  : code === "SLOT_INVALID"
+                    ? d.checkout.slotNone
+                    : code === "RATE_LIMITED" || code === "PRODUCT_UNAVAILABLE" || code === "INVALID_QUANTITY"
+                      ? j.error.message
+                      : d.checkout.payError,
         );
         setSubmitting(false);
         return;
@@ -201,7 +205,6 @@ export function CheckoutForm() {
       <form onSubmit={submit} noValidate className="grid gap-6 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
           {!totals.meetsMinimum && <MinOrderBanner totals={totals} />}
-          <FreeDeliveryBar totals={totals} check={current ?? undefined} />
           <Card className="space-y-4 p-5 sm:p-6">
             <h2 className="text-lg font-semibold">{d.checkout.contact}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -297,14 +300,36 @@ export function CheckoutForm() {
               <p className="font-semibold">{d.checkout.estimated}</p>
               {estimate ? (
                 <>
-                  <p className="text-base font-bold capitalize">
-                    {t(d.delivery.slotLine, {
-                      day: formatSlotDay(estimate.date, locale),
-                      start: estimate.windowStart,
-                      end: estimate.windowEnd,
-                    })}
-                  </p>
-                  <p className="text-xs opacity-80">{t(d.delivery.orderBy, { cutoff: formatCutoff(estimate.cutoffAt, locale) })}</p>
+                  {current?.status === "review" && (
+                    <p className="font-medium text-warn-ink" data-testid="review-note">
+                      {t(d.delivery.reviewNote, { postcode: current.postcode })}
+                    </p>
+                  )}
+                  <fieldset className="mt-2 flex flex-wrap gap-2" data-testid="date-picker">
+                    <legend className="font-semibold">{d.delivery.chooseDate}</legend>
+                    {dateOptions.map((o) => (
+                      <label
+                        key={o.date}
+                        className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 ${chosenDate?.date === o.date ? "border-primary bg-white" : "border-transparent bg-white/60"}`}
+                      >
+                        <input type="radio" name="deliveryDate" value={o.date} checked={chosenDate?.date === o.date} onChange={() => setDate(o.date)} className="size-4 accent-[var(--color-primary)]" />
+                        {o.showTomorrow ? d.delivery.tomorrow : formatSlotDay(o.date, locale)}
+                      </label>
+                    ))}
+                  </fieldset>
+                  <fieldset className="mt-2 flex flex-wrap gap-2" data-testid="slot-picker">
+                    <legend className="sr-only">{d.delivery.slotLabel}</legend>
+                    {estimate.slots.map((s) => (
+                      <label
+                        key={s.start}
+                        className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 ${slotStart === s.start ? "border-primary bg-white" : "border-transparent bg-white/60"}`}
+                      >
+                        <input type="radio" name="slot" value={s.start} checked={slotStart === s.start} onChange={() => setSlotStart(s.start)} className="size-4 accent-[var(--color-primary)]" />
+                        {s.start}–{s.end} {d.delivery.oclock}
+                      </label>
+                    ))}
+                  </fieldset>
+                  {chosenDate && <p className="text-xs opacity-80">{t(d.delivery.orderBy, { cutoff: formatCutoff(chosenDate.cutoffAt, locale) })}</p>}
                 </>
               ) : checking ? (
                 <p>{d.checkout.slotLoading}</p>
@@ -319,9 +344,6 @@ export function CheckoutForm() {
                 <p role="status" className="mt-1 text-xs font-medium">
                   {notice}
                 </p>
-              )}
-              {current?.mode === "PREORDER_ONLY" && (
-                <p className="mt-1 text-xs font-medium">{hasNonPreorder ? d.delivery.cartPreorderOnly : d.delivery.preorderText}</p>
               )}
               {err("slot") && (
                 <p role="alert" className="mt-1 text-xs font-medium text-danger">

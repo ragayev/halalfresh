@@ -1,0 +1,5627 @@
+{
+ "attribution": "Contains data from GeoNames (https://www.geonames.org), licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).",
+ "source": "https://download.geonames.org/export/zip/DE.zip",
+ "shop": {
+  "lat": 52.4757,
+  "lon": 13.4267
+ },
+ "count": 624,
+ "postcodes": [
+  {
+   "postcode": "01945",
+   "state": "BB",
+   "place": "Grünewald, Guteborn, Hermsdorf u. a.",
+   "lat": 51.41971,
+   "lon": 13.87812,
+   "distanceKm": 121.428,
+   "bearingDeg": 165.06
+  },
+  {
+   "postcode": "01968",
+   "state": "BB",
+   "place": "Schipkau, Schipkau Hörlitz, Senftenberg",
+   "lat": 51.53357,
+   "lon": 13.95483,
+   "distanceKm": 110.822,
+   "bearingDeg": 160.75
+  },
+  {
+   "postcode": "01979",
+   "state": "BB",
+   "place": "Lauchhammer",
+   "lat": 51.4881,
+   "lon": 13.7662,
+   "distanceKm": 112.25,
+   "bearingDeg": 167.91
+  },
+  {
+   "postcode": "01983",
+   "state": "BB",
+   "place": "Großräschen, Neu-Seeland",
+   "lat": 51.6045,
+   "lon": 14.0709,
+   "distanceKm": 106.422,
+   "bearingDeg": 155.29
+  },
+  {
+   "postcode": "01987",
+   "state": "BB",
+   "place": "Schwarzheide",
+   "lat": 51.4767,
+   "lon": 13.8556,
+   "distanceKm": 114.902,
+   "bearingDeg": 165.02
+  },
+  {
+   "postcode": "01990",
+   "state": "BB",
+   "place": "Frauendorf, Großkmehlen, Ortrand",
+   "lat": 51.3896,
+   "lon": 13.75147,
+   "distanceKm": 122.804,
+   "bearingDeg": 169.43
+  },
+  {
+   "postcode": "01993",
+   "state": "BB",
+   "place": "Schipkau, Schipkau Schipkau",
+   "lat": 51.52785,
+   "lon": 13.9051,
+   "distanceKm": 110.366,
+   "bearingDeg": 162.55
+  },
+  {
+   "postcode": "01994",
+   "state": "BB",
+   "place": "Schipkau, Schipkau Annahütte, Schipkau Annahütte, Annahütte u. a.",
+   "lat": 51.55901,
+   "lon": 13.89627,
+   "distanceKm": 106.876,
+   "bearingDeg": 162.32
+  },
+  {
+   "postcode": "01996",
+   "state": "BB",
+   "place": "Hosena",
+   "lat": 51.4547,
+   "lon": 14.0251,
+   "distanceKm": 120.705,
+   "bearingDeg": 159.91
+  },
+  {
+   "postcode": "01998",
+   "state": "BB",
+   "place": "Schipkau, Schipkau Klettwitz, Schipkau Meuro",
+   "lat": 51.54607,
+   "lon": 13.91197,
+   "distanceKm": 108.574,
+   "bearingDeg": 162
+  },
+  {
+   "postcode": "03039",
+   "state": "BB",
+   "place": "Agentur für Arbeit Cottbus",
+   "lat": 51.7591,
+   "lon": 14.328,
+   "distanceKm": 100.678,
+   "bearingDeg": 141.96
+  },
+  {
+   "postcode": "03042",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7612,
+   "lon": 14.3544,
+   "distanceKm": 101.606,
+   "bearingDeg": 141.07
+  },
+  {
+   "postcode": "03044",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7754,
+   "lon": 14.3374,
+   "distanceKm": 99.642,
+   "bearingDeg": 141.04
+  },
+  {
+   "postcode": "03046",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.756,
+   "lon": 14.3197,
+   "distanceKm": 100.608,
+   "bearingDeg": 142.34
+  },
+  {
+   "postcode": "03048",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7403,
+   "lon": 14.3198,
+   "distanceKm": 102.013,
+   "bearingDeg": 142.93
+  },
+  {
+   "postcode": "03050",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7324,
+   "lon": 14.3347,
+   "distanceKm": 103.329,
+   "bearingDeg": 142.76
+  },
+  {
+   "postcode": "03051",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7667,
+   "lon": 14.3333,
+   "distanceKm": 100.23,
+   "bearingDeg": 141.51
+  },
+  {
+   "postcode": "03052",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7667,
+   "lon": 14.3333,
+   "distanceKm": 100.23,
+   "bearingDeg": 141.51
+  },
+  {
+   "postcode": "03053",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7667,
+   "lon": 14.3333,
+   "distanceKm": 100.23,
+   "bearingDeg": 141.51
+  },
+  {
+   "postcode": "03054",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7667,
+   "lon": 14.3333,
+   "distanceKm": 100.23,
+   "bearingDeg": 141.51
+  },
+  {
+   "postcode": "03055",
+   "state": "BB",
+   "place": "Cottbus",
+   "lat": 51.7667,
+   "lon": 14.3333,
+   "distanceKm": 100.23,
+   "bearingDeg": 141.51
+  },
+  {
+   "postcode": "03058",
+   "state": "BB",
+   "place": "Frauendorf, Gablenz, Gallinchen u. a.",
+   "lat": 51.69638,
+   "lon": 14.41246,
+   "distanceKm": 109.752,
+   "bearingDeg": 141.75
+  },
+  {
+   "postcode": "03065",
+   "state": "BB",
+   "place": "Deutsche Post AG Niederlassung BRIEF Cottbus",
+   "lat": 51.767,
+   "lon": 14.3801,
+   "distanceKm": 102.208,
+   "bearingDeg": 140.07
+  },
+  {
+   "postcode": "03096",
+   "state": "BB",
+   "place": "Briesen, Burg (Spreewald), Dissen-Striesow u. a.",
+   "lat": 51.82542,
+   "lon": 14.22058,
+   "distanceKm": 90.345,
+   "bearingDeg": 142.85
+  },
+  {
+   "postcode": "03099",
+   "state": "BB",
+   "place": "Kolkwitz",
+   "lat": 51.75,
+   "lon": 14.25,
+   "distanceKm": 98.346,
+   "bearingDeg": 144.81
+  },
+  {
+   "postcode": "03103",
+   "state": "BB",
+   "place": "Neu-Seeland, Neupetershain",
+   "lat": 51.6147,
+   "lon": 14.148,
+   "distanceKm": 107.699,
+   "bearingDeg": 152.46
+  },
+  {
+   "postcode": "03116",
+   "state": "BB",
+   "place": "Drebkau",
+   "lat": 51.6541,
+   "lon": 14.2232,
+   "distanceKm": 106.351,
+   "bearingDeg": 148.89
+  },
+  {
+   "postcode": "03119",
+   "state": "BB",
+   "place": "Welzow",
+   "lat": 51.5838,
+   "lon": 14.1708,
+   "distanceKm": 111.475,
+   "bearingDeg": 152.53
+  },
+  {
+   "postcode": "03130",
+   "state": "BB",
+   "place": "Bagenz, Drieschnitz-Kahsel, Felixsee u. a.",
+   "lat": 51.59121,
+   "lon": 14.4656,
+   "distanceKm": 121.338,
+   "bearingDeg": 143.74
+  },
+  {
+   "postcode": "03139",
+   "state": "BB",
+   "place": "Terpe",
+   "lat": 51.5667,
+   "lon": 14.3667,
+   "distanceKm": 119.804,
+   "bearingDeg": 147.16
+  },
+  {
+   "postcode": "03149",
+   "state": "BB",
+   "place": "Forst (Lausitz), Groß Schacksdorf-Simmersdorf, Wiesengrund",
+   "lat": 51.70897,
+   "lon": 14.5921,
+   "distanceKm": 116.649,
+   "bearingDeg": 136.5
+  },
+  {
+   "postcode": "03159",
+   "state": "BB",
+   "place": "Döbern, Neiße-Malxetal, Wiesengrund",
+   "lat": 51.65197,
+   "lon": 14.5938,
+   "distanceKm": 121.468,
+   "bearingDeg": 138.48
+  },
+  {
+   "postcode": "03172",
+   "state": "BB",
+   "place": "Atterwasch, Bärenklau, Gastrose-Kerkwitz u. a.",
+   "lat": 51.93101,
+   "lon": 14.61022,
+   "distanceKm": 100.861,
+   "bearingDeg": 126.44
+  },
+  {
+   "postcode": "03185",
+   "state": "BB",
+   "place": "Drachhausen, Drehnow, Grötsch u. a.",
+   "lat": 51.85114,
+   "lon": 14.42678,
+   "distanceKm": 97.344,
+   "bearingDeg": 135.12
+  },
+  {
+   "postcode": "03197",
+   "state": "BB",
+   "place": "Drewitz, Jänschwalde",
+   "lat": 51.87865,
+   "lon": 14.5042,
+   "distanceKm": 99.021,
+   "bearingDeg": 131.67
+  },
+  {
+   "postcode": "03202",
+   "state": "BB",
+   "place": "Luckow-Petershagen",
+   "lat": 53.2435,
+   "lon": 14.2573,
+   "distanceKm": 101.972,
+   "bearingDeg": 32.82
+  },
+  {
+   "postcode": "03205",
+   "state": "BB",
+   "place": "Bischdorf, Bolschwitz, Bronkow u. a.",
+   "lat": 51.71983,
+   "lon": 13.96877,
+   "distanceKm": 91.843,
+   "bearingDeg": 156.01
+  },
+  {
+   "postcode": "03222",
+   "state": "BB",
+   "place": "Boblitz, Groß Beuchow, Groß-Klessow u. a.",
+   "lat": 51.85344,
+   "lon": 13.91765,
+   "distanceKm": 76.869,
+   "bearingDeg": 153.98
+  },
+  {
+   "postcode": "03226",
+   "state": "BB",
+   "place": "Koßwig, Leipe, Raddusch u. a.",
+   "lat": 51.80724,
+   "lon": 14.05696,
+   "distanceKm": 85.876,
+   "bearingDeg": 149.7
+  },
+  {
+   "postcode": "03229",
+   "state": "BB",
+   "place": "Altdöbern, Luckaitztal",
+   "lat": 51.66665,
+   "lon": 14.01665,
+   "distanceKm": 98.585,
+   "bearingDeg": 155.62
+  },
+  {
+   "postcode": "03238",
+   "state": "BB",
+   "place": "Betten, Dollenchen, Eichholz-Drößig u. a.",
+   "lat": 51.60648,
+   "lon": 13.6878,
+   "distanceKm": 98.289,
+   "bearingDeg": 169.43
+  },
+  {
+   "postcode": "03246",
+   "state": "BB",
+   "place": "Babben, Crinitz, Gahro",
+   "lat": 51.72797,
+   "lon": 13.75897,
+   "distanceKm": 86.186,
+   "bearingDeg": 164.6
+  },
+  {
+   "postcode": "03249",
+   "state": "BB",
+   "place": "Bahren, Breitenau, Goßmar u. a.",
+   "lat": 51.7084,
+   "lon": 13.659,
+   "distanceKm": 86.783,
+   "bearingDeg": 169.37
+  },
+  {
+   "postcode": "03253",
+   "state": "BB",
+   "place": "Arenzhain, Brenitz, Buchhain u. a.",
+   "lat": 51.65208,
+   "lon": 13.50443,
+   "distanceKm": 91.737,
+   "bearingDeg": 176.65
+  },
+  {
+   "postcode": "04895",
+   "state": "BB",
+   "place": "Falkenberg/Elster",
+   "lat": 51.5875,
+   "lon": 13.2364,
+   "distanceKm": 99.618,
+   "bearingDeg": 187.58
+  },
+  {
+   "postcode": "04910",
+   "state": "BB",
+   "place": "Elsterwerda, Haida",
+   "lat": 51.46985,
+   "lon": 13.49395,
+   "distanceKm": 111.94,
+   "bearingDeg": 177.61
+  },
+  {
+   "postcode": "04916",
+   "state": "BB",
+   "place": "Heideeck, Herzberg (Elster), Stolzenhain u. a.",
+   "lat": 51.78148,
+   "lon": 13.24668,
+   "distanceKm": 78.165,
+   "bearingDeg": 189.12
+  },
+  {
+   "postcode": "04924",
+   "state": "BB",
+   "place": "Bad Liebenwerda, Uebigau-Wahrenbrück",
+   "lat": 51.5175,
+   "lon": 13.36395,
+   "distanceKm": 106.634,
+   "bearingDeg": 182.33
+  },
+  {
+   "postcode": "04928",
+   "state": "BB",
+   "place": "Döllingen, Kahla, Plessa u. a.",
+   "lat": 51.46088,
+   "lon": 13.61655,
+   "distanceKm": 113.59,
+   "bearingDeg": 173.35
+  },
+  {
+   "postcode": "04931",
+   "state": "BB",
+   "place": "Mühlberg (Elbe)",
+   "lat": 51.4333,
+   "lon": 13.2167,
+   "distanceKm": 116.8,
+   "bearingDeg": 187.16
+  },
+  {
+   "postcode": "04932",
+   "state": "BB",
+   "place": "Großthiemig, Gröden, Hirschfeld u. a.",
+   "lat": 51.41429,
+   "lon": 13.54166,
+   "distanceKm": 118.287,
+   "bearingDeg": 176.14
+  },
+  {
+   "postcode": "04934",
+   "state": "BB",
+   "place": "Dreska, Hohenleipisch",
+   "lat": 51.49265,
+   "lon": 13.544,
+   "distanceKm": 109.605,
+   "bearingDeg": 175.75
+  },
+  {
+   "postcode": "04936",
+   "state": "BB",
+   "place": "Frankenhain, Freileben, Hillmersdorf u. a.",
+   "lat": 51.73744,
+   "lon": 13.41295,
+   "distanceKm": 82.096,
+   "bearingDeg": 180.66
+  },
+  {
+   "postcode": "04938",
+   "state": "BB",
+   "place": "Uebigau-Wahrenbrück",
+   "lat": 51.5167,
+   "lon": 13.3333,
+   "distanceKm": 106.828,
+   "bearingDeg": 183.47
+  },
+  {
+   "postcode": "10026",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5172,
+   "lon": 13.4149,
+   "distanceKm": 4.683,
+   "bearingDeg": 350.18
+  },
+  {
+   "postcode": "10082",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5318,
+   "lon": 13.3838,
+   "distanceKm": 6.881,
+   "bearingDeg": 335.06
+  },
+  {
+   "postcode": "10083",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5318,
+   "lon": 13.3838,
+   "distanceKm": 6.881,
+   "bearingDeg": 335.06
+  },
+  {
+   "postcode": "10086",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5105,
+   "lon": 13.4024,
+   "distanceKm": 4.205,
+   "bearingDeg": 336.98
+  },
+  {
+   "postcode": "10096",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5137,
+   "lon": 13.4227,
+   "distanceKm": 4.234,
+   "bearingDeg": 356.33
+  },
+  {
+   "postcode": "10098",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5237,
+   "lon": 13.3799,
+   "distanceKm": 6.207,
+   "bearingDeg": 329.33
+  },
+  {
+   "postcode": "10099",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5176,
+   "lon": 13.3938,
+   "distanceKm": 5.164,
+   "bearingDeg": 334.46
+  },
+  {
+   "postcode": "10102",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5175,
+   "lon": 13.3916,
+   "distanceKm": 5.22,
+   "bearingDeg": 332.94
+  },
+  {
+   "postcode": "10103",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5286,
+   "lon": 13.3692,
+   "distanceKm": 7.053,
+   "bearingDeg": 326.53
+  },
+  {
+   "postcode": "10104",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5106,
+   "lon": 13.3901,
+   "distanceKm": 4.604,
+   "bearingDeg": 327.46
+  },
+  {
+   "postcode": "10105",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51853,
+   "lon": 13.38735,
+   "distanceKm": 5.456,
+   "bearingDeg": 330.79
+  },
+  {
+   "postcode": "10106",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51673,
+   "lon": 13.4269,
+   "distanceKm": 4.563,
+   "bearingDeg": 0.17
+  },
+  {
+   "postcode": "10107",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51266,
+   "lon": 13.39217,
+   "distanceKm": 4.728,
+   "bearingDeg": 330.39
+  },
+  {
+   "postcode": "10108",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.52287,
+   "lon": 13.3835,
+   "distanceKm": 6.006,
+   "bearingDeg": 330.88
+  },
+  {
+   "postcode": "10109",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51647,
+   "lon": 13.39135,
+   "distanceKm": 5.127,
+   "bearingDeg": 332.19
+  },
+  {
+   "postcode": "10112",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.509,
+   "lon": 13.4279,
+   "distanceKm": 3.704,
+   "bearingDeg": 1.26
+  },
+  {
+   "postcode": "10115",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5323,
+   "lon": 13.3846,
+   "distanceKm": 6.909,
+   "bearingDeg": 335.66
+  },
+  {
+   "postcode": "10117",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.517,
+   "lon": 13.3872,
+   "distanceKm": 5.314,
+   "bearingDeg": 329.8
+  },
+  {
+   "postcode": "10119",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5305,
+   "lon": 13.4053,
+   "distanceKm": 6.263,
+   "bearingDeg": 346.64
+  },
+  {
+   "postcode": "10150",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5169,
+   "lon": 13.4147,
+   "distanceKm": 4.653,
+   "bearingDeg": 349.95
+  },
+  {
+   "postcode": "10169",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5176,
+   "lon": 13.4142,
+   "distanceKm": 4.735,
+   "bearingDeg": 349.71
+  },
+  {
+   "postcode": "10173",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5258,
+   "lon": 13.4135,
+   "distanceKm": 5.642,
+   "bearingDeg": 350.89
+  },
+  {
+   "postcode": "10178",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5213,
+   "lon": 13.4096,
+   "distanceKm": 5.201,
+   "bearingDeg": 347.15
+  },
+  {
+   "postcode": "10179",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5122,
+   "lon": 13.4164,
+   "distanceKm": 4.118,
+   "bearingDeg": 350.26
+  },
+  {
+   "postcode": "10243",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5123,
+   "lon": 13.4394,
+   "distanceKm": 4.16,
+   "bearingDeg": 11.92
+  },
+  {
+   "postcode": "10245",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5007,
+   "lon": 13.4647,
+   "distanceKm": 3.788,
+   "bearingDeg": 42.77
+  },
+  {
+   "postcode": "10247",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5161,
+   "lon": 13.4656,
+   "distanceKm": 5.207,
+   "bearingDeg": 30.36
+  },
+  {
+   "postcode": "10249",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5238,
+   "lon": 13.4428,
+   "distanceKm": 5.458,
+   "bearingDeg": 11.51
+  },
+  {
+   "postcode": "10306",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5094,
+   "lon": 13.5255,
+   "distanceKm": 7.667,
+   "bearingDeg": 60.7
+  },
+  {
+   "postcode": "10313",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4932,
+   "lon": 13.5259,
+   "distanceKm": 6.994,
+   "bearingDeg": 73.81
+  },
+  {
+   "postcode": "10315",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5132,
+   "lon": 13.5148,
+   "distanceKm": 7.277,
+   "bearingDeg": 55.01
+  },
+  {
+   "postcode": "10317",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4979,
+   "lon": 13.4908,
+   "distanceKm": 4.993,
+   "bearingDeg": 60.35
+  },
+  {
+   "postcode": "10318",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4835,
+   "lon": 13.5287,
+   "distanceKm": 6.962,
+   "bearingDeg": 82.8
+  },
+  {
+   "postcode": "10319",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4992,
+   "lon": 13.5188,
+   "distanceKm": 6.761,
+   "bearingDeg": 67.23
+  },
+  {
+   "postcode": "10356",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5183,
+   "lon": 13.4882,
+   "distanceKm": 6.306,
+   "bearingDeg": 41.29
+  },
+  {
+   "postcode": "10358",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5094,
+   "lon": 13.5255,
+   "distanceKm": 7.667,
+   "bearingDeg": 60.7
+  },
+  {
+   "postcode": "10360",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5094,
+   "lon": 13.5255,
+   "distanceKm": 7.667,
+   "bearingDeg": 60.7
+  },
+  {
+   "postcode": "10361",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.52323,
+   "lon": 13.48583,
+   "distanceKm": 6.63,
+   "bearingDeg": 37.11
+  },
+  {
+   "postcode": "10362",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5149,
+   "lon": 13.4887,
+   "distanceKm": 6.051,
+   "bearingDeg": 43.89
+  },
+  {
+   "postcode": "10365",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5206,
+   "lon": 13.4969,
+   "distanceKm": 6.893,
+   "bearingDeg": 43.56
+  },
+  {
+   "postcode": "10367",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5246,
+   "lon": 13.4821,
+   "distanceKm": 6.605,
+   "bearingDeg": 34.57
+  },
+  {
+   "postcode": "10369",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5295,
+   "lon": 13.4695,
+   "distanceKm": 6.647,
+   "bearingDeg": 25.82
+  },
+  {
+   "postcode": "10400",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.535,
+   "lon": 13.4279,
+   "distanceKm": 6.594,
+   "bearingDeg": 0.71
+  },
+  {
+   "postcode": "10405",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5352,
+   "lon": 13.4257,
+   "distanceKm": 6.616,
+   "bearingDeg": 359.41
+  },
+  {
+   "postcode": "10407",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5336,
+   "lon": 13.4492,
+   "distanceKm": 6.616,
+   "bearingDeg": 13.3
+  },
+  {
+   "postcode": "10409",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5443,
+   "lon": 13.4414,
+   "distanceKm": 7.693,
+   "bearingDeg": 7.42
+  },
+  {
+   "postcode": "10431",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5426,
+   "lon": 13.42995,
+   "distanceKm": 7.442,
+   "bearingDeg": 1.69
+  },
+  {
+   "postcode": "10435",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5378,
+   "lon": 13.4112,
+   "distanceKm": 6.984,
+   "bearingDeg": 351.37
+  },
+  {
+   "postcode": "10437",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5449,
+   "lon": 13.4126,
+   "distanceKm": 7.754,
+   "bearingDeg": 352.94
+  },
+  {
+   "postcode": "10439",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5522,
+   "lon": 13.4121,
+   "distanceKm": 8.564,
+   "bearingDeg": 353.38
+  },
+  {
+   "postcode": "10546",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5334,
+   "lon": 13.28,
+   "distanceKm": 11.822,
+   "bearingDeg": 302.93
+  },
+  {
+   "postcode": "10547",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5234,
+   "lon": 13.3446,
+   "distanceKm": 7.682,
+   "bearingDeg": 313.7
+  },
+  {
+   "postcode": "10548",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5293,
+   "lon": 13.31713,
+   "distanceKm": 9.514,
+   "bearingDeg": 308.83
+  },
+  {
+   "postcode": "10551",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5307,
+   "lon": 13.3372,
+   "distanceKm": 8.608,
+   "bearingDeg": 315.31
+  },
+  {
+   "postcode": "10553",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5305,
+   "lon": 13.3215,
+   "distanceKm": 9.372,
+   "bearingDeg": 310.6
+  },
+  {
+   "postcode": "10555",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5215,
+   "lon": 13.3355,
+   "distanceKm": 8.003,
+   "bearingDeg": 309.56
+  },
+  {
+   "postcode": "10557",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5233,
+   "lon": 13.3594,
+   "distanceKm": 6.983,
+   "bearingDeg": 319.31
+  },
+  {
+   "postcode": "10559",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5301,
+   "lon": 13.3499,
+   "distanceKm": 7.976,
+   "bearingDeg": 319.36
+  },
+  {
+   "postcode": "10585",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5152,
+   "lon": 13.3057,
+   "distanceKm": 9.295,
+   "bearingDeg": 298.25
+  },
+  {
+   "postcode": "10587",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5184,
+   "lon": 13.3195,
+   "distanceKm": 8.672,
+   "bearingDeg": 303.24
+  },
+  {
+   "postcode": "10589",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5276,
+   "lon": 13.3057,
+   "distanceKm": 10.019,
+   "bearingDeg": 305.22
+  },
+  {
+   "postcode": "10617",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51253,
+   "lon": 13.3177,
+   "distanceKm": 8.44,
+   "bearingDeg": 299.07
+  },
+  {
+   "postcode": "10623",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5088,
+   "lon": 13.3274,
+   "distanceKm": 7.664,
+   "bearingDeg": 298.74
+  },
+  {
+   "postcode": "10625",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5095,
+   "lon": 13.3147,
+   "distanceKm": 8.463,
+   "bearingDeg": 296.41
+  },
+  {
+   "postcode": "10627",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.508,
+   "lon": 13.303,
+   "distanceKm": 9.113,
+   "bearingDeg": 293.26
+  },
+  {
+   "postcode": "10629",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5028,
+   "lon": 13.3086,
+   "distanceKm": 8.545,
+   "bearingDeg": 290.7
+  },
+  {
+   "postcode": "10702",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.49045,
+   "lon": 13.31876,
+   "distanceKm": 7.491,
+   "bearingDeg": 282.69
+  },
+  {
+   "postcode": "10703",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5021,
+   "lon": 13.321,
+   "distanceKm": 7.735,
+   "bearingDeg": 292.34
+  },
+  {
+   "postcode": "10704",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4904,
+   "lon": 13.3112,
+   "distanceKm": 7.99,
+   "bearingDeg": 281.85
+  },
+  {
+   "postcode": "10705",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4974,
+   "lon": 13.293,
+   "distanceKm": 9.369,
+   "bearingDeg": 284.98
+  },
+  {
+   "postcode": "10707",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4967,
+   "lon": 13.3138,
+   "distanceKm": 7.993,
+   "bearingDeg": 287.03
+  },
+  {
+   "postcode": "10709",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4939,
+   "lon": 13.3031,
+   "distanceKm": 8.611,
+   "bearingDeg": 283.64
+  },
+  {
+   "postcode": "10711",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4981,
+   "lon": 13.2905,
+   "distanceKm": 9.553,
+   "bearingDeg": 285.17
+  },
+  {
+   "postcode": "10713",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4851,
+   "lon": 13.3133,
+   "distanceKm": 7.75,
+   "bearingDeg": 277.8
+  },
+  {
+   "postcode": "10715",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4824,
+   "lon": 13.3289,
+   "distanceKm": 6.665,
+   "bearingDeg": 276.46
+  },
+  {
+   "postcode": "10717",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4908,
+   "lon": 13.3275,
+   "distanceKm": 6.924,
+   "bearingDeg": 284.07
+  },
+  {
+   "postcode": "10719",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4988,
+   "lon": 13.3257,
+   "distanceKm": 7.305,
+   "bearingDeg": 290.63
+  },
+  {
+   "postcode": "10768",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4998,
+   "lon": 13.3253,
+   "distanceKm": 7.37,
+   "bearingDeg": 291.36
+  },
+  {
+   "postcode": "10772",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5061,
+   "lon": 13.35703,
+   "distanceKm": 5.803,
+   "bearingDeg": 305.65
+  },
+  {
+   "postcode": "10773",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.506,
+   "lon": 13.34588,
+   "distanceKm": 6.426,
+   "bearingDeg": 301.65
+  },
+  {
+   "postcode": "10774",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5102,
+   "lon": 13.3762,
+   "distanceKm": 5.139,
+   "bearingDeg": 318.31
+  },
+  {
+   "postcode": "10777",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4975,
+   "lon": 13.3427,
+   "distanceKm": 6.183,
+   "bearingDeg": 293.12
+  },
+  {
+   "postcode": "10779",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4921,
+   "lon": 13.3395,
+   "distanceKm": 6.18,
+   "bearingDeg": 287.2
+  },
+  {
+   "postcode": "10781",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4936,
+   "lon": 13.3529,
+   "distanceKm": 5.379,
+   "bearingDeg": 291.75
+  },
+  {
+   "postcode": "10783",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4964,
+   "lon": 13.3624,
+   "distanceKm": 4.925,
+   "bearingDeg": 297.89
+  },
+  {
+   "postcode": "10785",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5073,
+   "lon": 13.3643,
+   "distanceKm": 5.495,
+   "bearingDeg": 309.78
+  },
+  {
+   "postcode": "10787",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5078,
+   "lon": 13.3439,
+   "distanceKm": 6.646,
+   "bearingDeg": 302.52
+  },
+  {
+   "postcode": "10789",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5017,
+   "lon": 13.3377,
+   "distanceKm": 6.684,
+   "bearingDeg": 295.67
+  },
+  {
+   "postcode": "10819",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4812,
+   "lon": 13.338,
+   "distanceKm": 6.038,
+   "bearingDeg": 275.85
+  },
+  {
+   "postcode": "10820",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4841,
+   "lon": 13.345,
+   "distanceKm": 5.611,
+   "bearingDeg": 279.61
+  },
+  {
+   "postcode": "10823",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4873,
+   "lon": 13.3509,
+   "distanceKm": 5.293,
+   "bearingDeg": 284.14
+  },
+  {
+   "postcode": "10825",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4838,
+   "lon": 13.3413,
+   "distanceKm": 5.853,
+   "bearingDeg": 278.89
+  },
+  {
+   "postcode": "10827",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4838,
+   "lon": 13.3543,
+   "distanceKm": 4.985,
+   "bearingDeg": 280.44
+  },
+  {
+   "postcode": "10829",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4761,
+   "lon": 13.3607,
+   "distanceKm": 4.47,
+   "bearingDeg": 270.6
+  },
+  {
+   "postcode": "10842",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4341,
+   "lon": 13.536,
+   "distanceKm": 8.732,
+   "bearingDeg": 121.94
+  },
+  {
+   "postcode": "10850",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4341,
+   "lon": 13.536,
+   "distanceKm": 8.732,
+   "bearingDeg": 121.94
+  },
+  {
+   "postcode": "10858",
+   "state": "BB",
+   "place": "Mercedes-Benz Werk Berlin Ludwigsfelde GmbH",
+   "lat": 52.3173,
+   "lon": 13.2654,
+   "distanceKm": 20.737,
+   "bearingDeg": 211.92
+  },
+  {
+   "postcode": "10859",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.506,
+   "lon": 13.3924,
+   "distanceKm": 4.092,
+   "bearingDeg": 325.44
+  },
+  {
+   "postcode": "10860",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4994,
+   "lon": 13.3816,
+   "distanceKm": 4.034,
+   "bearingDeg": 310.81
+  },
+  {
+   "postcode": "10861",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4892,
+   "lon": 13.3482,
+   "distanceKm": 5.524,
+   "bearingDeg": 285.8
+  },
+  {
+   "postcode": "10862",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5061,
+   "lon": 13.2951,
+   "distanceKm": 9.53,
+   "bearingDeg": 290.83
+  },
+  {
+   "postcode": "10863",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51155,
+   "lon": 13.38908,
+   "distanceKm": 4.731,
+   "bearingDeg": 327.44
+  },
+  {
+   "postcode": "10864",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5155,
+   "lon": 13.4107,
+   "distanceKm": 4.556,
+   "bearingDeg": 346.25
+  },
+  {
+   "postcode": "10865",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51718,
+   "lon": 13.3913,
+   "distanceKm": 5.198,
+   "bearingDeg": 332.56
+  },
+  {
+   "postcode": "10867",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5078,
+   "lon": 13.3975,
+   "distanceKm": 4.08,
+   "bearingDeg": 331.03
+  },
+  {
+   "postcode": "10868",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4915,
+   "lon": 13.3104,
+   "distanceKm": 8.069,
+   "bearingDeg": 282.62
+  },
+  {
+   "postcode": "10871",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4962,
+   "lon": 13.4548,
+   "distanceKm": 2.969,
+   "bearingDeg": 39.84
+  },
+  {
+   "postcode": "10872",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5073,
+   "lon": 13.3749,
+   "distanceKm": 4.964,
+   "bearingDeg": 315.08
+  },
+  {
+   "postcode": "10873",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5218,
+   "lon": 13.389,
+   "distanceKm": 5.726,
+   "bearingDeg": 333.55
+  },
+  {
+   "postcode": "10874",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.50923,
+   "lon": 13.368,
+   "distanceKm": 5.449,
+   "bearingDeg": 313.19
+  },
+  {
+   "postcode": "10875",
+   "state": "BB",
+   "place": "Anota Fahrzeug Service- und Vertriebsgesellschaft mbH, DITGAS Handelshaus GmbH, Daimler Grund Services GmbH (DGS) u. a.",
+   "lat": 52.47489,
+   "lon": 13.40952,
+   "distanceKm": 1.167,
+   "bearingDeg": 265.57
+  },
+  {
+   "postcode": "10876",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5045,
+   "lon": 13.3809,
+   "distanceKm": 4.458,
+   "bearingDeg": 315.94
+  },
+  {
+   "postcode": "10877",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5119,
+   "lon": 13.4331,
+   "distanceKm": 4.049,
+   "bearingDeg": 6.14
+  },
+  {
+   "postcode": "10878",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5068,
+   "lon": 13.4381,
+   "distanceKm": 3.543,
+   "bearingDeg": 12.58
+  },
+  {
+   "postcode": "10880",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5334,
+   "lon": 13.3842,
+   "distanceKm": 7.031,
+   "bearingDeg": 335.87
+  },
+  {
+   "postcode": "10881",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4672,
+   "lon": 13.3726,
+   "distanceKm": 3.784,
+   "bearingDeg": 255.56
+  },
+  {
+   "postcode": "10882",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4644,
+   "lon": 13.3696,
+   "distanceKm": 4.067,
+   "bearingDeg": 252.03
+  },
+  {
+   "postcode": "10883",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51334,
+   "lon": 13.31898,
+   "distanceKm": 8.408,
+   "bearingDeg": 299.9
+  },
+  {
+   "postcode": "10884",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5206,
+   "lon": 13.4928,
+   "distanceKm": 6.704,
+   "bearingDeg": 41.84
+  },
+  {
+   "postcode": "10885",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5255,
+   "lon": 13.3216,
+   "distanceKm": 9.015,
+   "bearingDeg": 307.94
+  },
+  {
+   "postcode": "10886",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5199,
+   "lon": 13.4039,
+   "distanceKm": 5.151,
+   "bearingDeg": 342.57
+  },
+  {
+   "postcode": "10887",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5172,
+   "lon": 13.3871,
+   "distanceKm": 5.337,
+   "bearingDeg": 329.86
+  },
+  {
+   "postcode": "10888",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5078,
+   "lon": 13.3975,
+   "distanceKm": 4.08,
+   "bearingDeg": 331.03
+  },
+  {
+   "postcode": "10889",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5208,
+   "lon": 13.4138,
+   "distanceKm": 5.09,
+   "bearingDeg": 350.13
+  },
+  {
+   "postcode": "10890",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5118,
+   "lon": 13.3888,
+   "distanceKm": 4.764,
+   "bearingDeg": 327.43
+  },
+  {
+   "postcode": "10891",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5119,
+   "lon": 13.4331,
+   "distanceKm": 4.049,
+   "bearingDeg": 6.14
+  },
+  {
+   "postcode": "10892",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5784,
+   "lon": 13.2943,
+   "distanceKm": 14.513,
+   "bearingDeg": 321.94
+  },
+  {
+   "postcode": "10893",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4834,
+   "lon": 13.293,
+   "distanceKm": 9.095,
+   "bearingDeg": 275.45
+  },
+  {
+   "postcode": "10896",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5124,
+   "lon": 13.3146,
+   "distanceKm": 8.617,
+   "bearingDeg": 298.31
+  },
+  {
+   "postcode": "10898",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.50983,
+   "lon": 13.37787,
+   "distanceKm": 5.033,
+   "bearingDeg": 318.96
+  },
+  {
+   "postcode": "10899",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5043,
+   "lon": 13.4506,
+   "distanceKm": 3.568,
+   "bearingDeg": 26.96
+  },
+  {
+   "postcode": "10901",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5149,
+   "lon": 13.3292,
+   "distanceKm": 7.91,
+   "bearingDeg": 303.48
+  },
+  {
+   "postcode": "10902",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5045,
+   "lon": 13.3602,
+   "distanceKm": 5.525,
+   "bearingDeg": 305.45
+  },
+  {
+   "postcode": "10903",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5068,
+   "lon": 13.379,
+   "distanceKm": 4.732,
+   "bearingDeg": 316.98
+  },
+  {
+   "postcode": "10904",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4955,
+   "lon": 13.484,
+   "distanceKm": 4.461,
+   "bearingDeg": 60.4
+  },
+  {
+   "postcode": "10905",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4672,
+   "lon": 13.3726,
+   "distanceKm": 3.784,
+   "bearingDeg": 255.56
+  },
+  {
+   "postcode": "10907",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5087,
+   "lon": 13.3523,
+   "distanceKm": 6.232,
+   "bearingDeg": 306.1
+  },
+  {
+   "postcode": "10908",
+   "state": "BB",
+   "place": "DKB AG - DKB Service GmbH",
+   "lat": 52.4069,
+   "lon": 13.0537,
+   "distanceKm": 26.415,
+   "bearingDeg": 253.31
+  },
+  {
+   "postcode": "10909",
+   "state": "BB",
+   "place": "DKB AG - DKB Service GmbH",
+   "lat": 52.4069,
+   "lon": 13.0537,
+   "distanceKm": 26.415,
+   "bearingDeg": 253.31
+  },
+  {
+   "postcode": "10912",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5047,
+   "lon": 13.3693,
+   "distanceKm": 5.05,
+   "bearingDeg": 309.71
+  },
+  {
+   "postcode": "10913",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5047,
+   "lon": 13.3693,
+   "distanceKm": 5.05,
+   "bearingDeg": 309.71
+  },
+  {
+   "postcode": "10914",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5018,
+   "lon": 13.336,
+   "distanceKm": 6.792,
+   "bearingDeg": 295.33
+  },
+  {
+   "postcode": "10916",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5233,
+   "lon": 13.3475,
+   "distanceKm": 7.534,
+   "bearingDeg": 314.66
+  },
+  {
+   "postcode": "10917",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5084,
+   "lon": 13.403,
+   "distanceKm": 3.974,
+   "bearingDeg": 336.2
+  },
+  {
+   "postcode": "10918",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5084,
+   "lon": 13.403,
+   "distanceKm": 3.974,
+   "bearingDeg": 336.2
+  },
+  {
+   "postcode": "10919",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.511,
+   "lon": 13.3883,
+   "distanceKm": 4.708,
+   "bearingDeg": 326.5
+  },
+  {
+   "postcode": "10934",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5008,
+   "lon": 13.3884,
+   "distanceKm": 3.81,
+   "bearingDeg": 317.12
+  },
+  {
+   "postcode": "10956",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.506,
+   "lon": 13.3924,
+   "distanceKm": 4.092,
+   "bearingDeg": 325.44
+  },
+  {
+   "postcode": "10958",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.49941,
+   "lon": 13.39149,
+   "distanceKm": 3.555,
+   "bearingDeg": 317.89
+  },
+  {
+   "postcode": "10959",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4994,
+   "lon": 13.3816,
+   "distanceKm": 4.034,
+   "bearingDeg": 310.81
+  },
+  {
+   "postcode": "10961",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4926,
+   "lon": 13.3975,
+   "distanceKm": 2.728,
+   "bearingDeg": 313.55
+  },
+  {
+   "postcode": "10963",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5003,
+   "lon": 13.3813,
+   "distanceKm": 4.115,
+   "bearingDeg": 311.68
+  },
+  {
+   "postcode": "10965",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4855,
+   "lon": 13.3946,
+   "distanceKm": 2.432,
+   "bearingDeg": 296.64
+  },
+  {
+   "postcode": "10967",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4905,
+   "lon": 13.4164,
+   "distanceKm": 1.787,
+   "bearingDeg": 337.04
+  },
+  {
+   "postcode": "10969",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5025,
+   "lon": 13.4012,
+   "distanceKm": 3.444,
+   "bearingDeg": 329.92
+  },
+  {
+   "postcode": "10997",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5009,
+   "lon": 13.4356,
+   "distanceKm": 2.866,
+   "bearingDeg": 12.13
+  },
+  {
+   "postcode": "10999",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4969,
+   "lon": 13.4266,
+   "distanceKm": 2.357,
+   "bearingDeg": 359.84
+  },
+  {
+   "postcode": "11010",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5163,
+   "lon": 13.3527,
+   "distanceKm": 6.744,
+   "bearingDeg": 312.05
+  },
+  {
+   "postcode": "11011",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5179,
+   "lon": 13.3759,
+   "distanceKm": 5.818,
+   "bearingDeg": 323.78
+  },
+  {
+   "postcode": "11013",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5154,
+   "lon": 13.3985,
+   "distanceKm": 4.81,
+   "bearingDeg": 336.62
+  },
+  {
+   "postcode": "11014",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5227,
+   "lon": 13.3622,
+   "distanceKm": 6.81,
+   "bearingDeg": 320.15
+  },
+  {
+   "postcode": "11017",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5124,
+   "lon": 13.3843,
+   "distanceKm": 4.989,
+   "bearingDeg": 324.89
+  },
+  {
+   "postcode": "11052",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5147,
+   "lon": 13.4054,
+   "distanceKm": 4.57,
+   "bearingDeg": 341.62
+  },
+  {
+   "postcode": "11053",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5147,
+   "lon": 13.4054,
+   "distanceKm": 4.57,
+   "bearingDeg": 341.62
+  },
+  {
+   "postcode": "11054",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5147,
+   "lon": 13.4054,
+   "distanceKm": 4.57,
+   "bearingDeg": 341.62
+  },
+  {
+   "postcode": "11055",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5418,
+   "lon": 13.4144,
+   "distanceKm": 7.397,
+   "bearingDeg": 353.54
+  },
+  {
+   "postcode": "11056",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.51328,
+   "lon": 13.37881,
+   "distanceKm": 5.289,
+   "bearingDeg": 322.21
+  },
+  {
+   "postcode": "11501",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5055,
+   "lon": 13.4473,
+   "distanceKm": 3.595,
+   "bearingDeg": 22.82
+  },
+  {
+   "postcode": "11503",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4955,
+   "lon": 13.484,
+   "distanceKm": 4.461,
+   "bearingDeg": 60.4
+  },
+  {
+   "postcode": "11504",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4955,
+   "lon": 13.484,
+   "distanceKm": 4.461,
+   "bearingDeg": 60.4
+  },
+  {
+   "postcode": "11505",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4672,
+   "lon": 13.3721,
+   "distanceKm": 3.817,
+   "bearingDeg": 255.69
+  },
+  {
+   "postcode": "11506",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5044,
+   "lon": 13.346,
+   "distanceKm": 6.328,
+   "bearingDeg": 300.32
+  },
+  {
+   "postcode": "11507",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4716,
+   "lon": 13.366,
+   "distanceKm": 4.137,
+   "bearingDeg": 263.7
+  },
+  {
+   "postcode": "11508",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4672,
+   "lon": 13.3726,
+   "distanceKm": 3.784,
+   "bearingDeg": 255.56
+  },
+  {
+   "postcode": "11509",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5077,
+   "lon": 13.4041,
+   "distanceKm": 3.873,
+   "bearingDeg": 336.74
+  },
+  {
+   "postcode": "11510",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5068,
+   "lon": 13.4381,
+   "distanceKm": 3.543,
+   "bearingDeg": 12.58
+  },
+  {
+   "postcode": "11511",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4765,
+   "lon": 13.3639,
+   "distanceKm": 4.254,
+   "bearingDeg": 271.22
+  },
+  {
+   "postcode": "11513",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5151,
+   "lon": 13.3348,
+   "distanceKm": 7.609,
+   "bearingDeg": 305.19
+  },
+  {
+   "postcode": "11515",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4341,
+   "lon": 13.536,
+   "distanceKm": 8.732,
+   "bearingDeg": 121.94
+  },
+  {
+   "postcode": "11516",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5025,
+   "lon": 13.407,
+   "distanceKm": 3.265,
+   "bearingDeg": 335.89
+  },
+  {
+   "postcode": "12028",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.479,
+   "lon": 13.4279,
+   "distanceKm": 0.376,
+   "bearingDeg": 12.49
+  },
+  {
+   "postcode": "12032",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5153,
+   "lon": 13.4125,
+   "distanceKm": 4.507,
+   "bearingDeg": 347.69
+  },
+  {
+   "postcode": "12037",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4739,
+   "lon": 13.4575,
+   "distanceKm": 2.096,
+   "bearingDeg": 95.47
+  },
+  {
+   "postcode": "12038",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.482,
+   "lon": 13.4339,
+   "distanceKm": 0.854,
+   "bearingDeg": 34.84
+  },
+  {
+   "postcode": "12039",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4698,
+   "lon": 13.4648,
+   "distanceKm": 2.663,
+   "bearingDeg": 104.25
+  },
+  {
+   "postcode": "12040",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4813,
+   "lon": 13.435,
+   "distanceKm": 0.839,
+   "bearingDeg": 42.07
+  },
+  {
+   "postcode": "12043",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4799,
+   "lon": 13.4371,
+   "distanceKm": 0.845,
+   "bearingDeg": 56.45
+  },
+  {
+   "postcode": "12045",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4855,
+   "lon": 13.4392,
+   "distanceKm": 1.38,
+   "bearingDeg": 37.84
+  },
+  {
+   "postcode": "12047",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4905,
+   "lon": 13.4285,
+   "distanceKm": 1.65,
+   "bearingDeg": 4.24
+  },
+  {
+   "postcode": "12049",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4764,
+   "lon": 13.422,
+   "distanceKm": 0.328,
+   "bearingDeg": 283.74
+  },
+  {
+   "postcode": "12051",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4669,
+   "lon": 13.4298,
+   "distanceKm": 1.001,
+   "bearingDeg": 167.89
+  },
+  {
+   "postcode": "12053",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4768,
+   "lon": 13.4325,
+   "distanceKm": 0.411,
+   "bearingDeg": 72.7
+  },
+  {
+   "postcode": "12055",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4712,
+   "lon": 13.4486,
+   "distanceKm": 1.565,
+   "bearingDeg": 108.63
+  },
+  {
+   "postcode": "12057",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4684,
+   "lon": 13.4633,
+   "distanceKm": 2.609,
+   "bearingDeg": 108.12
+  },
+  {
+   "postcode": "12059",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4809,
+   "lon": 13.4513,
+   "distanceKm": 1.764,
+   "bearingDeg": 70.85
+  },
+  {
+   "postcode": "12095",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4007,
+   "lon": 13.3819,
+   "distanceKm": 8.875,
+   "bearingDeg": 200.03
+  },
+  {
+   "postcode": "12096",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.45826,
+   "lon": 13.38938,
+   "distanceKm": 3.186,
+   "bearingDeg": 232.52
+  },
+  {
+   "postcode": "12099",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4644,
+   "lon": 13.4023,
+   "distanceKm": 2.076,
+   "bearingDeg": 232.77
+  },
+  {
+   "postcode": "12101",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4785,
+   "lon": 13.3791,
+   "distanceKm": 3.239,
+   "bearingDeg": 275.54
+  },
+  {
+   "postcode": "12103",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4641,
+   "lon": 13.3747,
+   "distanceKm": 3.751,
+   "bearingDeg": 249.91
+  },
+  {
+   "postcode": "12105",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4492,
+   "lon": 13.3714,
+   "distanceKm": 4.766,
+   "bearingDeg": 231.84
+  },
+  {
+   "postcode": "12107",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4312,
+   "lon": 13.3917,
+   "distanceKm": 5.487,
+   "bearingDeg": 205.62
+  },
+  {
+   "postcode": "12109",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4465,
+   "lon": 13.3993,
+   "distanceKm": 3.74,
+   "bearingDeg": 209.77
+  },
+  {
+   "postcode": "12154",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.46162,
+   "lon": 13.32412,
+   "distanceKm": 7.123,
+   "bearingDeg": 257.34
+  },
+  {
+   "postcode": "12157",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4653,
+   "lon": 13.3462,
+   "distanceKm": 5.574,
+   "bearingDeg": 258.06
+  },
+  {
+   "postcode": "12159",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4737,
+   "lon": 13.3369,
+   "distanceKm": 6.086,
+   "bearingDeg": 267.94
+  },
+  {
+   "postcode": "12161",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4704,
+   "lon": 13.327,
+   "distanceKm": 6.779,
+   "bearingDeg": 265.05
+  },
+  {
+   "postcode": "12163",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4626,
+   "lon": 13.3185,
+   "distanceKm": 7.473,
+   "bearingDeg": 258.8
+  },
+  {
+   "postcode": "12165",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4557,
+   "lon": 13.3148,
+   "distanceKm": 7.9,
+   "bearingDeg": 253.69
+  },
+  {
+   "postcode": "12167",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4486,
+   "lon": 13.3338,
+   "distanceKm": 6.978,
+   "bearingDeg": 244.45
+  },
+  {
+   "postcode": "12169",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4548,
+   "lon": 13.3435,
+   "distanceKm": 6.097,
+   "bearingDeg": 247.63
+  },
+  {
+   "postcode": "12200",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.43274,
+   "lon": 13.30318,
+   "distanceKm": 9.637,
+   "bearingDeg": 240.34
+  },
+  {
+   "postcode": "12203",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4444,
+   "lon": 13.3096,
+   "distanceKm": 8.664,
+   "bearingDeg": 246.36
+  },
+  {
+   "postcode": "12205",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.434,
+   "lon": 13.2945,
+   "distanceKm": 10.087,
+   "bearingDeg": 242.69
+  },
+  {
+   "postcode": "12207",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4199,
+   "lon": 13.3133,
+   "distanceKm": 9.877,
+   "bearingDeg": 231.13
+  },
+  {
+   "postcode": "12209",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4179,
+   "lon": 13.3291,
+   "distanceKm": 9.223,
+   "bearingDeg": 225.86
+  },
+  {
+   "postcode": "12247",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4395,
+   "lon": 13.3462,
+   "distanceKm": 6.779,
+   "bearingDeg": 233.61
+  },
+  {
+   "postcode": "12249",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4264,
+   "lon": 13.3518,
+   "distanceKm": 7.471,
+   "bearingDeg": 222.83
+  },
+  {
+   "postcode": "12274",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.41162,
+   "lon": 13.38304,
+   "distanceKm": 7.715,
+   "bearingDeg": 202.57
+  },
+  {
+   "postcode": "12277",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4134,
+   "lon": 13.375,
+   "distanceKm": 7.763,
+   "bearingDeg": 206.85
+  },
+  {
+   "postcode": "12279",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4106,
+   "lon": 13.3531,
+   "distanceKm": 8.791,
+   "bearingDeg": 214.6
+  },
+  {
+   "postcode": "12305",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4033,
+   "lon": 13.4021,
+   "distanceKm": 8.221,
+   "bearingDeg": 191.71
+  },
+  {
+   "postcode": "12307",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.3886,
+   "lon": 13.3907,
+   "distanceKm": 9.988,
+   "bearingDeg": 194.16
+  },
+  {
+   "postcode": "12309",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.3905,
+   "lon": 13.4171,
+   "distanceKm": 9.496,
+   "bearingDeg": 183.93
+  },
+  {
+   "postcode": "12345",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.44255,
+   "lon": 13.43852,
+   "distanceKm": 3.772,
+   "bearingDeg": 167.73
+  },
+  {
+   "postcode": "12347",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4509,
+   "lon": 13.4281,
+   "distanceKm": 2.759,
+   "bearingDeg": 178.03
+  },
+  {
+   "postcode": "12349",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4253,
+   "lon": 13.4221,
+   "distanceKm": 5.613,
+   "bearingDeg": 183.19
+  },
+  {
+   "postcode": "12351",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4328,
+   "lon": 13.4555,
+   "distanceKm": 5.154,
+   "bearingDeg": 157.74
+  },
+  {
+   "postcode": "12353",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4227,
+   "lon": 13.4589,
+   "distanceKm": 6.284,
+   "bearingDeg": 159.67
+  },
+  {
+   "postcode": "12355",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.411,
+   "lon": 13.4978,
+   "distanceKm": 8.659,
+   "bearingDeg": 146.16
+  },
+  {
+   "postcode": "12357",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4293,
+   "lon": 13.4905,
+   "distanceKm": 6.731,
+   "bearingDeg": 140.01
+  },
+  {
+   "postcode": "12359",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4473,
+   "lon": 13.4531,
+   "distanceKm": 3.629,
+   "bearingDeg": 150.46
+  },
+  {
+   "postcode": "12435",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4866,
+   "lon": 13.4672,
+   "distanceKm": 2.999,
+   "bearingDeg": 66.14
+  },
+  {
+   "postcode": "12437",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4624,
+   "lon": 13.4817,
+   "distanceKm": 4.008,
+   "bearingDeg": 111.63
+  },
+  {
+   "postcode": "12439",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4494,
+   "lon": 13.5269,
+   "distanceKm": 7.392,
+   "bearingDeg": 113.27
+  },
+  {
+   "postcode": "12459",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4656,
+   "lon": 13.528,
+   "distanceKm": 6.953,
+   "bearingDeg": 99.26
+  },
+  {
+   "postcode": "12485",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4336,
+   "lon": 13.5569,
+   "distanceKm": 9.988,
+   "bearingDeg": 117.9
+  },
+  {
+   "postcode": "12487",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4437,
+   "lon": 13.5052,
+   "distanceKm": 6.399,
+   "bearingDeg": 123.75
+  },
+  {
+   "postcode": "12489",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4356,
+   "lon": 13.5432,
+   "distanceKm": 9.066,
+   "bearingDeg": 119.41
+  },
+  {
+   "postcode": "12521",
+   "state": "BB",
+   "place": "Flughafen Berlin Brandenburg GmbH",
+   "lat": 52.3898,
+   "lon": 13.518,
+   "distanceKm": 11.382,
+   "bearingDeg": 147.02
+  },
+  {
+   "postcode": "12524",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4128,
+   "lon": 13.5417,
+   "distanceKm": 10.472,
+   "bearingDeg": 131.86
+  },
+  {
+   "postcode": "12526",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.3976,
+   "lon": 13.5642,
+   "distanceKm": 12.74,
+   "bearingDeg": 132.92
+  },
+  {
+   "postcode": "12527",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.3856,
+   "lon": 13.6339,
+   "distanceKm": 17.254,
+   "bearingDeg": 125.41
+  },
+  {
+   "postcode": "12529",
+   "state": "BB",
+   "place": "Schönefeld",
+   "lat": 52.389,
+   "lon": 13.5037,
+   "distanceKm": 10.963,
+   "bearingDeg": 151.53
+  },
+  {
+   "postcode": "12552",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4454,
+   "lon": 13.5936,
+   "distanceKm": 11.799,
+   "bearingDeg": 106.53
+  },
+  {
+   "postcode": "12555",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4627,
+   "lon": 13.5791,
+   "distanceKm": 10.424,
+   "bearingDeg": 97.91
+  },
+  {
+   "postcode": "12557",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4303,
+   "lon": 13.592,
+   "distanceKm": 12.286,
+   "bearingDeg": 114.19
+  },
+  {
+   "postcode": "12559",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4149,
+   "lon": 13.6634,
+   "distanceKm": 17.409,
+   "bearingDeg": 112.76
+  },
+  {
+   "postcode": "12587",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4586,
+   "lon": 13.6362,
+   "distanceKm": 14.319,
+   "bearingDeg": 97.55
+  },
+  {
+   "postcode": "12589",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4438,
+   "lon": 13.7034,
+   "distanceKm": 19.08,
+   "bearingDeg": 100.6
+  },
+  {
+   "postcode": "12616",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.52017,
+   "lon": 13.60517,
+   "distanceKm": 13.054,
+   "bearingDeg": 67.67
+  },
+  {
+   "postcode": "12619",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5235,
+   "lon": 13.5883,
+   "distanceKm": 12.162,
+   "bearingDeg": 64.02
+  },
+  {
+   "postcode": "12621",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5027,
+   "lon": 13.5878,
+   "distanceKm": 11.313,
+   "bearingDeg": 74.55
+  },
+  {
+   "postcode": "12623",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5026,
+   "lon": 13.6165,
+   "distanceKm": 13.194,
+   "bearingDeg": 76.82
+  },
+  {
+   "postcode": "12627",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5372,
+   "lon": 13.6135,
+   "distanceKm": 14.374,
+   "bearingDeg": 61.52
+  },
+  {
+   "postcode": "12629",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5413,
+   "lon": 13.5901,
+   "distanceKm": 13.248,
+   "bearingDeg": 56.53
+  },
+  {
+   "postcode": "12670",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5533,
+   "lon": 13.5429,
+   "distanceKm": 11.674,
+   "bearingDeg": 42.3
+  },
+  {
+   "postcode": "12671",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5275,
+   "lon": 13.54,
+   "distanceKm": 9.591,
+   "bearingDeg": 53.05
+  },
+  {
+   "postcode": "12677",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.53963,
+   "lon": 13.55253,
+   "distanceKm": 11.094,
+   "bearingDeg": 50.1
+  },
+  {
+   "postcode": "12679",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5501,
+   "lon": 13.566,
+   "distanceKm": 12.542,
+   "bearingDeg": 48.67
+  },
+  {
+   "postcode": "12681",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5369,
+   "lon": 13.5367,
+   "distanceKm": 10.087,
+   "bearingDeg": 47.53
+  },
+  {
+   "postcode": "12683",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5075,
+   "lon": 13.5591,
+   "distanceKm": 9.636,
+   "bearingDeg": 68.42
+  },
+  {
+   "postcode": "12685",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5391,
+   "lon": 13.565,
+   "distanceKm": 11.718,
+   "bearingDeg": 52.96
+  },
+  {
+   "postcode": "12687",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5564,
+   "lon": 13.5645,
+   "distanceKm": 12.941,
+   "bearingDeg": 46.04
+  },
+  {
+   "postcode": "12689",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5665,
+   "lon": 13.5675,
+   "distanceKm": 13.881,
+   "bearingDeg": 43.28
+  },
+  {
+   "postcode": "12712",
+   "state": "BB",
+   "place": "Deutsche Post AG Niederlassung BRIEF Berlin Südost",
+   "lat": 52.386,
+   "lon": 13.4895,
+   "distanceKm": 10.845,
+   "bearingDeg": 156.86
+  },
+  {
+   "postcode": "13047",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.54965,
+   "lon": 13.45615,
+   "distanceKm": 8.461,
+   "bearingDeg": 13.61
+  },
+  {
+   "postcode": "13048",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.546,
+   "lon": 13.50115,
+   "distanceKm": 9.3,
+   "bearingDeg": 32.77
+  },
+  {
+   "postcode": "13051",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5815,
+   "lon": 13.4908,
+   "distanceKm": 12.538,
+   "bearingDeg": 20.21
+  },
+  {
+   "postcode": "13053",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.55,
+   "lon": 13.5046,
+   "distanceKm": 9.8,
+   "bearingDeg": 32.51
+  },
+  {
+   "postcode": "13055",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5401,
+   "lon": 13.496,
+   "distanceKm": 8.56,
+   "bearingDeg": 33.2
+  },
+  {
+   "postcode": "13057",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5711,
+   "lon": 13.5415,
+   "distanceKm": 13.147,
+   "bearingDeg": 36.16
+  },
+  {
+   "postcode": "13059",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5809,
+   "lon": 13.5217,
+   "distanceKm": 13.347,
+   "bearingDeg": 28.75
+  },
+  {
+   "postcode": "13086",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5565,
+   "lon": 13.4482,
+   "distanceKm": 9.102,
+   "bearingDeg": 9.19
+  },
+  {
+   "postcode": "13088",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5603,
+   "lon": 13.4708,
+   "distanceKm": 9.869,
+   "bearingDeg": 17.58
+  },
+  {
+   "postcode": "13089",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5707,
+   "lon": 13.441,
+   "distanceKm": 10.608,
+   "bearingDeg": 5.23
+  },
+  {
+   "postcode": "13122",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.62935,
+   "lon": 13.5063,
+   "distanceKm": 17.913,
+   "bearingDeg": 17.45
+  },
+  {
+   "postcode": "13125",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.6329,
+   "lon": 13.4829,
+   "distanceKm": 17.888,
+   "bearingDeg": 12.24
+  },
+  {
+   "postcode": "13127",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.62,
+   "lon": 13.438,
+   "distanceKm": 16.064,
+   "bearingDeg": 2.72
+  },
+  {
+   "postcode": "13129",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5921,
+   "lon": 13.4579,
+   "distanceKm": 13.114,
+   "bearingDeg": 9.25
+  },
+  {
+   "postcode": "13156",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5824,
+   "lon": 13.3997,
+   "distanceKm": 12.004,
+   "bearingDeg": 351.26
+  },
+  {
+   "postcode": "13158",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5932,
+   "lon": 13.3835,
+   "distanceKm": 13.388,
+   "bearingDeg": 347.41
+  },
+  {
+   "postcode": "13159",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.623,
+   "lon": 13.3978,
+   "distanceKm": 16.495,
+   "bearingDeg": 353.21
+  },
+  {
+   "postcode": "13187",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5695,
+   "lon": 13.4084,
+   "distanceKm": 10.503,
+   "bearingDeg": 353.24
+  },
+  {
+   "postcode": "13189",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5643,
+   "lon": 13.4219,
+   "distanceKm": 9.857,
+   "bearingDeg": 358.11
+  },
+  {
+   "postcode": "13340",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5577,
+   "lon": 13.3724,
+   "distanceKm": 9.83,
+   "bearingDeg": 338.07
+  },
+  {
+   "postcode": "13341",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.527,
+   "lon": 13.3385,
+   "distanceKm": 8.257,
+   "bearingDeg": 313.73
+  },
+  {
+   "postcode": "13342",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5418,
+   "lon": 13.3667,
+   "distanceKm": 8.397,
+   "bearingDeg": 331.1
+  },
+  {
+   "postcode": "13343",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5497,
+   "lon": 13.3752,
+   "distanceKm": 8.936,
+   "bearingDeg": 337.07
+  },
+  {
+   "postcode": "13344",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.53836,
+   "lon": 13.34014,
+   "distanceKm": 9.103,
+   "bearingDeg": 319.98
+  },
+  {
+   "postcode": "13347",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5491,
+   "lon": 13.3655,
+   "distanceKm": 9.152,
+   "bearingDeg": 333.12
+  },
+  {
+   "postcode": "13349",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.558,
+   "lon": 13.3473,
+   "distanceKm": 10.612,
+   "bearingDeg": 329.61
+  },
+  {
+   "postcode": "13351",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5507,
+   "lon": 13.3328,
+   "distanceKm": 10.485,
+   "bearingDeg": 322.73
+  },
+  {
+   "postcode": "13353",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5416,
+   "lon": 13.3495,
+   "distanceKm": 9,
+   "bearingDeg": 324.54
+  },
+  {
+   "postcode": "13355",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5416,
+   "lon": 13.3904,
+   "distanceKm": 7.729,
+   "bearingDeg": 341.48
+  },
+  {
+   "postcode": "13357",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5502,
+   "lon": 13.3828,
+   "distanceKm": 8.801,
+   "bearingDeg": 340.29
+  },
+  {
+   "postcode": "13359",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5599,
+   "lon": 13.3851,
+   "distanceKm": 9.777,
+   "bearingDeg": 343.28
+  },
+  {
+   "postcode": "13400",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.58645,
+   "lon": 13.3234,
+   "distanceKm": 14.159,
+   "bearingDeg": 330.47
+  },
+  {
+   "postcode": "13403",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5739,
+   "lon": 13.3224,
+   "distanceKm": 13.001,
+   "bearingDeg": 327.17
+  },
+  {
+   "postcode": "13405",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5596,
+   "lon": 13.2967,
+   "distanceKm": 12.822,
+   "bearingDeg": 316.74
+  },
+  {
+   "postcode": "13407",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5727,
+   "lon": 13.3512,
+   "distanceKm": 11.934,
+   "bearingDeg": 334.69
+  },
+  {
+   "postcode": "13409",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5679,
+   "lon": 13.3714,
+   "distanceKm": 10.914,
+   "bearingDeg": 339.97
+  },
+  {
+   "postcode": "13435",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.602,
+   "lon": 13.3456,
+   "distanceKm": 15.077,
+   "bearingDeg": 338.7
+  },
+  {
+   "postcode": "13437",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5905,
+   "lon": 13.3284,
+   "distanceKm": 14.393,
+   "bearingDeg": 332.53
+  },
+  {
+   "postcode": "13439",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5976,
+   "lon": 13.3584,
+   "distanceKm": 14.32,
+   "bearingDeg": 341.21
+  },
+  {
+   "postcode": "13465",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.6399,
+   "lon": 13.2896,
+   "distanceKm": 20.476,
+   "bearingDeg": 333.14
+  },
+  {
+   "postcode": "13467",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.6171,
+   "lon": 13.3075,
+   "distanceKm": 17.669,
+   "bearingDeg": 332.91
+  },
+  {
+   "postcode": "13469",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.6119,
+   "lon": 13.3422,
+   "distanceKm": 16.187,
+   "bearingDeg": 339.36
+  },
+  {
+   "postcode": "13496",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5784,
+   "lon": 13.2943,
+   "distanceKm": 14.513,
+   "bearingDeg": 321.94
+  },
+  {
+   "postcode": "13497",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5784,
+   "lon": 13.2943,
+   "distanceKm": 14.513,
+   "bearingDeg": 321.94
+  },
+  {
+   "postcode": "13498",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5319,
+   "lon": 13.3899,
+   "distanceKm": 6.727,
+   "bearingDeg": 338.28
+  },
+  {
+   "postcode": "13499",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5761,
+   "lon": 13.2953,
+   "distanceKm": 14.271,
+   "bearingDeg": 321.52
+  },
+  {
+   "postcode": "13500",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.58352,
+   "lon": 13.29234,
+   "distanceKm": 15.045,
+   "bearingDeg": 322.89
+  },
+  {
+   "postcode": "13503",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.6122,
+   "lon": 13.2488,
+   "distanceKm": 19.368,
+   "bearingDeg": 321.67
+  },
+  {
+   "postcode": "13505",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5839,
+   "lon": 13.2404,
+   "distanceKm": 17.423,
+   "bearingDeg": 313.75
+  },
+  {
+   "postcode": "13507",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5765,
+   "lon": 13.2717,
+   "distanceKm": 15.349,
+   "bearingDeg": 316.97
+  },
+  {
+   "postcode": "13509",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5892,
+   "lon": 13.3006,
+   "distanceKm": 15.233,
+   "bearingDeg": 326
+  },
+  {
+   "postcode": "13565",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5641,
+   "lon": 13.2202,
+   "distanceKm": 17.083,
+   "bearingDeg": 305.21
+  },
+  {
+   "postcode": "13578",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.53407,
+   "lon": 13.19392,
+   "distanceKm": 17.04,
+   "bearingDeg": 292.48
+  },
+  {
+   "postcode": "13581",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.531,
+   "lon": 13.1794,
+   "distanceKm": 17.832,
+   "bearingDeg": 290.27
+  },
+  {
+   "postcode": "13583",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5437,
+   "lon": 13.1824,
+   "distanceKm": 18.18,
+   "bearingDeg": 294.67
+  },
+  {
+   "postcode": "13585",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5477,
+   "lon": 13.2049,
+   "distanceKm": 17.012,
+   "bearingDeg": 298.16
+  },
+  {
+   "postcode": "13587",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5767,
+   "lon": 13.1854,
+   "distanceKm": 19.814,
+   "bearingDeg": 304.62
+  },
+  {
+   "postcode": "13589",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.557,
+   "lon": 13.1676,
+   "distanceKm": 19.726,
+   "bearingDeg": 297.38
+  },
+  {
+   "postcode": "13591",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5345,
+   "lon": 13.1405,
+   "distanceKm": 20.445,
+   "bearingDeg": 288.76
+  },
+  {
+   "postcode": "13593",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5148,
+   "lon": 13.1672,
+   "distanceKm": 18.098,
+   "bearingDeg": 284
+  },
+  {
+   "postcode": "13595",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5116,
+   "lon": 13.1962,
+   "distanceKm": 16.108,
+   "bearingDeg": 284.44
+  },
+  {
+   "postcode": "13597",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5272,
+   "lon": 13.2195,
+   "distanceKm": 15.149,
+   "bearingDeg": 292.29
+  },
+  {
+   "postcode": "13599",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5463,
+   "lon": 13.235,
+   "distanceKm": 15.163,
+   "bearingDeg": 301.26
+  },
+  {
+   "postcode": "13619",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5391,
+   "lon": 13.2182,
+   "distanceKm": 15.774,
+   "bearingDeg": 296.63
+  },
+  {
+   "postcode": "13622",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5355,
+   "lon": 13.2745,
+   "distanceKm": 12.261,
+   "bearingDeg": 302.9
+  },
+  {
+   "postcode": "13623",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5375,
+   "lon": 13.2622,
+   "distanceKm": 13.084,
+   "bearingDeg": 301.75
+  },
+  {
+   "postcode": "13624",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.53742,
+   "lon": 13.26356,
+   "distanceKm": 13.001,
+   "bearingDeg": 301.93
+  },
+  {
+   "postcode": "13625",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.54165,
+   "lon": 13.2843,
+   "distanceKm": 12.11,
+   "bearingDeg": 307.32
+  },
+  {
+   "postcode": "13627",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5398,
+   "lon": 13.2991,
+   "distanceKm": 11.197,
+   "bearingDeg": 309.59
+  },
+  {
+   "postcode": "13629",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5422,
+   "lon": 13.2661,
+   "distanceKm": 13.146,
+   "bearingDeg": 304.29
+  },
+  {
+   "postcode": "13660",
+   "state": "BB",
+   "place": "Deutsche Post AG Niederlassung BRIEF Berlin Nord",
+   "lat": 52.6203,
+   "lon": 13.2079,
+   "distanceKm": 21.85,
+   "bearingDeg": 317.47
+  },
+  {
+   "postcode": "14045",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5162,
+   "lon": 13.2804,
+   "distanceKm": 10.88,
+   "bearingDeg": 294.51
+  },
+  {
+   "postcode": "14046",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5072,
+   "lon": 13.278,
+   "distanceKm": 10.66,
+   "bearingDeg": 289.24
+  },
+  {
+   "postcode": "14047",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5132,
+   "lon": 13.2822,
+   "distanceKm": 10.634,
+   "bearingDeg": 293.14
+  },
+  {
+   "postcode": "14050",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5208,
+   "lon": 13.2683,
+   "distanceKm": 11.837,
+   "bearingDeg": 295.13
+  },
+  {
+   "postcode": "14052",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5156,
+   "lon": 13.2569,
+   "distanceKm": 12.322,
+   "bearingDeg": 291.17
+  },
+  {
+   "postcode": "14053",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5159,
+   "lon": 13.2387,
+   "distanceKm": 13.489,
+   "bearingDeg": 289.43
+  },
+  {
+   "postcode": "14055",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5089,
+   "lon": 13.2441,
+   "distanceKm": 12.902,
+   "bearingDeg": 286.7
+  },
+  {
+   "postcode": "14057",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5073,
+   "lon": 13.2879,
+   "distanceKm": 10.033,
+   "bearingDeg": 290.56
+  },
+  {
+   "postcode": "14059",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5205,
+   "lon": 13.2878,
+   "distanceKm": 10.641,
+   "bearingDeg": 297.97
+  },
+  {
+   "postcode": "14089",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4708,
+   "lon": 13.1516,
+   "distanceKm": 18.641,
+   "bearingDeg": 268.43
+  },
+  {
+   "postcode": "14107",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4112,
+   "lon": 13.1298,
+   "distanceKm": 21.363,
+   "bearingDeg": 250.5
+  },
+  {
+   "postcode": "14109",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4197,
+   "lon": 13.144,
+   "distanceKm": 20.146,
+   "bearingDeg": 252.11
+  },
+  {
+   "postcode": "14129",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4463,
+   "lon": 13.2026,
+   "distanceKm": 15.531,
+   "bearingDeg": 257.94
+  },
+  {
+   "postcode": "14131",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.517,
+   "lon": 13.4,
+   "distanceKm": 4.935,
+   "bearingDeg": 338.53
+  },
+  {
+   "postcode": "14160",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4208,
+   "lon": 13.26625,
+   "distanceKm": 12.47,
+   "bearingDeg": 240.75
+  },
+  {
+   "postcode": "14163",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4368,
+   "lon": 13.2385,
+   "distanceKm": 13.466,
+   "bearingDeg": 251.34
+  },
+  {
+   "postcode": "14165",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4175,
+   "lon": 13.2536,
+   "distanceKm": 13.398,
+   "bearingDeg": 241.19
+  },
+  {
+   "postcode": "14167",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4212,
+   "lon": 13.2765,
+   "distanceKm": 11.847,
+   "bearingDeg": 239.29
+  },
+  {
+   "postcode": "14169",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4496,
+   "lon": 13.2573,
+   "distanceKm": 11.838,
+   "bearingDeg": 255.88
+  },
+  {
+   "postcode": "14191",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.47252,
+   "lon": 13.29896,
+   "distanceKm": 8.659,
+   "bearingDeg": 267.71
+  },
+  {
+   "postcode": "14193",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4831,
+   "lon": 13.2365,
+   "distanceKm": 12.907,
+   "bearingDeg": 273.73
+  },
+  {
+   "postcode": "14195",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4589,
+   "lon": 13.2829,
+   "distanceKm": 9.919,
+   "bearingDeg": 259.2
+  },
+  {
+   "postcode": "14197",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4734,
+   "lon": 13.3118,
+   "distanceKm": 7.786,
+   "bearingDeg": 268.16
+  },
+  {
+   "postcode": "14199",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4777,
+   "lon": 13.2951,
+   "distanceKm": 8.916,
+   "bearingDeg": 271.48
+  },
+  {
+   "postcode": "14322",
+   "state": "BB",
+   "place": "AOK Nordost Die Gesundheitskasse",
+   "lat": 52.4008,
+   "lon": 13.2515,
+   "distanceKm": 14.505,
+   "bearingDeg": 235.03
+  },
+  {
+   "postcode": "14328",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.4742,
+   "lon": 13.3021,
+   "distanceKm": 8.441,
+   "bearingDeg": 268.92
+  },
+  {
+   "postcode": "14329",
+   "state": "BB",
+   "place": "Verti früher Direct Line Versicherung AG",
+   "lat": 52.4001,
+   "lon": 13.2468,
+   "distanceKm": 14.812,
+   "bearingDeg": 235.49
+  },
+  {
+   "postcode": "14424",
+   "state": "BB",
+   "place": "Max-Planck-Institut",
+   "lat": 52.4154,
+   "lon": 12.9687,
+   "distanceKm": 31.757,
+   "bearingDeg": 257.99
+  },
+  {
+   "postcode": "14425",
+   "state": "BB",
+   "place": "BASE c/o E-Plus Service GmbH & Co.KG",
+   "lat": 52.3923,
+   "lon": 13.0827,
+   "distanceKm": 25.097,
+   "bearingDeg": 248.45
+  },
+  {
+   "postcode": "14456",
+   "state": "BB",
+   "place": "AOK Nordost Die Gesundheitskasse",
+   "lat": 52.4008,
+   "lon": 13.2515,
+   "distanceKm": 14.505,
+   "bearingDeg": 235.03
+  },
+  {
+   "postcode": "14457",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5072,
+   "lon": 13.3785,
+   "distanceKm": 4.787,
+   "bearingDeg": 317.04
+  },
+  {
+   "postcode": "14458",
+   "state": "BB",
+   "place": "Ostdeutsche Sparkassenakademie",
+   "lat": 52.3748,
+   "lon": 13.0137,
+   "distanceKm": 30.168,
+   "bearingDeg": 248.33
+  },
+  {
+   "postcode": "14459",
+   "state": "BB",
+   "place": "Mittelbrandenburgische Sparkasse in Potsdam",
+   "lat": 52.3624,
+   "lon": 13.0948,
+   "distanceKm": 25.794,
+   "bearingDeg": 240.89
+  },
+  {
+   "postcode": "14461",
+   "state": "BB",
+   "place": "Potsdam, Stadtverwaltung Potsdam",
+   "lat": 52.40315,
+   "lon": 13.06245,
+   "distanceKm": 25.975,
+   "bearingDeg": 252.05
+  },
+  {
+   "postcode": "14462",
+   "state": "BB",
+   "place": "Agentur für Arbeit Potsdam",
+   "lat": 52.3805,
+   "lon": 13.0866,
+   "distanceKm": 25.373,
+   "bearingDeg": 245.48
+  },
+  {
+   "postcode": "14463",
+   "state": "BB",
+   "place": "LBS Landesbausparkasse NordOst AG",
+   "lat": 52.3748,
+   "lon": 13.0137,
+   "distanceKm": 30.168,
+   "bearingDeg": 248.33
+  },
+  {
+   "postcode": "14464",
+   "state": "BB",
+   "place": "Zalando Lounge",
+   "lat": 52.3771,
+   "lon": 13.3063,
+   "distanceKm": 13.669,
+   "bearingDeg": 216.72
+  },
+  {
+   "postcode": "14465",
+   "state": "BB",
+   "place": "Familienkasse Berlin-Brandenburg",
+   "lat": 52.3882,
+   "lon": 13.0784,
+   "distanceKm": 25.539,
+   "bearingDeg": 247.74
+  },
+  {
+   "postcode": "14467",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.403,
+   "lon": 13.0626,
+   "distanceKm": 25.971,
+   "bearingDeg": 252.01
+  },
+  {
+   "postcode": "14469",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.4091,
+   "lon": 12.9899,
+   "distanceKm": 30.518,
+   "bearingDeg": 256.13
+  },
+  {
+   "postcode": "14471",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.3744,
+   "lon": 13.0102,
+   "distanceKm": 30.405,
+   "bearingDeg": 248.42
+  },
+  {
+   "postcode": "14473",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.3908,
+   "lon": 13.0645,
+   "distanceKm": 26.307,
+   "bearingDeg": 249.11
+  },
+  {
+   "postcode": "14476",
+   "state": "BB",
+   "place": "Fahrland, Golm, Groß Glienicke u. a.",
+   "lat": 52.45821,
+   "lon": 12.99376,
+   "distanceKm": 29.393,
+   "bearingDeg": 266.38
+  },
+  {
+   "postcode": "14478",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.3725,
+   "lon": 13.0914,
+   "distanceKm": 25.468,
+   "bearingDeg": 243.35
+  },
+  {
+   "postcode": "14480",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.3689,
+   "lon": 13.1273,
+   "distanceKm": 23.521,
+   "bearingDeg": 239.79
+  },
+  {
+   "postcode": "14482",
+   "state": "BB",
+   "place": "Potsdam",
+   "lat": 52.3871,
+   "lon": 13.0993,
+   "distanceKm": 24.285,
+   "bearingDeg": 246.2
+  },
+  {
+   "postcode": "14510",
+   "state": "BB",
+   "place": "AOK für das Land Brandenburg",
+   "lat": 52.4013,
+   "lon": 13.2436,
+   "distanceKm": 14.916,
+   "bearingDeg": 236.39
+  },
+  {
+   "postcode": "14513",
+   "state": "BB",
+   "place": "Teltow",
+   "lat": 52.4031,
+   "lon": 13.2601,
+   "distanceKm": 13.882,
+   "bearingDeg": 234.51
+  },
+  {
+   "postcode": "14532",
+   "state": "BB",
+   "place": "Fahlhorst, Kleinmachnow, Nudow u. a.",
+   "lat": 52.35184,
+   "lon": 13.18208,
+   "distanceKm": 21.563,
+   "bearingDeg": 230.4
+  },
+  {
+   "postcode": "14542",
+   "state": "BB",
+   "place": "Kloster Lehnin, Schwielowsee, Werder (Havel)",
+   "lat": 52.3449,
+   "lon": 12.85117,
+   "distanceKm": 41.659,
+   "bearingDeg": 249.79
+  },
+  {
+   "postcode": "14547",
+   "state": "BB",
+   "place": "Beelitz, Stücken",
+   "lat": 52.24155,
+   "lon": 13.0253,
+   "distanceKm": 37.695,
+   "bearingDeg": 226.47
+  },
+  {
+   "postcode": "14548",
+   "state": "BB",
+   "place": "Schwielowsee",
+   "lat": 52.3389,
+   "lon": 12.9722,
+   "distanceKm": 34.379,
+   "bearingDeg": 243.92
+  },
+  {
+   "postcode": "14550",
+   "state": "BB",
+   "place": "Bochow, Deetz, Derwitz u. a.",
+   "lat": 52.41732,
+   "lon": 12.79735,
+   "distanceKm": 43.144,
+   "bearingDeg": 261.6
+  },
+  {
+   "postcode": "14552",
+   "state": "BB",
+   "place": "Fresdorf, Michendorf, Saarmund u. a.",
+   "lat": 52.2906,
+   "lon": 13.0824,
+   "distanceKm": 31.14,
+   "bearingDeg": 228.76
+  },
+  {
+   "postcode": "14554",
+   "state": "BB",
+   "place": "Seddiner See",
+   "lat": 52.2722,
+   "lon": 13.0167,
+   "distanceKm": 35.871,
+   "bearingDeg": 231.05
+  },
+  {
+   "postcode": "14557",
+   "state": "BB",
+   "place": "Langerwisch, Wilhelmshorst",
+   "lat": 52.32425,
+   "lon": 13.06445,
+   "distanceKm": 29.793,
+   "bearingDeg": 235.72
+  },
+  {
+   "postcode": "14558",
+   "state": "BB",
+   "place": "Bergholz-Rehbrücke",
+   "lat": 52.3472,
+   "lon": 13.1053,
+   "distanceKm": 26.065,
+   "bearingDeg": 236.88
+  },
+  {
+   "postcode": "14612",
+   "state": "BB",
+   "place": "Falkensee",
+   "lat": 52.5601,
+   "lon": 13.0927,
+   "distanceKm": 24.471,
+   "bearingDeg": 292.68
+  },
+  {
+   "postcode": "14621",
+   "state": "BB",
+   "place": "Schönwalde",
+   "lat": 52.6192,
+   "lon": 13.1265,
+   "distanceKm": 25.82,
+   "bearingDeg": 308.29
+  },
+  {
+   "postcode": "14624",
+   "state": "BB",
+   "place": "Dallgow-Döberitz",
+   "lat": 52.5427,
+   "lon": 13.0584,
+   "distanceKm": 26.015,
+   "bearingDeg": 286.79
+  },
+  {
+   "postcode": "14627",
+   "state": "BB",
+   "place": "Elstal",
+   "lat": 52.5425,
+   "lon": 12.9879,
+   "distanceKm": 30.612,
+   "bearingDeg": 284.22
+  },
+  {
+   "postcode": "14641",
+   "state": "BB",
+   "place": "Berge, Bergerdamm, Bredow u. a.",
+   "lat": 52.61728,
+   "lon": 12.84357,
+   "distanceKm": 42.458,
+   "bearingDeg": 292
+  },
+  {
+   "postcode": "14655",
+   "state": "BB",
+   "place": "MyBrands Zalando eLogistics GmbH & Co.KG",
+   "lat": 52.6038,
+   "lon": 12.9745,
+   "distanceKm": 33.737,
+   "bearingDeg": 295.15
+  },
+  {
+   "postcode": "14656",
+   "state": "BB",
+   "place": "Brieselang",
+   "lat": 52.5833,
+   "lon": 13,
+   "distanceKm": 31.246,
+   "bearingDeg": 292.68
+  },
+  {
+   "postcode": "14662",
+   "state": "BB",
+   "place": "Friesack, Mühlenberge, Vietznitz u. a.",
+   "lat": 52.711,
+   "lon": 12.61492,
+   "distanceKm": 60.755,
+   "bearingDeg": 295.83
+  },
+  {
+   "postcode": "14669",
+   "state": "BB",
+   "place": "Ketzin, Zachow",
+   "lat": 52.4809,
+   "lon": 12.8149,
+   "distanceKm": 41.438,
+   "bearingDeg": 271.04
+  },
+  {
+   "postcode": "14710",
+   "state": "BB",
+   "place": "Landkreis Havelland Haupt und Personalamt",
+   "lat": 52.6048,
+   "lon": 12.3491,
+   "distanceKm": 74.277,
+   "bearingDeg": 281.57
+  },
+  {
+   "postcode": "14712",
+   "state": "BB",
+   "place": "Rathenow",
+   "lat": 52.6066,
+   "lon": 12.337,
+   "distanceKm": 75.117,
+   "bearingDeg": 281.6
+  },
+  {
+   "postcode": "14715",
+   "state": "BB",
+   "place": "Bamme, Bützer, Großwudicke u. a.",
+   "lat": 52.58165,
+   "lon": 12.44574,
+   "distanceKm": 67.396,
+   "bearingDeg": 280.46
+  },
+  {
+   "postcode": "14727",
+   "state": "BB",
+   "place": "Döberitz, Premnitz",
+   "lat": 52.527,
+   "lon": 12.35835,
+   "distanceKm": 72.54,
+   "bearingDeg": 274.93
+  },
+  {
+   "postcode": "14728",
+   "state": "BB",
+   "place": "Gollenberg, Havelaue, Kleßen-Görne u. a.",
+   "lat": 52.73233,
+   "lon": 12.37465,
+   "distanceKm": 76.562,
+   "bearingDeg": 292.3
+  },
+  {
+   "postcode": "14765",
+   "state": "BB",
+   "place": "Landesjustizkasse bei dem Brandenburgischen Oberlandesgericht",
+   "lat": 52.4118,
+   "lon": 12.5408,
+   "distanceKm": 60.463,
+   "bearingDeg": 263.6
+  },
+  {
+   "postcode": "14767",
+   "state": "BB",
+   "place": "Amtsgericht, Brandenburgisches Oberlandesgericht, Generalstaatsanwalt des Landes Brandenburg u. a.",
+   "lat": 52.40922,
+   "lon": 12.54418,
+   "distanceKm": 60.272,
+   "bearingDeg": 263.3
+  },
+  {
+   "postcode": "14770",
+   "state": "BB",
+   "place": "Brandenburg an der Havel",
+   "lat": 52.4189,
+   "lon": 12.5228,
+   "distanceKm": 61.584,
+   "bearingDeg": 264.47
+  },
+  {
+   "postcode": "14772",
+   "state": "BB",
+   "place": "Brandenburg an der Havel",
+   "lat": 52.4358,
+   "lon": 12.5297,
+   "distanceKm": 60.941,
+   "bearingDeg": 266.18
+  },
+  {
+   "postcode": "14774",
+   "state": "BB",
+   "place": "Brandenburg an der Havel",
+   "lat": 52.3864,
+   "lon": 12.4144,
+   "distanceKm": 69.345,
+   "bearingDeg": 262.17
+  },
+  {
+   "postcode": "14776",
+   "state": "BB",
+   "place": "Brandenburg an der Havel",
+   "lat": 52.4043,
+   "lon": 12.568,
+   "distanceKm": 58.744,
+   "bearingDeg": 262.57
+  },
+  {
+   "postcode": "14778",
+   "state": "BB",
+   "place": "Beetzsee, Beetzseeheide, Gollwitz u. a.",
+   "lat": 52.35946,
+   "lon": 12.61625,
+   "distanceKm": 56.462,
+   "bearingDeg": 257.09
+  },
+  {
+   "postcode": "14789",
+   "state": "BB",
+   "place": "Bensdorf, Rosenau, Wusterwitz",
+   "lat": 52.37087,
+   "lon": 12.35883,
+   "distanceKm": 73.343,
+   "bearingDeg": 261.28
+  },
+  {
+   "postcode": "14793",
+   "state": "BB",
+   "place": "Buckautal, Gräben, Rottstock u. a.",
+   "lat": 52.2265,
+   "lon": 12.36373,
+   "distanceKm": 77.332,
+   "bearingDeg": 249.42
+  },
+  {
+   "postcode": "14797",
+   "state": "BB",
+   "place": "Kloster Lehnin",
+   "lat": 52.3271,
+   "lon": 12.6625,
+   "distanceKm": 54.415,
+   "bearingDeg": 252.63
+  },
+  {
+   "postcode": "14798",
+   "state": "BB",
+   "place": "Havelsee",
+   "lat": 52.4929,
+   "lon": 12.4667,
+   "distanceKm": 65.034,
+   "bearingDeg": 272.07
+  },
+  {
+   "postcode": "14806",
+   "state": "BB",
+   "place": "Belzig, Hagelberg, Planetal u. a.",
+   "lat": 52.14128,
+   "lon": 12.60588,
+   "distanceKm": 67.059,
+   "bearingDeg": 236.65
+  },
+  {
+   "postcode": "14822",
+   "state": "BB",
+   "place": "Borkheide, Borkwalde, Brück u. a.",
+   "lat": 52.20592,
+   "lon": 12.78605,
+   "distanceKm": 52.86,
+   "bearingDeg": 235.68
+  },
+  {
+   "postcode": "14823",
+   "state": "BB",
+   "place": "Mühlenfließ, Niemegk, Rabenstein/Fläming",
+   "lat": 52.0686,
+   "lon": 12.6805,
+   "distanceKm": 68.021,
+   "bearingDeg": 228.58
+  },
+  {
+   "postcode": "14827",
+   "state": "BB",
+   "place": "Wiesenburg",
+   "lat": 52.1146,
+   "lon": 12.4553,
+   "distanceKm": 77.306,
+   "bearingDeg": 239.09
+  },
+  {
+   "postcode": "14828",
+   "state": "BB",
+   "place": "Görzke",
+   "lat": 52.1718,
+   "lon": 12.3751,
+   "distanceKm": 79.054,
+   "bearingDeg": 245.11
+  },
+  {
+   "postcode": "14913",
+   "state": "BB",
+   "place": "Herbersdorf, Hohenseefeld, Ihlow u. a.",
+   "lat": 51.94418,
+   "lon": 13.23204,
+   "distanceKm": 60.573,
+   "bearingDeg": 192.73
+  },
+  {
+   "postcode": "14929",
+   "state": "BB",
+   "place": "Treuenbrietzen",
+   "lat": 52.0975,
+   "lon": 12.8726,
+   "distanceKm": 56.471,
+   "bearingDeg": 222.09
+  },
+  {
+   "postcode": "14943",
+   "state": "BB",
+   "place": "Luckenwalde, Lüdersdorf, Lühsdorf",
+   "lat": 52.14417,
+   "lon": 13.14263,
+   "distanceKm": 41.617,
+   "bearingDeg": 207.76
+  },
+  {
+   "postcode": "14947",
+   "state": "BB",
+   "place": "Nuthe-Urstromtal",
+   "lat": 52.1116,
+   "lon": 13.2152,
+   "distanceKm": 42.965,
+   "bearingDeg": 199.64
+  },
+  {
+   "postcode": "14959",
+   "state": "BB",
+   "place": "Schönhagen, Trebbin",
+   "lat": 52.2149,
+   "lon": 13.1857,
+   "distanceKm": 33.301,
+   "bearingDeg": 209.54
+  },
+  {
+   "postcode": "14974",
+   "state": "BB",
+   "place": "Ludwigsfelde, Thyrow",
+   "lat": 52.2779,
+   "lon": 13.2468,
+   "distanceKm": 25.157,
+   "bearingDeg": 209.11
+  },
+  {
+   "postcode": "14979",
+   "state": "BB",
+   "place": "Großbeeren",
+   "lat": 52.3586,
+   "lon": 13.3099,
+   "distanceKm": 15.241,
+   "bearingDeg": 211.36
+  },
+  {
+   "postcode": "14980",
+   "state": "BB",
+   "place": "Zalando Lounge",
+   "lat": 52.3771,
+   "lon": 13.3063,
+   "distanceKm": 13.669,
+   "bearingDeg": 216.72
+  },
+  {
+   "postcode": "15220",
+   "state": "BB",
+   "place": "Agentur für Arbeit Frankfurt (Oder)",
+   "lat": 52.3298,
+   "lon": 14.5328,
+   "distanceKm": 76.772,
+   "bearingDeg": 101.76
+  },
+  {
+   "postcode": "15224",
+   "state": "BB",
+   "place": "ARGUS DATA INSIGHTS Service GmbH",
+   "lat": 52.2914,
+   "lon": 14.4697,
+   "distanceKm": 73.695,
+   "bearingDeg": 105.73
+  },
+  {
+   "postcode": "15227",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.559,
+   "lon": 13.441,
+   "distanceKm": 9.313,
+   "bearingDeg": 5.96
+  },
+  {
+   "postcode": "15228",
+   "state": "BB",
+   "place": "Deutsche Rentenversicherung Berlin-Brandenburg",
+   "lat": 52.3112,
+   "lon": 14.4859,
+   "distanceKm": 74.163,
+   "bearingDeg": 103.86
+  },
+  {
+   "postcode": "15229",
+   "state": "BB",
+   "place": "Agentur für Arbeit Frankfurt (Oder), Amt für Soziales und Versorgung, Deutsche Post AG NL Postfilialen Berlin- Brandenburg FilBzl Frankfurt (Oder) u. a.",
+   "lat": 52.33994,
+   "lon": 14.54071,
+   "distanceKm": 77.059,
+   "bearingDeg": 100.86
+  },
+  {
+   "postcode": "15230",
+   "state": "BB",
+   "place": "Frankfurt (Oder)",
+   "lat": 52.3475,
+   "lon": 14.5539,
+   "distanceKm": 77.772,
+   "bearingDeg": 100.11
+  },
+  {
+   "postcode": "15232",
+   "state": "BB",
+   "place": "Frankfurt (Oder)",
+   "lat": 52.3241,
+   "lon": 14.5325,
+   "distanceKm": 76.893,
+   "bearingDeg": 102.23
+  },
+  {
+   "postcode": "15234",
+   "state": "BB",
+   "place": "Frankfurt (Oder)",
+   "lat": 52.3646,
+   "lon": 14.5244,
+   "distanceKm": 75.457,
+   "bearingDeg": 98.99
+  },
+  {
+   "postcode": "15236",
+   "state": "BB",
+   "place": "Frankfurt (Oder), Jacobsdorf, Jacobsdorf Jacobsdorf u. a.",
+   "lat": 52.3573,
+   "lon": 14.40494,
+   "distanceKm": 67.637,
+   "bearingDeg": 100.84
+  },
+  {
+   "postcode": "15295",
+   "state": "BB",
+   "place": "Brieskow-Finkenheerd, Groß Lindow, Groß Lindow Schlaubehammer u. a.",
+   "lat": 52.23633,
+   "lon": 14.57974,
+   "distanceKm": 82.705,
+   "bearingDeg": 108.32
+  },
+  {
+   "postcode": "15299",
+   "state": "BB",
+   "place": "Dammendorf, Grunow-Dammendorf, Grunow-Dammendorf Grunow u. a.",
+   "lat": 52.17764,
+   "lon": 14.40844,
+   "distanceKm": 74.495,
+   "bearingDeg": 116.03
+  },
+  {
+   "postcode": "15306",
+   "state": "BB",
+   "place": "Falkenhagen, Fichtenhöhe, Fichtenhöhe Alt Mahlisch u. a.",
+   "lat": 52.50721,
+   "lon": 14.36516,
+   "distanceKm": 63.634,
+   "bearingDeg": 86.47
+  },
+  {
+   "postcode": "15320",
+   "state": "BB",
+   "place": "Neuhardenberg, Neuhardenberg Altfriedland, Neuhardenberg Neuhardenberg u. a.",
+   "lat": 52.63746,
+   "lon": 14.24696,
+   "distanceKm": 58.297,
+   "bearingDeg": 71.7
+  },
+  {
+   "postcode": "15324",
+   "state": "BB",
+   "place": "Gieshof-Zelliner Loose, Groß Neuendorf, Kiehnwerder u. a.",
+   "lat": 52.68273,
+   "lon": 14.35561,
+   "distanceKm": 66.854,
+   "bearingDeg": 69.49
+  },
+  {
+   "postcode": "15326",
+   "state": "BB",
+   "place": "Fichtenhöhe, Fichtenhöhe Carzig, Lebus u. a.",
+   "lat": 52.43338,
+   "lon": 14.46017,
+   "distanceKm": 70.187,
+   "bearingDeg": 93.43
+  },
+  {
+   "postcode": "15328",
+   "state": "BB",
+   "place": "Alt Tucheband, Alt Tucheband Alt Tucheband, Alt Tucheband Hathenow u. a.",
+   "lat": 52.56779,
+   "lon": 14.52856,
+   "distanceKm": 75.249,
+   "bearingDeg": 81.74
+  },
+  {
+   "postcode": "15344",
+   "state": "BB",
+   "place": "Strausberg",
+   "lat": 52.5786,
+   "lon": 13.8874,
+   "distanceKm": 33.2,
+   "bearingDeg": 69.66
+  },
+  {
+   "postcode": "15345",
+   "state": "BB",
+   "place": "Altlandsberg, Garzau-Garzin, Garzau-Garzin Garzau u. a.",
+   "lat": 52.5775,
+   "lon": 13.96265,
+   "distanceKm": 37.983,
+   "bearingDeg": 72.45
+  },
+  {
+   "postcode": "15366",
+   "state": "BB",
+   "place": "Dahlwitz-Hoppegarten, Hönow, Münchehofe u. a.",
+   "lat": 52.53822,
+   "lon": 13.7813,
+   "distanceKm": 24.986,
+   "bearingDeg": 73.7
+  },
+  {
+   "postcode": "15370",
+   "state": "BB",
+   "place": "Fredersdorf-Vogelsdorf, Petershagen-Eggersdorf",
+   "lat": 52.5125,
+   "lon": 13.76665,
+   "distanceKm": 23.376,
+   "bearingDeg": 79.78
+  },
+  {
+   "postcode": "15372",
+   "state": "BB",
+   "place": "Müncheberg",
+   "lat": 52.5,
+   "lon": 14.1333,
+   "distanceKm": 47.92,
+   "bearingDeg": 86.49
+  },
+  {
+   "postcode": "15374",
+   "state": "BB",
+   "place": "Müncheberg",
+   "lat": 52.5114,
+   "lon": 14.1359,
+   "distanceKm": 48.177,
+   "bearingDeg": 84.99
+  },
+  {
+   "postcode": "15377",
+   "state": "BB",
+   "place": "Buckow, Ihlow, Märkische Höhe u. a.",
+   "lat": 52.59764,
+   "lon": 14.07845,
+   "distanceKm": 46.119,
+   "bearingDeg": 72.64
+  },
+  {
+   "postcode": "15378",
+   "state": "BB",
+   "place": "Hennickendorf, Herzfelde",
+   "lat": 52.49465,
+   "lon": 13.8521,
+   "distanceKm": 28.883,
+   "bearingDeg": 85.65
+  },
+  {
+   "postcode": "15515",
+   "state": "BB",
+   "place": "Amtsgericht Fürstenwalde, Spree, Finanzamt, Landkreis Oder-Spree u. a.",
+   "lat": 52.3618,
+   "lon": 14.06513,
+   "distanceKm": 45.11,
+   "bearingDeg": 106.05
+  },
+  {
+   "postcode": "15517",
+   "state": "BB",
+   "place": "Fürstenwalde/Spree, Fürstenwalde/Spree Fürstenwalde, Fürstenwalde/Spree Trebus",
+   "lat": 52.38237,
+   "lon": 14.05167,
+   "distanceKm": 43.625,
+   "bearingDeg": 103.51
+  },
+  {
+   "postcode": "15518",
+   "state": "BB",
+   "place": "Berkenbrück, Briesen (Mark), Briesen (Mark) Biegen u. a.",
+   "lat": 52.39365,
+   "lon": 14.15978,
+   "distanceKm": 50.527,
+   "bearingDeg": 100.11
+  },
+  {
+   "postcode": "15526",
+   "state": "BB",
+   "place": "Bad Saarow, Bad Saarow Bad Saarow, Bad Saarow Neu Golm u. a.",
+   "lat": 52.27654,
+   "lon": 14.05619,
+   "distanceKm": 48.128,
+   "bearingDeg": 117.15
+  },
+  {
+   "postcode": "15528",
+   "state": "BB",
+   "place": "Grünheide (Mark), Grünheide (Mark) Mönchwinkel, Grünheide (Mark) Spreeau u. a.",
+   "lat": 52.36187,
+   "lon": 13.89349,
+   "distanceKm": 34.092,
+   "bearingDeg": 111.61
+  },
+  {
+   "postcode": "15537",
+   "state": "BB",
+   "place": "Erkner, Gosen, Gosen Neu Zittau u. a.",
+   "lat": 52.41874,
+   "lon": 13.82763,
+   "distanceKm": 27.9,
+   "bearingDeg": 102.96
+  },
+  {
+   "postcode": "15559",
+   "state": "BB",
+   "place": "Dienstleistungszentrum der Cemex",
+   "lat": 52.4859,
+   "lon": 13.8247,
+   "distanceKm": 26.977,
+   "bearingDeg": 87.43
+  },
+  {
+   "postcode": "15562",
+   "state": "BB",
+   "place": "Rüdersdorf bei Berlin",
+   "lat": 52.4707,
+   "lon": 13.7736,
+   "distanceKm": 23.503,
+   "bearingDeg": 91.22
+  },
+  {
+   "postcode": "15566",
+   "state": "BB",
+   "place": "Schöneiche bei Berlin",
+   "lat": 52.4598,
+   "lon": 13.7054,
+   "distanceKm": 18.962,
+   "bearingDeg": 95.24
+  },
+  {
+   "postcode": "15569",
+   "state": "BB",
+   "place": "Woltersdorf",
+   "lat": 52.446,
+   "lon": 13.756,
+   "distanceKm": 22.554,
+   "bearingDeg": 98.29
+  },
+  {
+   "postcode": "15711",
+   "state": "BB",
+   "place": "Königs Wusterhausen, Schenkendorf, Zeesen",
+   "lat": 52.28603,
+   "lon": 13.6218,
+   "distanceKm": 24.903,
+   "bearingDeg": 147.8
+  },
+  {
+   "postcode": "15712",
+   "state": "BB",
+   "place": "Kablow, Senzig, Zernsdorf",
+   "lat": 52.29667,
+   "lon": 13.70483,
+   "distanceKm": 27.434,
+   "bearingDeg": 136.41
+  },
+  {
+   "postcode": "15713",
+   "state": "BB",
+   "place": "Niederlehme, Wernsdorf",
+   "lat": 52.3431,
+   "lon": 13.6767,
+   "distanceKm": 22.471,
+   "bearingDeg": 130.91
+  },
+  {
+   "postcode": "15732",
+   "state": "BB",
+   "place": "Eichwalde, Schulzendorf, Waltersdorf",
+   "lat": 52.3624,
+   "lon": 13.59053,
+   "distanceKm": 16.798,
+   "bearingDeg": 138.53
+  },
+  {
+   "postcode": "15738",
+   "state": "BB",
+   "place": "Zeuthen",
+   "lat": 52.348,
+   "lon": 13.6217,
+   "distanceKm": 19.405,
+   "bearingDeg": 136.96
+  },
+  {
+   "postcode": "15741",
+   "state": "BB",
+   "place": "Bestensee, Gräbendorf, Motzen u. a.",
+   "lat": 52.22733,
+   "lon": 13.6471,
+   "distanceKm": 31.414,
+   "bearingDeg": 151.45
+  },
+  {
+   "postcode": "15745",
+   "state": "BB",
+   "place": "Wildau",
+   "lat": 52.3167,
+   "lon": 13.6333,
+   "distanceKm": 22.563,
+   "bearingDeg": 141.51
+  },
+  {
+   "postcode": "15746",
+   "state": "BB",
+   "place": "Groß Köris",
+   "lat": 52.1659,
+   "lon": 13.6594,
+   "distanceKm": 37.905,
+   "bearingDeg": 155.25
+  },
+  {
+   "postcode": "15748",
+   "state": "BB",
+   "place": "Märkisch Buchholz, Münchehofe",
+   "lat": 52.12845,
+   "lon": 13.79985,
+   "distanceKm": 46.203,
+   "bearingDeg": 146.54
+  },
+  {
+   "postcode": "15749",
+   "state": "BB",
+   "place": "Brusendorf, Gallun, Kiekebusch u. a.",
+   "lat": 52.29796,
+   "lon": 13.5407,
+   "distanceKm": 21.224,
+   "bearingDeg": 158.58
+  },
+  {
+   "postcode": "15752",
+   "state": "BB",
+   "place": "Kolberg, Prieros, Streganz",
+   "lat": 52.22337,
+   "lon": 13.80437,
+   "distanceKm": 38.017,
+   "bearingDeg": 137.42
+  },
+  {
+   "postcode": "15754",
+   "state": "BB",
+   "place": "Bindow, Blossin, Dannenreich u. a.",
+   "lat": 52.27374,
+   "lon": 13.77409,
+   "distanceKm": 32.564,
+   "bearingDeg": 133.46
+  },
+  {
+   "postcode": "15755",
+   "state": "BB",
+   "place": "Schwerin, Teupitz, Töpchin",
+   "lat": 52.1504,
+   "lon": 13.61,
+   "distanceKm": 38.258,
+   "bearingDeg": 160.92
+  },
+  {
+   "postcode": "15757",
+   "state": "BB",
+   "place": "Briesen, Freidorf, Halbe u. a.",
+   "lat": 52.09198,
+   "lon": 13.70392,
+   "distanceKm": 46.649,
+   "bearingDeg": 156.05
+  },
+  {
+   "postcode": "15806",
+   "state": "BB",
+   "place": "Gadsdorf, Glienick, Groß Machnow u. a.",
+   "lat": 52.21787,
+   "lon": 13.41883,
+   "distanceKm": 28.674,
+   "bearingDeg": 181.07
+  },
+  {
+   "postcode": "15827",
+   "state": "BB",
+   "place": "Blankenfelde, Dahlewitz",
+   "lat": 52.32905,
+   "lon": 13.4261,
+   "distanceKm": 16.307,
+   "bearingDeg": 180.14
+  },
+  {
+   "postcode": "15831",
+   "state": "BB",
+   "place": "Diepensee, Groß Kienitz, Großziethen u. a.",
+   "lat": 52.35331,
+   "lon": 13.45143,
+   "distanceKm": 13.712,
+   "bearingDeg": 172.96
+  },
+  {
+   "postcode": "15834",
+   "state": "BB",
+   "place": "Rangsdorf",
+   "lat": 52.2913,
+   "lon": 13.4195,
+   "distanceKm": 20.51,
+   "bearingDeg": 181.37
+  },
+  {
+   "postcode": "15837",
+   "state": "BB",
+   "place": "Baruth/Mark",
+   "lat": 52.05,
+   "lon": 13.5,
+   "distanceKm": 47.598,
+   "bearingDeg": 173.96
+  },
+  {
+   "postcode": "15838",
+   "state": "BB",
+   "place": "Klausdorf, Kummersdorf-Gut, Sperenberg u. a.",
+   "lat": 52.14072,
+   "lon": 13.4048,
+   "distanceKm": 37.277,
+   "bearingDeg": 182.3
+  },
+  {
+   "postcode": "15848",
+   "state": "BB",
+   "place": "Beeskow, Beeskow Bornow, Beeskow Kohlsdorf u. a.",
+   "lat": 52.15159,
+   "lon": 14.21962,
+   "distanceKm": 64.839,
+   "bearingDeg": 123.45
+  },
+  {
+   "postcode": "15859",
+   "state": "BB",
+   "place": "Kehrigk, Kummersdorf, Philadelphia u. a.",
+   "lat": 52.22757,
+   "lon": 13.89481,
+   "distanceKm": 42.096,
+   "bearingDeg": 130.77
+  },
+  {
+   "postcode": "15864",
+   "state": "BB",
+   "place": "Diensdorf-Radlow, Rietz-Neuendorf, Rietz-Neuendorf Glienicke u. a.",
+   "lat": 52.22038,
+   "lon": 14.0759,
+   "distanceKm": 52.446,
+   "bearingDeg": 122.52
+  },
+  {
+   "postcode": "15868",
+   "state": "BB",
+   "place": "Doberburg, Friedland, Friedland Groß Muckrow u. a.",
+   "lat": 52.02956,
+   "lon": 14.34671,
+   "distanceKm": 79.894,
+   "bearingDeg": 128.02
+  },
+  {
+   "postcode": "15887",
+   "state": "BB",
+   "place": "Medent GmbH",
+   "lat": 52.165,
+   "lon": 14.606,
+   "distanceKm": 87.281,
+   "bearingDeg": 112.85
+  },
+  {
+   "postcode": "15888",
+   "state": "BB",
+   "place": "EKO - Stahl AG",
+   "lat": 52.162,
+   "lon": 14.6276,
+   "distanceKm": 88.764,
+   "bearingDeg": 112.66
+  },
+  {
+   "postcode": "15890",
+   "state": "BB",
+   "place": "Eisenhüttenstadt, Eisenhüttenstadt Diehlo, Eisenhüttenstadt Fürstenberg u. a.",
+   "lat": 52.16147,
+   "lon": 14.55998,
+   "distanceKm": 84.582,
+   "bearingDeg": 113.95
+  },
+  {
+   "postcode": "15898",
+   "state": "BB",
+   "place": "Lawitz, Neißemünde, Neißemünde Breslack u. a.",
+   "lat": 52.06251,
+   "lon": 14.63917,
+   "distanceKm": 94.433,
+   "bearingDeg": 118.63
+  },
+  {
+   "postcode": "15907",
+   "state": "BB",
+   "place": "Lübben (Spreewald)",
+   "lat": 51.9455,
+   "lon": 13.8852,
+   "distanceKm": 66.721,
+   "bearingDeg": 151.9
+  },
+  {
+   "postcode": "15910",
+   "state": "BB",
+   "place": "Alt-Schadow, Dürrenhofe, Gröditsch u. a.",
+   "lat": 52.0582,
+   "lon": 13.92058,
+   "distanceKm": 57.312,
+   "bearingDeg": 143.9
+  },
+  {
+   "postcode": "15913",
+   "state": "BB",
+   "place": "Alt Zauche, Biebersdorf, Briesensee u. a.",
+   "lat": 51.97191,
+   "lon": 14.10023,
+   "distanceKm": 72.408,
+   "bearingDeg": 140.42
+  },
+  {
+   "postcode": "15926",
+   "state": "BB",
+   "place": "Bersteland, Bersteland Freiwalde, Bersteland Niewitz u. a.",
+   "lat": 51.84085,
+   "lon": 13.69665,
+   "distanceKm": 72.954,
+   "bearingDeg": 165.27
+  },
+  {
+   "postcode": "15936",
+   "state": "BB",
+   "place": "Dahme/Mark, Dahmetal, Steinreich u. a.",
+   "lat": 51.92285,
+   "lon": 13.4681,
+   "distanceKm": 61.539,
+   "bearingDeg": 177.36
+  },
+  {
+   "postcode": "15938",
+   "state": "BB",
+   "place": "Drahnsdorf, Golßen, Kasel-Golzig u. a.",
+   "lat": 51.94606,
+   "lon": 13.58394,
+   "distanceKm": 59.86,
+   "bearingDeg": 169.63
+  },
+  {
+   "postcode": "16222",
+   "state": "BB",
+   "place": "Agentur für Arbeit Eberswalde",
+   "lat": 52.836,
+   "lon": 13.8078,
+   "distanceKm": 47.601,
+   "bearingDeg": 32.53
+  },
+  {
+   "postcode": "16225",
+   "state": "BB",
+   "place": "Eberswalde",
+   "lat": 52.8342,
+   "lon": 13.8218,
+   "distanceKm": 47.951,
+   "bearingDeg": 33.61
+  },
+  {
+   "postcode": "16227",
+   "state": "BB",
+   "place": "Eberswalde",
+   "lat": 52.8333,
+   "lon": 13.8333,
+   "distanceKm": 48.304,
+   "bearingDeg": 34.43
+  },
+  {
+   "postcode": "16230",
+   "state": "BB",
+   "place": "Breydin, Britz, Chorin u. a.",
+   "lat": 52.81244,
+   "lon": 13.7855,
+   "distanceKm": 44.588,
+   "bearingDeg": 32.74
+  },
+  {
+   "postcode": "16244",
+   "state": "BB",
+   "place": "Altenhof, Finowfurt",
+   "lat": 52.88655,
+   "lon": 13.7355,
+   "distanceKm": 50.204,
+   "bearingDeg": 24.37
+  },
+  {
+   "postcode": "16247",
+   "state": "BB",
+   "place": "Althüttendorf, Friedrichswalde, Joachimsthal u. a.",
+   "lat": 52.98256,
+   "lon": 13.80106,
+   "distanceKm": 61.741,
+   "bearingDeg": 23.95
+  },
+  {
+   "postcode": "16248",
+   "state": "BB",
+   "place": "Bölkendorf, Hohenfinow, Hohensaaten u. a.",
+   "lat": 52.8833,
+   "lon": 14.02114,
+   "distanceKm": 60.498,
+   "bearingDeg": 41.25
+  },
+  {
+   "postcode": "16259",
+   "state": "BB",
+   "place": "Altglietzen, Bad Freienwalde, Beiersdorf-Freudenberg u. a.",
+   "lat": 52.76523,
+   "lon": 14.04196,
+   "distanceKm": 52.55,
+   "bearingDeg": 51.98
+  },
+  {
+   "postcode": "16269",
+   "state": "BB",
+   "place": "Bliesdorf, Bliesdorf Bliesdorf, Bliesdorf Kunersdorf u. a.",
+   "lat": 52.6912,
+   "lon": 14.13943,
+   "distanceKm": 53.787,
+   "bearingDeg": 63.26
+  },
+  {
+   "postcode": "16278",
+   "state": "BB",
+   "place": "Angermünde, Biesenbrow, Bruchhagen u. a.",
+   "lat": 53.049,
+   "lon": 14.00546,
+   "distanceKm": 74.701,
+   "bearingDeg": 31.19
+  },
+  {
+   "postcode": "16303",
+   "state": "BB",
+   "place": "Schwedt/Oder",
+   "lat": 53.066,
+   "lon": 14.2711,
+   "distanceKm": 86.805,
+   "bearingDeg": 40.54
+  },
+  {
+   "postcode": "16306",
+   "state": "BB",
+   "place": "Berkholz-Meyenburg, Biesendahlshof, Blumberg u. a.",
+   "lat": 53.17574,
+   "lon": 14.20574,
+   "distanceKm": 93.802,
+   "bearingDeg": 33.61
+  },
+  {
+   "postcode": "16307",
+   "state": "BB",
+   "place": "Gartz (Oder), Geesow, Hohenreinkendorf u. a.",
+   "lat": 53.26241,
+   "lon": 14.36793,
+   "distanceKm": 107.904,
+   "bearingDeg": 35.46
+  },
+  {
+   "postcode": "16321",
+   "state": "BB",
+   "place": "Bernau, Börnicke, Danewitz u. a.",
+   "lat": 52.68697,
+   "lon": 13.59689,
+   "distanceKm": 26.156,
+   "bearingDeg": 26.01
+  },
+  {
+   "postcode": "16341",
+   "state": "BB",
+   "place": "Schwanebeck, Zepernick",
+   "lat": 52.638,
+   "lon": 13.5425,
+   "distanceKm": 19.672,
+   "bearingDeg": 23.4
+  },
+  {
+   "postcode": "16348",
+   "state": "BB",
+   "place": "Groß Schönebeck (Schorfheide), Klosterfelde, Marienwerder u. a.",
+   "lat": 52.81588,
+   "lon": 13.51563,
+   "distanceKm": 38.299,
+   "bearingDeg": 8.98
+  },
+  {
+   "postcode": "16352",
+   "state": "BB",
+   "place": "Basdorf, Schönerlinde, Schönwalde",
+   "lat": 52.68147,
+   "lon": 13.44123,
+   "distanceKm": 22.901,
+   "bearingDeg": 2.45
+  },
+  {
+   "postcode": "16356",
+   "state": "BB",
+   "place": "Ahrensfelde, Blumberg, Eiche u. a.",
+   "lat": 52.63319,
+   "lon": 13.66296,
+   "distanceKm": 23.702,
+   "bearingDeg": 42.27
+  },
+  {
+   "postcode": "16359",
+   "state": "BB",
+   "place": "Biesenthal, Lanke",
+   "lat": 52.76355,
+   "lon": 13.60475,
+   "distanceKm": 34.19,
+   "bearingDeg": 20.51
+  },
+  {
+   "postcode": "16515",
+   "state": "BB",
+   "place": "Freienhagen, Friedrichsthal, Malz u. a.",
+   "lat": 52.78913,
+   "lon": 13.31069,
+   "distanceKm": 35.72,
+   "bearingDeg": 347.39
+  },
+  {
+   "postcode": "16540",
+   "state": "BB",
+   "place": "Hohen Neuendorf, Stolpe",
+   "lat": 52.66865,
+   "lon": 13.26855,
+   "distanceKm": 23.97,
+   "bearingDeg": 333.58
+  },
+  {
+   "postcode": "16547",
+   "state": "BB",
+   "place": "Birkenwerder",
+   "lat": 52.6833,
+   "lon": 13.2833,
+   "distanceKm": 25.035,
+   "bearingDeg": 337.29
+  },
+  {
+   "postcode": "16548",
+   "state": "BB",
+   "place": "Glienicke/Nordbahn",
+   "lat": 52.6351,
+   "lon": 13.3075,
+   "distanceKm": 19.47,
+   "bearingDeg": 335.6
+  },
+  {
+   "postcode": "16552",
+   "state": "BB",
+   "place": "Schildow",
+   "lat": 52.6363,
+   "lon": 13.376,
+   "distanceKm": 18.184,
+   "bearingDeg": 349.16
+  },
+  {
+   "postcode": "16556",
+   "state": "BB",
+   "place": "Borgsdorf",
+   "lat": 52.7129,
+   "lon": 13.2767,
+   "distanceKm": 28.255,
+   "bearingDeg": 339.05
+  },
+  {
+   "postcode": "16559",
+   "state": "BB",
+   "place": "Hammer, Kreuzbruch, Liebenthal u. a.",
+   "lat": 52.87605,
+   "lon": 13.42948,
+   "distanceKm": 44.517,
+   "bearingDeg": 0.24
+  },
+  {
+   "postcode": "16562",
+   "state": "BB",
+   "place": "Bergfelde",
+   "lat": 52.6729,
+   "lon": 13.3186,
+   "distanceKm": 23.112,
+   "bearingDeg": 341.62
+  },
+  {
+   "postcode": "16565",
+   "state": "BB",
+   "place": "Lehnitz",
+   "lat": 52.7405,
+   "lon": 13.2627,
+   "distanceKm": 31.458,
+   "bearingDeg": 339.45
+  },
+  {
+   "postcode": "16567",
+   "state": "BB",
+   "place": "Mühlenbeck, Schönfließ",
+   "lat": 52.6601,
+   "lon": 13.35755,
+   "distanceKm": 21.03,
+   "bearingDeg": 347.19
+  },
+  {
+   "postcode": "16727",
+   "state": "BB",
+   "place": "Oberkrämer, Velten",
+   "lat": 52.6374,
+   "lon": 13.246,
+   "distanceKm": 21.738,
+   "bearingDeg": 325.88
+  },
+  {
+   "postcode": "16759",
+   "state": "BB",
+   "place": "B.R.A.H.M.S. Diagnostica GmbH",
+   "lat": 52.6328,
+   "lon": 13.2105,
+   "distanceKm": 22.777,
+   "bearingDeg": 320.17
+  },
+  {
+   "postcode": "16761",
+   "state": "BB",
+   "place": "Hennigsdorf",
+   "lat": 52.636,
+   "lon": 13.2042,
+   "distanceKm": 23.323,
+   "bearingDeg": 319.93
+  },
+  {
+   "postcode": "16766",
+   "state": "BB",
+   "place": "Kremmen, Oberkrämer",
+   "lat": 52.67275,
+   "lon": 13.17095,
+   "distanceKm": 27.907,
+   "bearingDeg": 321.84
+  },
+  {
+   "postcode": "16767",
+   "state": "BB",
+   "place": "Germendorf, Leegebruch",
+   "lat": 52.73665,
+   "lon": 13.18155,
+   "distanceKm": 33.407,
+   "bearingDeg": 330.39
+  },
+  {
+   "postcode": "16775",
+   "state": "BB",
+   "place": "Badingen, Barsdorf, Blumenow u. a.",
+   "lat": 53.02907,
+   "lon": 13.21608,
+   "distanceKm": 63.144,
+   "bearingDeg": 347.11
+  },
+  {
+   "postcode": "16792",
+   "state": "BB",
+   "place": "Kurtschlag, Wesendorf, Zehdenick",
+   "lat": 52.98677,
+   "lon": 13.39657,
+   "distanceKm": 56.864,
+   "bearingDeg": 357.97
+  },
+  {
+   "postcode": "16798",
+   "state": "BB",
+   "place": "Altthymen, Fürstenberg/Havel, Himmelpfort u. a.",
+   "lat": 53.18876,
+   "lon": 13.17246,
+   "distanceKm": 81.107,
+   "bearingDeg": 347.94
+  },
+  {
+   "postcode": "16814",
+   "state": "BB",
+   "place": "Agentur für Arbeit Neuruppin",
+   "lat": 52.8895,
+   "lon": 12.8098,
+   "distanceKm": 62.019,
+   "bearingDeg": 318.14
+  },
+  {
+   "postcode": "16816",
+   "state": "BB",
+   "place": "Neuruppin",
+   "lat": 52.9282,
+   "lon": 12.8031,
+   "distanceKm": 65.553,
+   "bearingDeg": 320.38
+  },
+  {
+   "postcode": "16818",
+   "state": "BB",
+   "place": "Basdorf, Dabergotz, Fehrbellin Deutschhof u. a.",
+   "lat": 52.92186,
+   "lon": 12.77241,
+   "distanceKm": 66.371,
+   "bearingDeg": 318.63
+  },
+  {
+   "postcode": "16827",
+   "state": "BB",
+   "place": "Alt Ruppin",
+   "lat": 52.9483,
+   "lon": 12.848,
+   "distanceKm": 65.431,
+   "bearingDeg": 323.66
+  },
+  {
+   "postcode": "16831",
+   "state": "BB",
+   "place": "Rheinsberg, Rheinsberg Großzerlang, Rheinsberg Heinrichsdorf u. a.",
+   "lat": 53.10551,
+   "lon": 12.89248,
+   "distanceKm": 78.707,
+   "bearingDeg": 333.06
+  },
+  {
+   "postcode": "16833",
+   "state": "BB",
+   "place": "Fehrbellin, Fehrbellin Betzin, Fehrbellin Brunne u. a.",
+   "lat": 52.7857,
+   "lon": 12.77325,
+   "distanceKm": 55.974,
+   "bearingDeg": 308.27
+  },
+  {
+   "postcode": "16835",
+   "state": "BB",
+   "place": "Herzberg, Lindow (Mark), Lindow (Mark) Hindenberg u. a.",
+   "lat": 52.95399,
+   "lon": 12.99043,
+   "distanceKm": 60.762,
+   "bearingDeg": 331.25
+  },
+  {
+   "postcode": "16837",
+   "state": "BB",
+   "place": "Rheinsberg Dorf Zechlin, Rheinsberg Flecken Zechlin, Rheinsberg Kagar u. a.",
+   "lat": 53.15555,
+   "lon": 12.78057,
+   "distanceKm": 87.179,
+   "bearingDeg": 330.38
+  },
+  {
+   "postcode": "16845",
+   "state": "BB",
+   "place": "Breddin, Dreetz, Fehrbellin Manker u. a.",
+   "lat": 52.86183,
+   "lon": 12.47488,
+   "distanceKm": 77.218,
+   "bearingDeg": 304.16
+  },
+  {
+   "postcode": "16866",
+   "state": "BB",
+   "place": "Barenthin, Bork-Lellichow, Dannenwalde u. a.",
+   "lat": 52.9828,
+   "lon": 12.26167,
+   "distanceKm": 96.611,
+   "bearingDeg": 306.17
+  },
+  {
+   "postcode": "16868",
+   "state": "BB",
+   "place": "Wusterhausen (Dosse)",
+   "lat": 52.8833,
+   "lon": 12.4667,
+   "distanceKm": 79.009,
+   "bearingDeg": 305.39
+  },
+  {
+   "postcode": "16909",
+   "state": "BB",
+   "place": "Heiligengrabe, Heiligengrabe Blandikow, Heiligengrabe Blesendorf u. a.",
+   "lat": 53.15183,
+   "lon": 12.48022,
+   "distanceKm": 98.48,
+   "bearingDeg": 320.14
+  },
+  {
+   "postcode": "16918",
+   "state": "BB",
+   "place": "Wittstock/Dosse Freyenstein",
+   "lat": 53.2833,
+   "lon": 12.35,
+   "distanceKm": 115.256,
+   "bearingDeg": 321.61
+  },
+  {
+   "postcode": "16921",
+   "state": "BB",
+   "place": "Alt Krüssow",
+   "lat": 53.15,
+   "lon": 12.2667,
+   "distanceKm": 108.163,
+   "bearingDeg": 314.34
+  },
+  {
+   "postcode": "16928",
+   "state": "BB",
+   "place": "Alt Krüssow, Beveringen, Boddin-Langnow u. a.",
+   "lat": 53.11625,
+   "lon": 12.18493,
+   "distanceKm": 109.741,
+   "bearingDeg": 310.96
+  },
+  {
+   "postcode": "16945",
+   "state": "BB",
+   "place": "Halenbeck-Rohlsdorf, Kümmernitztal, Marienfließ u. a.",
+   "lat": 53.27708,
+   "lon": 12.20103,
+   "distanceKm": 121.266,
+   "bearingDeg": 317.78
+  },
+  {
+   "postcode": "16949",
+   "state": "BB",
+   "place": "Putlitz, Triglitz",
+   "lat": 53.23285,
+   "lon": 12.0709,
+   "distanceKm": 123.994,
+   "bearingDeg": 313.3
+  },
+  {
+   "postcode": "17240",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5055,
+   "lon": 13.4473,
+   "distanceKm": 3.595,
+   "bearingDeg": 22.82
+  },
+  {
+   "postcode": "17268",
+   "state": "BB",
+   "place": "Beutel, Boitzenburger Land, Densow u. a.",
+   "lat": 53.11834,
+   "lon": 13.56095,
+   "distanceKm": 72.027,
+   "bearingDeg": 7.15
+  },
+  {
+   "postcode": "17279",
+   "state": "BB",
+   "place": "Lychen",
+   "lat": 53.2124,
+   "lon": 13.3148,
+   "distanceKm": 82.261,
+   "bearingDeg": 354.8
+  },
+  {
+   "postcode": "17291",
+   "state": "BB",
+   "place": "Carmzow-Wallmow, Gramzow, Grünow u. a.",
+   "lat": 53.31316,
+   "lon": 13.93216,
+   "distanceKm": 99.102,
+   "bearingDeg": 19.81
+  },
+  {
+   "postcode": "17326",
+   "state": "BB",
+   "place": "Brüssow",
+   "lat": 53.3997,
+   "lon": 14.1253,
+   "distanceKm": 112.907,
+   "bearingDeg": 24.22
+  },
+  {
+   "postcode": "17337",
+   "state": "BB",
+   "place": "Uckerland",
+   "lat": 53.4569,
+   "lon": 13.7806,
+   "distanceKm": 111.649,
+   "bearingDeg": 12.12
+  },
+  {
+   "postcode": "19309",
+   "state": "BB",
+   "place": "Besandten, Eldenburg, Lanz u. a.",
+   "lat": 53.09682,
+   "lon": 11.45945,
+   "distanceKm": 149.232,
+   "bearingDeg": 298.35
+  },
+  {
+   "postcode": "19322",
+   "state": "BB",
+   "place": "Breese, Cumlosen, Groß Breese u. a.",
+   "lat": 52.99762,
+   "lon": 11.78233,
+   "distanceKm": 124.994,
+   "bearingDeg": 298.32
+  },
+  {
+   "postcode": "19334",
+   "state": "BB",
+   "place": "KMG Kliniken PLC",
+   "lat": 52.9604,
+   "lon": 11.951,
+   "distanceKm": 113.065,
+   "bearingDeg": 299.05
+  },
+  {
+   "postcode": "19336",
+   "state": "BB",
+   "place": "Bad Wilsnack, Kletzke, Legde/Quitzöbel u. a.",
+   "lat": 52.9692,
+   "lon": 12.0025,
+   "distanceKm": 110.502,
+   "bearingDeg": 300.34
+  },
+  {
+   "postcode": "19339",
+   "state": "BB",
+   "place": "Bendelin, Glöwen, Netzow",
+   "lat": 52.91527,
+   "lon": 12.13097,
+   "distanceKm": 100.066,
+   "bearingDeg": 299.75
+  },
+  {
+   "postcode": "19348",
+   "state": "BB",
+   "place": "Baek, Berge, Gülitz-Reetz u. a.",
+   "lat": 53.13258,
+   "lon": 11.92528,
+   "distanceKm": 124.582,
+   "bearingDeg": 306.49
+  },
+  {
+   "postcode": "19357",
+   "state": "BB",
+   "place": "Boberow, Garlin, Karstädt u. a.",
+   "lat": 53.1642,
+   "lon": 11.65614,
+   "distanceKm": 141.474,
+   "bearingDeg": 303.46
+  },
+  {
+   "postcode": "60647",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5159,
+   "lon": 13.328,
+   "distanceKm": 8.039,
+   "bearingDeg": 303.82
+  },
+  {
+   "postcode": "96035",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5025,
+   "lon": 13.407,
+   "distanceKm": 3.265,
+   "bearingDeg": 335.89
+  },
+  {
+   "postcode": "96076",
+   "state": "BE",
+   "place": "Berlin",
+   "lat": 52.5044,
+   "lon": 13.346,
+   "distanceKm": 6.328,
+   "bearingDeg": 300.32
+  }
+ ]
+}

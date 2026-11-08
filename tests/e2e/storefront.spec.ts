@@ -138,10 +138,10 @@ test.describe.serial("MVP journey", () => {
     await a.getByRole("button", { name: /Speichern & Kunde informieren/ }).click();
     await expect(a.getByText("Gespeichert.")).toBeVisible();
 
-    // Customer can no longer cancel; pays the final amount (3.1 kg x €27.99 = €86.77 + €4.90 delivery)
+    // Customer can no longer cancel; pays the final amount (3.1 kg x €27.99 = €86.77, delivery is free)
     await page.goto(orderUrl);
     await expect(page.getByTestId("cancel-order")).toHaveCount(0);
-    await expect(page.getByText("Bitte bezahlen Sie 91,67")).toBeVisible();
+    await expect(page.getByText("Bitte bezahlen Sie 86,77")).toBeVisible();
     await page.getByTestId("pay-paypal").click();
     await expect(page.getByText("Vielen Dank, Ihre Zahlung ist eingegangen.")).toBeVisible();
 

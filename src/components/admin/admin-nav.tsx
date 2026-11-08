@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Package, Settings, ShoppingBag, Truck, Users } from "lucide-react";
+import { BarChart3, ClipboardList, Package, Settings, ShoppingBag, Truck, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/admin/orders", label: "Bestellungen", icon: ShoppingBag },
   { href: "/admin/products", label: "Produkte", icon: Package },
+  { href: "/admin/dispatch", label: "Planung", icon: ClipboardList },
   { href: "/admin/delivery", label: "Lieferung", icon: Truck },
   { href: "/admin/customers", label: "Kunden", icon: Users },
   { href: "/admin", label: "Kennzahlen", icon: BarChart3, exact: true },
@@ -29,7 +30,7 @@ export function AdminNav({ variant }: { variant: "bottom" | "side" }) {
     );
   return (
     <nav aria-label="Admin" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden">
-      <ul className="grid grid-cols-6">
+      <ul className="grid grid-cols-7">
         {ITEMS.map((i) => (
           <li key={i.href}>
             <Link href={i.href} aria-current={active(i) ? "page" : undefined} className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[10px] font-medium", active(i) ? "text-primary" : "text-text-muted")}>

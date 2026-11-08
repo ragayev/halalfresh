@@ -7,7 +7,6 @@ import { formatMoney } from "@/domain/money";
 import { formatWeight, lineTotalCents } from "@/domain/pricing";
 import { formatQuantity } from "@/domain/bundles";
 import { Button } from "./ui";
-import { useDelivery } from "./delivery-provider";
 
 export function ProductBuyBox({
   p,
@@ -27,7 +26,6 @@ export function ProductBuyBox({
   const { d, locale, t } = useI18n();
   const { add, gramsOf, addBundle, ready } = useCart();
   const [bundleFailed, setBundleFailed] = useState(false);
-  const { check } = useDelivery();
   // Kg-sold cuts: customer picks half a kilo or a full kilo.
   const isBundle = !!p.bundle;
   const halfOrFull = !isBundle && p.minGrams === 500 && p.stepGrams === 500;
@@ -80,8 +78,6 @@ export function ProductBuyBox({
     </div>
   );
 
-  if (check?.mode === "PREORDER_ONLY" && !p.preorderEligible)
-    return <p className="rounded-2xl bg-warn p-4 text-center font-medium text-warn-ink">{d.delivery.lineNotPreorder}</p>;
   if (!p.isAvailable)
     return <p className="rounded-2xl bg-neutral-100 p-4 text-center font-medium text-neutral-600">{d.common.unavailable}</p>;
   return (

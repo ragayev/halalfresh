@@ -7,6 +7,7 @@ import { cashEligibility, type CashReason } from "@/domain/payment-eligibility";
 import { normalizePhone } from "@/domain/phone";
 import { estimateOrder } from "@/domain/pricing";
 import { LOCALES } from "@/i18n/config";
+import { SLOTS } from "@/config/delivery";
 import { resolveDelivery } from "./delivery-service";
 import { AppError } from "./errors";
 import { getSettings } from "./app-settings";
@@ -32,6 +33,10 @@ export const checkoutInput = z.object({
     postalCode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)),
     city: z.string().trim().min(2).max(80),
   }),
+  /** Chosen delivery date (YYYY-MM-DD); must be one of the currently orderable dates. */
+  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** Start time of the chosen delivery slot (see SLOTS). */
+  slotStart: z.string().refine((v) => SLOTS.some((x) => x.start === v)),
   checkedPostcode: z.string().transform(normalizePostcode).pipe(z.string().regex(POSTCODE_RE)).optional(),
   deliveryNotes: z.string().trim().max(500).optional(),
   paymentMethod: z.enum(["PAYPAL", "CASH"]),
@@ -73,18 +78,17 @@ export async function createOrder(raw: unknown, now = new Date()): Promise<{ tok
 
   if (input.checkedPostcode && input.checkedPostcode !== input.address.postalCode)
     throw new AppError("POSTCODE_MISMATCH", "The delivery address postcode differs from the postcode you checked", 422);
-  const { check, slot, zoneId, routeId } = await resolveDelivery(input.address.postalCode, now);
-  if (!check.supported || !zoneId || !routeId) throw new AppError("POSTCODE_UNSUPPORTED", "We don't deliver to this postcode yet", 422);
-  if (!slot) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
+  const { check, zone, dates } = resolveDelivery(input.address.postalCode, now);
+  if (!check.supported || !zone) throw new AppError("POSTCODE_UNSUPPORTED", "We don't deliver to this postcode yet", 422);
+  if (!dates.length) throw new AppError("SLOT_INVALID", "No delivery date is available right now", 422);
+  // The cutoff is enforced here, not in the browser: a date that closed while the customer was typing is rejected.
+  const delivery = dates.find((d) => d.date === input.deliveryDate);
+  if (!delivery) throw new AppError("SLOT_INVALID", "This delivery date is no longer available", 422);
+  const slot = SLOTS.find((x) => x.start === input.slotStart)!;
 
   const merchant = await getMerchant();
   const settings = await getSettings();
-  const { lines, totals } = await priceCart(input.lines, {
-    mode: check.mode!,
-    minOrderCents: check.minOrderCents,
-    deliveryFeeCents: check.deliveryFeeCents,
-    freeDeliveryThresholdCents: check.freeDeliveryThresholdCents,
-  });
+  const { lines, totals } = await priceCart(input.lines, { minOrderCents: check.minOrderCents, deliveryFeeCents: 0, freeDeliveryThresholdCents: null });
   if (!totals.meetsMinimum)
     throw new AppError("BELOW_MINIMUM", "Minimum order value not reached", 422, { minOrderCents: totals.minOrderCents, shortfallCents: totals.shortfallCents });
 
@@ -113,13 +117,14 @@ export async function createOrder(raw: unknown, now = new Date()): Promise<{ tok
           postalCode: input.address.postalCode,
           city: input.address.city,
           deliveryNotes: input.deliveryNotes || null,
-          zoneId,
-          routeId,
-          zoneName: check.zone!.name,
-          deliveryMode: check.mode!,
-          deliveryDate: new Date(`${slot.date}T00:00:00.000Z`),
-          slotStartTime: slot.windowStart,
-          slotEndTime: slot.windowEnd,
+          zoneName: zone.sector ? `${zone.tier}/${zone.sector}` : zone.tier,
+          tier: zone.tier,
+          sector: zone.sector,
+          zoneNeedsReview: zone.needsReview,
+          deliveryMode: "REGULAR",
+          deliveryDate: new Date(`${delivery.date}T00:00:00.000Z`),
+          slotStartTime: slot.start,
+          slotEndTime: slot.end,
           locale: input.locale,
           status: "NEW",
           paymentMethod: input.paymentMethod,

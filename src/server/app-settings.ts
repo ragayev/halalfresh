@@ -13,7 +13,7 @@ export const SETTING_DEFAULTS = {
   /** Preferred-delivery windows and how many days ahead the customer may pick. */
   deliveryWindows: ["10:00–14:00", "14:00–18:00", "18:00–21:00"] as string[],
   deliveryDaysAhead: 5,
-  /** Only render "zertifiziert"/halal badge when the operator has verified the certificate. */
+  /** Only render the halal proof badge when the operator has verified it. */
   halalCertificateVerified: false,
   /** Telegram admin notification target (bot token comes from env). */
   telegramChatId: "",
