@@ -9,7 +9,7 @@ export const legalContent: Record<LegalSlug, { heading: string; body: string[] }
   agb: [
     {
       heading: "AGB & Widerruf der Kevser Fleischerei",
-      body: ["[PLATZHALTER: Die AGB und Widerrufsbelehrung der Kevser Fleischerei werden vom Inhaber geliefert und hier im Volltext angezeigt. Die PDF-Fassung wird jeder Bestellbestätigung beigefügt.]"],
+      body: ["Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei (Hermannstraße 64, 12049 Berlin).", "[PLATZHALTER: Die AGB und Widerrufsbelehrung der Kevser Fleischerei werden vom Inhaber geliefert und hier im Volltext angezeigt. Die PDF-Fassung wird jeder Bestellbestätigung beigefügt.]"],
     },
   ],
   privacy: [
@@ -51,27 +51,33 @@ export const legalContent: Record<LegalSlug, { heading: string; body: string[] }
     {
       heading: "Seller of the goods",
       body: [
+        "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei (Hermannstraße 64, 12049 Berlin).",
         "Goods are sold and fulfilled by the partner butcher named at checkout. [TODO: Butcher legal name, address, register data, food-business registration / supervisory authority.]",
       ],
     },
   ],
   terms: [
     {
+      heading: "0. Data sources",
+      body: ["Postcode coordinates used for delivery areas: contains data from GeoNames (https://www.geonames.org), licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)."],
+    },
+    {
       heading: "1. Scope & roles",
       body: [
+        "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei (Hermannstraße 64, 12049 Berlin).",
         "Halal Fresh operates the online marketplace and order handling. The contract of sale is concluded with the partner butcher named at checkout. [TODO: confirm contractual structure with counsel.]",
       ],
     },
     {
       heading: "2. Minimum order & delivery",
       body: [
-        "A minimum merchandise value applies per delivery address (shown in the cart). Delivery is available only in the configured delivery area and in the slots offered at checkout.",
+        "A minimum merchandise value applies per delivery address, depending on the postcode (shown in the cart). Delivery is free. Delivery is available only in the delivery area and on the dates and in the slots offered at checkout.",
       ],
     },
     {
       heading: "3. Prices & payment",
       body: [
-        "Prices are in euro per kilogram; weights are fixed at order time and charged exactly as selected. [TODO: VAT statement per applicable law.]",
+        "Prices are the shop prices of Kevser Fleischerei in euro per kilogram, without a delivery fee. Meat is weighed before delivery; you pay the weighed amount, at most the maximum announced at checkout. [TODO: VAT statement per applicable law.]",
       ],
     },
     {

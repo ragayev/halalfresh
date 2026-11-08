@@ -19,7 +19,6 @@ const MAX_LINES = 50;
 
 /** Single source of truth for cart pricing. Client-supplied prices are never read. */
 export interface DeliveryTerms {
-  mode: "REGULAR" | "PREORDER_ONLY";
   minOrderCents: number;
   deliveryFeeCents: number;
   freeDeliveryThresholdCents: number | null;
@@ -42,11 +41,6 @@ export async function priceCart(lines: (CartLineInput & { bundleId?: string })[]
     // Only published products exist for customers; drafts and archived records behave as deleted.
     if (!p || p.status !== "ACTIVE")
       throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart no longer exists", 409, { productId: l.productId });
-    if (terms.mode === "PREORDER_ONLY" && !p.preorderEligible)
-      throw new AppError("PREORDER_ONLY", "This delivery area only accepts preorder products", 422, {
-        productId: p.id,
-        productName: p.name,
-      });
     // Server-side truth: listed + available + confirmed price (+ valid bundle). Client flags are never consulted.
     if (purchaseBlocker({ ...p, status: p.status as ProductStatus }))
       throw new AppError("PRODUCT_UNAVAILABLE", "A product in your cart is not available", 409, { productId: p.id, productName: p.name });

@@ -86,84 +86,25 @@ export function nthWeekdayOfMonth(date: string): number {
   return Math.ceil(Number(date.slice(8, 10)) / 7);
 }
 
-// ---- Schedules ----
+// ---- Customer-facing delivery terms ----
 
-export type DeliveryMode = "REGULAR" | "PREORDER_ONLY";
-
-export interface ScheduleLike {
-  kind: "WEEKLY" | "NTH_WEEKDAY_OF_MONTH";
-  /** ISO weekday 1 = Monday ... 7 = Sunday (Sunday is never delivered). */
-  weekday: number;
-  /** 1..5, only for NTH_WEEKDAY_OF_MONTH. */
-  nth: number | null;
-  windowStart: string;
-  windowEnd: string;
-  cutoffHoursBefore: number;
-  isActive: boolean;
-}
-
-export interface DeliverySlot {
-  date: string; // YYYY-MM-DD (Berlin)
-  weekday: number; // ISO 1..7
-  windowStart: string;
-  windowEnd: string;
-  /** Last instant at which this slot can still be ordered. */
-  cutoffAt: Date;
+export interface DeliverySlotWindow {
+  start: string;
+  end: string;
 }
 
 /**
- * Cutoff instant for a delivery on `date`. Whole days are subtracted on the Berlin calendar, so
- * "48h before Tuesday 14:00" is always "Sunday 14:00 local", also across DST changes; the remainder
- * (hours % 24) is subtracted as elapsed time.
+ * What a postcode resolves to, as sent to the browser. Deliberately carries no tier or sector:
+ * customers only see the minimum and the next date.
  */
-export function cutoffFor(date: string, windowStart: string, cutoffHoursBefore: number): Date {
-  const days = Math.floor(cutoffHoursBefore / 24);
-  const rem = cutoffHoursBefore % 24;
-  return new Date(berlinToUtc(addDays(date, -days), windowStart).getTime() - rem * 3600_000);
-}
-
-export interface NextSlotInput {
-  schedules: ScheduleLike[];
-  /** YYYY-MM-DD dates with no delivery (holidays, Bayram, ...). */
-  blackoutDates: ReadonlySet<string>;
-  now: Date;
-  horizonDays: number;
-}
-
-/**
- * Earliest slot whose cutoff has not passed. Sundays and blackout dates are skipped.
- * A slot is orderable strictly before its cutoff instant.
- */
-export function nextDeliverySlot({ schedules, blackoutDates, now, horizonDays }: NextSlotInput): DeliverySlot | null {
-  const today = berlinToday(now);
-  const active = schedules.filter((s) => s.isActive);
-  for (let i = 0; i <= horizonDays; i++) {
-    const date = addDays(today, i);
-    const wd = isoWeekdayOf(date);
-    if (wd === 7 || blackoutDates.has(date)) continue;
-    const slots: DeliverySlot[] = [];
-    for (const s of active) {
-      if (s.weekday !== wd) continue;
-      if (s.kind === "NTH_WEEKDAY_OF_MONTH" && s.nth !== nthWeekdayOfMonth(date)) continue;
-      const cutoffAt = cutoffFor(date, s.windowStart, s.cutoffHoursBefore);
-      if (cutoffAt.getTime() <= now.getTime()) continue;
-      slots.push({ date, weekday: wd, windowStart: s.windowStart, windowEnd: s.windowEnd, cutoffAt });
-    }
-    if (slots.length) return slots.sort((a, b) => a.windowStart.localeCompare(b.windowStart))[0];
-  }
-  return null;
-}
-
-/** Terms a postcode resolves to. Serialisable: this is the /api/delivery/check payload. */
 export interface DeliveryCheck {
   postcode: string;
+  /** "ok" = we deliver; "waitlist" = known postcode we do not serve yet; "unknown" = not in our data. */
+  status: "ok" | "waitlist" | "unknown";
   supported: boolean;
-  zone: { id: string; name: string } | null;
-  mode: DeliveryMode | null;
   minOrderCents: number;
-  deliveryFeeCents: number;
-  freeDeliveryThresholdCents: number | null;
-  /** At least one visible, available preorder product exists (offered to areas we do not serve regularly). */
-  preorderProductsAvailable: boolean;
-  nextSlot: { date: string; weekday: number; windowStart: string; windowEnd: string; cutoffAt: string } | null;
+  /** Delivery is free; kept as 0 so totals math needs no special case. */
+  deliveryFeeCents: 0;
+  /** showTomorrow: the date really is tomorrow AND the postcode is on daily delivery ("Morgen bei Ihnen"). */
+  nextSlot: { date: string; weekday: number; showTomorrow: boolean; cutoffAt: string; slots: DeliverySlotWindow[] } | null;
 }

@@ -69,6 +69,7 @@ export function checkoutBody(ctx: Awaited<ReturnType<typeof seedBasics>>, over: 
     lines: [{ productId: ctx.beef.id, grams: 8000 }], // 8 kg * €20 = €160 estimated, €176 max
     customer: { firstName: "Example", lastName: "Customer", email: "customer@example.com", phone: "0151 12345678" },
     address: { street: "Example Street 12", postalCode: "10115", city: "Berlin" },
+    slotStart: "10:00",
     deliveryNotes: "Ring twice",
     paymentMethod: "PAYPAL",
     consents: { terms: true, marketing: false, dataTransfer: false },

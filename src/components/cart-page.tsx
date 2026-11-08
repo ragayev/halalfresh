@@ -5,7 +5,7 @@ import { ArrowRight, Minus, Plus, ShoppingBasket, Trash2, AlertTriangle } from "
 import { useI18n } from "@/i18n/provider";
 import { useCart } from "./cart-store";
 import { useCartView } from "./use-cart-view";
-import { FreeDeliveryBar, MinOrderBanner } from "./cart-progress";
+import { MinOrderBanner } from "./cart-progress";
 import { DeliveryInfo } from "./delivery-ui";
 import { useDelivery } from "./delivery-provider";
 import { buttonClasses, Button, Card, Container } from "./ui";
@@ -51,7 +51,6 @@ export function CartPage() {
   const unsupported = !postcode || !delivery?.supported;
   const noSlot = !!delivery?.supported && !delivery.nextSlot;
   const blocked = unsupported || noSlot || !totals.meetsMinimum || !!data.hasIssues;
-  const hasNonPreorder = data.lines.some((l) => l.issue === "NOT_PREORDER");
 
   return (
     <Container className="py-6 sm:py-10">
@@ -74,16 +73,9 @@ export function CartPage() {
           ) : (
             <>
               <MinOrderBanner totals={totals} />
-              <FreeDeliveryBar totals={totals} check={delivery} />
             </>
           )}
-          {delivery?.mode === "PREORDER_ONLY" && hasNonPreorder && (
-            <div className="rounded-2xl bg-warn p-4 text-sm text-warn-ink">
-              <p className="font-semibold">{d.delivery.preorderTitle}</p>
-              <p>{d.delivery.cartPreorderOnly}</p>
-            </div>
-          )}
-          {data.hasIssues && !hasNonPreorder && (
+          {data.hasIssues && (
             <p role="alert" className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-sm font-medium text-danger">
               <AlertTriangle className="size-4" aria-hidden />
               {d.cart.updated}
@@ -125,7 +117,7 @@ export function CartPage() {
                         )}
                         {l.issue && (
                           <p className="mt-1 text-xs font-semibold text-danger">
-                            {l.issue === "NOT_PREORDER" ? d.delivery.lineNotPreorder : d.common.unavailable}
+                            {d.common.unavailable}
                           </p>
                         )}
                       </div>

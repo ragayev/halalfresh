@@ -369,7 +369,10 @@
     "slotLine": "{day}, {start}–{end} arası kapında",
     "orderBy": "Son sipariş: {cutoff}",
     "noSlot": "Şu anda açık bir teslimat tarihi yok. Lütfen yakında tekrar bak.",
-    "minOrder": "Minimum sipariş {amount}",
+    "minOrder": "Minimum sipariş tutarı {amount}",
+    "minOrderLabel": "Minimum sipariş",
+    "feeLabel": "Teslimat ücreti",
+    "freeFromLabel": "Ücretsiz teslimat",
     "feeLine": "Teslimat ücreti {amount}",
     "freeDelivery": "Ücretsiz teslimat",
     "freeFrom": "{amount} üzeri ücretsiz teslimat",
@@ -377,8 +380,8 @@
     "preorderTitle": "Ön sipariş teslimat bölgesi",
     "preorderText": "Bölgene ayda bir kez teslimat yapıyoruz. Burada sadece ön sipariş ürünleri alınır: Ramazan kutusu, Kurban ve akika hisseleri.",
     "preorderShop": "Ön sipariş ürünlerini gör",
-    "unsupportedTitle": "{postcode} bölgesine henüz düzenli teslimat yok",
-    "unsupportedText": "Bölgene henüz düzenli teslimat yok. Bölgenden 10 kişi toplanınca geliyoruz.",
+    "unsupportedTitle": "{postcode} bölgesine henüz teslimat yapmıyoruz",
+    "unsupportedText": "Bölgenize şu anda teslimat yapmıyoruz. Bekleme listesine yazılın, başlar başlamaz haber verelim.",
     "preorderOffer": "Bu arada ön sipariş verebilirsin:",
     "waitlistTitle": "İlgilendiğini bize bildir",
     "waitlistName": "Ad",
@@ -405,6 +408,10 @@
     "cartPreorderOnly": "Bölgende sadece ön sipariş ürünleri alınıyor. Devam etmek için diğer ürünleri kaldır.",
     "lineNotPreorder": "Bölgende satılmıyor (sadece ön sipariş ürünleri)",
     "checkoutBlocked": "Bu posta kodu için ödeme yapılamıyor.",
-    "noSlotCheckout": "Şu anda açık bir teslimat tarihi yok, bu yüzden ödeme geçici olarak kapalı."
+    "noSlotCheckout": "Şu anda açık bir teslimat tarihi yok, bu yüzden ödeme geçici olarak kapalı.",
+    "tomorrow": "Yarın kapınızda",
+    "nextDeliveryLine": "Sonraki teslimat: {day}",
+    "slotLabel": "Zaman aralığı",
+    "oclock": ""
   }
 }

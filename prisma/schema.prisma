@@ -282,6 +282,8 @@ model WaitlistEntry {
   /// Phone or email, as typed.
   contact           String
   preferredLanguage String
+  /// waitlist = known postcode outside the delivery area; unknown = postcode not in our data.
+  reason            String   @default("waitlist")
   consentGivenAt    DateTime
   createdAt         DateTime @default(now())
 
@@ -350,11 +352,17 @@ model Order {
   city          String
   deliveryNotes String?
 
-  zoneId        String
-  zone          DeliveryZone   @relation(fields: [zoneId], references: [id])
+  /// Legacy DB-managed zone; null for orders placed under the static postcode data (src/data/delivery).
+  zoneId        String?
+  zone          DeliveryZone?  @relation(fields: [zoneId], references: [id])
   routeId       String?
   route         DeliveryRoute? @relation(fields: [routeId], references: [id], onDelete: SetNull)
   zoneName      String
+  /// core | tier_100 | tier_150 and, outside core, west | north | northeast | southeast | southwest. Internal only.
+  tier          String?
+  sector        String?
+  /// The postcode was flagged needs_review in the overrides file when the order was placed.
+  zoneNeedsReview Boolean      @default(false)
   deliveryMode  DeliveryMode   @default(REGULAR)
   deliveryDate  DateTime       @db.Date
   slotStartTime String
@@ -372,6 +380,8 @@ model Order {
   estimatedTotalCents Int
   maxTotalCents       Int
   finalTotalCents     Int?
+  /// Final weighed amount as reported by Kevser over WhatsApp (admin entry). Informational; payment uses finalTotalCents.
+  reportedFinalCents  Int?
   /// final items total minus max items total when the tolerance cap applied (absorbed by the seller).
   cappedAmountCents   Int?
   paidAmountCents     Int?

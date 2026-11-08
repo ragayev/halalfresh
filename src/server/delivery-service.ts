@@ -1,85 +1,53 @@
-import { db } from "@/lib/db";
-import { nextDeliverySlot, normalizePostcode, POSTCODE_RE, type DeliveryCheck, type DeliverySlot } from "@/domain/delivery";
-import { getMerchant } from "./settings";
+import { normalizePostcode, POSTCODE_RE, type DeliveryCheck } from "@/domain/delivery";
+import { nextDeliveryDate, type NextDelivery } from "@/domain/delivery-dates";
+import { zoneForPostcode, type ZoneInfo } from "@/domain/delivery-zones";
+import { BLACKOUT_DATES } from "@/config/delivery";
 
 export type ResolvedDelivery = {
   check: DeliveryCheck;
-  /** Present when supported: ids the order needs. */
-  zoneId: string | null;
-  routeId: string | null;
-  slot: DeliverySlot | null;
+  /** Internal routing info (tier, sector); never serialise this to the browser. Null for waitlist/unknown. */
+  zone: ZoneInfo | null;
+  delivery: NextDelivery | null;
 };
 
-const unsupported = (postcode: string, preorderProductsAvailable: boolean): ResolvedDelivery => ({
-  check: {
-    postcode,
-    supported: false,
-    zone: null,
-    mode: null,
-    minOrderCents: 0,
-    deliveryFeeCents: 0,
-    freeDeliveryThresholdCents: null,
-    preorderProductsAvailable,
-    nextSlot: null,
-  },
-  zoneId: null,
-  routeId: null,
-  slot: null,
-});
+const blackouts = new Set(BLACKOUT_DATES);
 
-/** Single source of truth: postcode -> zone terms + next slot. Used by the API, cart pricing and checkout. */
-export async function resolveDelivery(rawPostcode: string, now = new Date()): Promise<ResolvedDelivery> {
+/** Single source of truth: postcode -> minimum + next delivery date. Used by the API, cart pricing and checkout. */
+export function resolveDelivery(rawPostcode: string, now = new Date()): ResolvedDelivery {
   const postcode = normalizePostcode(rawPostcode);
-  if (!POSTCODE_RE.test(postcode)) return unsupported(postcode, false);
+  const none = (status: "waitlist" | "unknown"): ResolvedDelivery => ({
+    check: { postcode, status, supported: false, minOrderCents: 0, deliveryFeeCents: 0, nextSlot: null },
+    zone: null,
+    delivery: null,
+  });
+  if (!POSTCODE_RE.test(postcode)) return none("unknown");
+  const zone = zoneForPostcode(postcode);
+  if (!zone) return none("unknown");
+  if (zone.tier === "waitlist") return none("waitlist");
 
-  const merchant = await getMerchant();
-  const preorderProductsAvailable =
-    (await db.product.count({ where: { merchantId: merchant.id, preorderEligible: true, status: "ACTIVE", isAvailable: true, priceConfirmed: true, pricePerKgCents: { gt: 0 } } })) > 0;
-  const pr = await db.postcodeRoute.findUnique({
-    where: { postcode },
-    include: { route: { include: { zone: true, schedules: true } } },
-  });
-  const route = pr?.route;
-  if (!route || !route.isActive || !route.zone.isActive || route.zone.merchantId !== merchant.id)
-    return unsupported(postcode, preorderProductsAvailable);
-
-  const blackouts = await db.deliveryBlackoutDate.findMany({
-    where: { merchantId: merchant.id, date: { gte: new Date(now.getTime() - 2 * 86400_000) } },
-    select: { date: true },
-  });
-  const slot = nextDeliverySlot({
-    schedules: route.schedules,
-    blackoutDates: new Set(blackouts.map((b) => b.date.toISOString().slice(0, 10))),
-    now,
-    horizonDays: merchant.settings.slotHorizonDays,
-  });
-  const z = route.zone;
+  const delivery = nextDeliveryDate({ weekdays: zone.weekdays, now, blackoutDates: blackouts });
   return {
     check: {
       postcode,
+      status: "ok",
       supported: true,
-      zone: { id: z.id, name: z.name },
-      mode: z.mode,
-      minOrderCents: z.minOrderCents,
-      deliveryFeeCents: z.deliveryFeeCents,
-      freeDeliveryThresholdCents: z.freeDeliveryThresholdCents,
-      preorderProductsAvailable,
-      nextSlot: slot
+      minOrderCents: zone.minOrderCents,
+      deliveryFeeCents: 0,
+      nextSlot: delivery
         ? {
-            date: slot.date,
-            weekday: slot.weekday,
-            windowStart: slot.windowStart,
-            windowEnd: slot.windowEnd,
-            cutoffAt: slot.cutoffAt.toISOString(),
+            date: delivery.date,
+            weekday: delivery.weekday,
+            showTomorrow: delivery.isTomorrow && zone.tier === "core",
+            cutoffAt: delivery.cutoffAt.toISOString(),
+            slots: delivery.slots.map((s) => ({ ...s })),
           }
         : null,
     },
-    zoneId: z.id,
-    routeId: route.id,
-    slot,
+    zone,
+    delivery,
   };
 }
 
-export async function checkDelivery(postcode: string, now = new Date()): Promise<DeliveryCheck> {
-  return (await resolveDelivery(postcode, now)).check;
+export function checkDelivery(postcode: string, now = new Date()): DeliveryCheck {
+  return resolveDelivery(postcode, now).check;
 }

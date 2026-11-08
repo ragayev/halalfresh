@@ -167,4 +167,4 @@ the PayPal provider itself is exercised through the mock provider (the real HTTP
 - Kevser's legal details, WhatsApp number, AGB text and PDF (`AGB_PDF_PATH`), Impressum, Datenschutz, Nutzungsbedingungen — placeholders until provided.
 - Wording for the data-transfer consent (pending lawyer review, kept in settings with a version).
 - Real product photos, prices, gram steps, origin text, delivery PLZ list/fees/windows, bundle definitions.
-- Halal certificate: `halalCertificateVerified` stays `false` until you tick it in Einstellungen; the word "zertifiziert" is not shown before that.
+- Halal proof: `halalCertificateVerified` stays `false` until you tick it in Einstellungen; the proof badge is not shown before that.

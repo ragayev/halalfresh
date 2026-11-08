@@ -6,7 +6,7 @@ import { getMerchant } from "./settings";
 import { resolveDelivery } from "./delivery-service";
 import { getSetting } from "./app-settings";
 
-export type LineIssue = "UNAVAILABLE" | "NOT_FOUND" | "QUANTITY" | "NOT_PREORDER";
+export type LineIssue = "UNAVAILABLE" | "NOT_FOUND" | "QUANTITY";
 
 export interface CartViewLine {
   productId: string;
@@ -26,7 +26,7 @@ export interface CartViewLine {
 
 /** Display-only pricing: tolerant of stale carts (reports issues instead of throwing). Checkout re-validates strictly. */
 export async function cartView(lines: CartLineInput[], locale: string, postcode?: string | null) {
-  const delivery = (await resolveDelivery(postcode ?? "")).check;
+  const delivery = resolveDelivery(postcode ?? "").check;
   const merchant = await getMerchant();
   const products = await getProductsByIds(
     lines.map((l) => l.productId),
@@ -58,8 +58,7 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
         issue: "NOT_FOUND",
       };
     let issue: LineIssue | undefined;
-    if (delivery.mode === "PREORDER_ONLY" && !r.preorderEligible) issue = "NOT_PREORDER";
-    if (!issue && purchaseBlocker({ ...r, status: r.status as ProductStatus })) issue = "UNAVAILABLE";
+    if (purchaseBlocker({ ...r, status: r.status as ProductStatus })) issue = "UNAVAILABLE";
     try {
       validateQuantity(r, l.grams);
     } catch (e) {
@@ -87,7 +86,6 @@ export async function cartView(lines: CartLineInput[], locale: string, postcode?
     subtotalCents: subtotal,
     minOrderCents: delivery.minOrderCents,
     deliveryFeeCents: delivery.deliveryFeeCents,
-    freeDeliveryOverCents: delivery.freeDeliveryThresholdCents,
   });
   const toleranceBps = await getSetting("toleranceBps");
   const priced = out.filter((l) => !l.issue);

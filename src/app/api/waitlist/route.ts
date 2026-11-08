@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { isValidPostcode, normalizePostcode } from "@/domain/delivery";
+import { zoneForPostcode } from "@/domain/delivery-zones";
 import { LOCALES } from "@/i18n/config";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 
@@ -25,8 +26,9 @@ export async function POST(req: Request) {
   const parsed = body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: { code: "VALIDATION", message: "Invalid input" } }, { status: 400 });
   const v = parsed.data;
+  const reason = zoneForPostcode(v.postcode) ? "waitlist" : "unknown";
   await db.waitlistEntry.create({
-    data: { postcode: v.postcode, name: v.name, contact: v.contact, preferredLanguage: v.preferredLanguage, consentGivenAt: new Date() },
+    data: { postcode: v.postcode, name: v.name, contact: v.contact, preferredLanguage: v.preferredLanguage, reason, consentGivenAt: new Date() },
   });
   return NextResponse.json({ ok: true }, { status: 201 });
 }

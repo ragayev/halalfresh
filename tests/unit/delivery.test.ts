@@ -1,28 +1,13 @@
 import { describe, expect, it } from "vitest";
-import {
-  berlinToUtc,
-  cutoffFor,
-  expandPostcodeRange,
-  isoWeekdayOf,
-  isValidPostcode,
-  nextDeliverySlot,
-  nthWeekdayOfMonth,
-  parsePostcodeList,
-  type ScheduleLike,
-} from "@/domain/delivery";
+import { berlinToUtc, expandPostcodeRange, isoWeekdayOf, isValidPostcode, nthWeekdayOfMonth, parsePostcodeList } from "@/domain/delivery";
+import { berlinHolidays, easterSunday, isWorkingDay, nextDeliveryDate, orderCutoffFor, previousWorkingDay } from "@/domain/delivery-dates";
 
-const weekly = (weekday: number, cutoffHoursBefore: number, windowStart = "14:00", windowEnd = "18:00"): ScheduleLike => ({
-  kind: "WEEKLY",
-  weekday,
-  nth: null,
-  windowStart,
-  windowEnd,
-  cutoffHoursBefore,
-  isActive: true,
-});
-const monSat24 = [1, 2, 3, 4, 5, 6].map((d) => weekly(d, 24));
-const next = (schedules: ScheduleLike[], nowBerlin: [string, string], blackouts: string[] = [], horizonDays = 90) =>
-  nextDeliverySlot({ schedules, blackoutDates: new Set(blackouts), now: berlinToUtc(...nowBerlin), horizonDays });
+const CORE = [1, 2, 3, 4, 5, 6];
+const MON = [1]; // southeast tour
+const TUE = [2]; // west tour
+/** Next delivery date for a Berlin wall-clock "now". */
+const next = (weekdays: number[], date: string, time: string, blackout: string[] = []) =>
+  nextDeliveryDate({ weekdays, now: berlinToUtc(date, time), blackoutDates: new Set(blackout) });
 
 describe("postcodes", () => {
   it("validates 5 digits and keeps leading zeros", () => {
@@ -56,53 +41,90 @@ describe("calendar helpers", () => {
   });
 });
 
-describe("next delivery slot", () => {
-  // 2026-11-04 is a Wednesday (CET, UTC+1).
-  it("takes tomorrow when the 24h cutoff has not passed", () => {
-    const s = next(monSat24, ["2026-11-04", "13:59"]);
-    expect(s).toMatchObject({ date: "2026-11-05", windowStart: "14:00", windowEnd: "18:00" });
+describe("Berlin holidays and working days", () => {
+  it("computes Easter and the Berlin holiday set", () => {
+    expect(easterSunday(2026)).toBe("2026-04-05");
+    expect(easterSunday(2027)).toBe("2027-03-28");
+    const h = berlinHolidays(2026);
+    for (const d of ["2026-01-01", "2026-03-08", "2026-04-03", "2026-04-06", "2026-05-01", "2026-05-14", "2026-05-25", "2026-10-03", "2026-12-25", "2026-12-26"])
+      expect(h.has(d), d).toBe(true);
+    expect(h.has("2026-10-31")).toBe(false); // Reformationstag is not a Berlin holiday
   });
-  it("moves to the following day exactly at and after the cutoff", () => {
-    expect(next(monSat24, ["2026-11-04", "14:00"])?.date).toBe("2026-11-06"); // cutoff instant has passed
-    expect(next(monSat24, ["2026-11-04", "14:01"])?.date).toBe("2026-11-06");
+  it("Monday to Saturday, minus holidays and blackout dates", () => {
+    expect(isWorkingDay("2026-11-07")).toBe(true); // Saturday
+    expect(isWorkingDay("2026-11-08")).toBe(false); // Sunday
+    expect(isWorkingDay("2026-12-25")).toBe(false);
+    expect(isWorkingDay("2026-11-10", new Set(["2026-11-10"]))).toBe(false);
+    expect(previousWorkingDay("2026-11-09")).toBe("2026-11-07"); // Monday -> Saturday
+    expect(previousWorkingDay("2026-04-04")).toBe("2026-04-02"); // Saturday after Good Friday -> Thursday
   });
-  it("Saturday after the cutoff goes to next week (Sunday skipped, Monday cutoff = Sunday 14:00)", () => {
-    // Fri 2026-11-06 15:00: Sat 14:00 cutoff (Fri 14:00) passed. Sunday never delivered. Monday cutoff is Sun 14:00 -> still open.
-    expect(next(monSat24, ["2026-11-06", "15:00"])?.date).toBe("2026-11-09");
+  it("order cutoff is 18:00 Berlin time on the working day before, across DST", () => {
+    expect(orderCutoffFor("2026-11-07").toISOString()).toBe("2026-11-06T17:00:00.000Z"); // Fri 18:00 CET
+    expect(orderCutoffFor("2026-03-30").toISOString()).toBe("2026-03-28T17:00:00.000Z"); // Sat 18:00 CET, DST starts Sunday
+    expect(orderCutoffFor("2026-03-31").toISOString()).toBe("2026-03-30T16:00:00.000Z"); // Mon 18:00 CEST
   });
-  it("skips Sunday even when a Sunday schedule exists", () => {
-    const withSunday = [...monSat24, weekly(7, 24)];
-    expect(next(withSunday, ["2026-11-07", "20:00"])?.date).toBe("2026-11-09"); // Sat 7th -> Mon 9th
+});
+
+describe("next delivery date: core (Monday to Saturday)", () => {
+  it("Friday 17:59 -> Saturday, which is tomorrow", () => {
+    const n = next(CORE, "2026-11-06", "17:59");
+    expect(n).toMatchObject({ date: "2026-11-07", isTomorrow: true });
   });
-  it("skips blackout dates", () => {
-    expect(next(monSat24, ["2026-11-04", "09:00"], ["2026-11-05"])?.date).toBe("2026-11-06");
-    expect(next(monSat24, ["2026-11-04", "09:00"], ["2026-11-05", "2026-11-06", "2026-11-07"])?.date).toBe("2026-11-09");
+  it("Friday 18:01 -> Monday (Saturday cutoff passed)", () => {
+    const n = next(CORE, "2026-11-06", "18:01");
+    expect(n).toMatchObject({ date: "2026-11-09", isTomorrow: false });
   });
-  it("48h route: Tuesday window closes Sunday 14:00", () => {
-    const west = [weekly(2, 48)];
-    expect(next(west, ["2026-11-01", "13:59"])?.date).toBe("2026-11-03"); // Sunday 13:59 -> this Tuesday
-    expect(next(west, ["2026-11-01", "14:00"])?.date).toBe("2026-11-10"); // Sunday 14:00 -> next Tuesday
-    expect(cutoffFor("2026-11-03", "14:00", 48).toISOString()).toBe(berlinToUtc("2026-11-01", "14:00").toISOString());
+  it("Friday exactly 18:00 is already too late for Saturday", () => {
+    expect(next(CORE, "2026-11-06", "18:00")?.date).toBe("2026-11-09");
   });
-  it("returns the earliest of several schedules and honours inactive ones", () => {
-    const off = { ...weekly(3, 0), isActive: false };
-    const s = next([weekly(5, 24), weekly(4, 24), off], ["2026-11-02", "08:00"]);
-    expect(s?.date).toBe("2026-11-05");
+  it("Saturday before the cutoff -> Monday; after the cutoff -> Tuesday", () => {
+    expect(next(CORE, "2026-11-07", "17:59")?.date).toBe("2026-11-09");
+    expect(next(CORE, "2026-11-07", "18:01")?.date).toBe("2026-11-10");
   });
-  it("returns null when nothing is bookable within the horizon", () => {
-    expect(next([], ["2026-11-02", "08:00"])).toBeNull();
-    expect(next([weekly(2, 48)], ["2026-11-02", "08:00"], [], 3)).toBeNull();
+  it("Sunday -> Tuesday: Monday's cutoff was Saturday 18:00", () => {
+    expect(next(CORE, "2026-11-08", "09:00")?.date).toBe("2026-11-10");
+    expect(next(CORE, "2026-11-08", "23:59")?.date).toBe("2026-11-10");
   });
-  it("monthly rule: first Saturday with 7-day cutoff", () => {
-    const monthly: ScheduleLike = { ...weekly(6, 7 * 24), kind: "NTH_WEEKDAY_OF_MONTH", nth: 1 };
-    // Sat 2026-11-07 is the first Saturday; cutoff Sat 2026-10-31 14:00.
-    expect(next([monthly], ["2026-10-31", "13:59"])?.date).toBe("2026-11-07");
-    expect(next([monthly], ["2026-10-31", "14:00"])?.date).toBe("2026-12-05"); // cutoff passed -> next month
-    expect(next([monthly], ["2026-11-08", "09:00"])?.date).toBe("2026-12-05");
+  it("Berlin public holiday: Wednesday before Good Friday", () => {
+    // Fri 3 Apr (Karfreitag) and Mon 6 Apr (Ostermontag) are skipped; Saturday's cutoff is Thursday 18:00.
+    expect(next(CORE, "2026-04-01", "17:59")?.date).toBe("2026-04-02");
+    expect(next(CORE, "2026-04-01", "18:01")?.date).toBe("2026-04-04");
+    expect(next(CORE, "2026-04-02", "18:01")?.date).toBe("2026-04-07"); // Sat cutoff passed, Mon holiday
   });
-  it("monthly rule skips a blacked-out first Saturday", () => {
-    const monthly: ScheduleLike = { ...weekly(6, 7 * 24), kind: "NTH_WEEKDAY_OF_MONTH", nth: 1 };
-    expect(next([monthly], ["2026-10-01", "09:00"], ["2026-11-07"])?.date).toBe("2026-12-05");
+  it("Christmas: nothing on the 25th and 26th", () => {
+    expect(next(CORE, "2026-12-23", "17:59")?.date).toBe("2026-12-24");
+    expect(next(CORE, "2026-12-23", "18:01")?.date).toBe("2026-12-28");
+  });
+  it("blackout dates are skipped like holidays", () => {
+    expect(next(CORE, "2026-11-04", "09:00")?.date).toBe("2026-11-05");
+    expect(next(CORE, "2026-11-04", "09:00", ["2026-11-05"])?.date).toBe("2026-11-06");
+  });
+  it("is Berlin time, not UTC: 17:30 UTC in summer is already 19:30 local", () => {
+    // Fri 2026-07-10 17:30Z = 19:30 CEST, after the cutoff.
+    expect(nextDeliveryDate({ weekdays: CORE, now: new Date("2026-07-10T17:30:00Z") })?.date).toBe("2026-07-13");
+    expect(nextDeliveryDate({ weekdays: CORE, now: new Date("2026-07-10T15:30:00Z") })?.date).toBe("2026-07-11"); // 17:30 CEST
+  });
+});
+
+describe("next delivery date: weekly tours", () => {
+  it("Monday tour ordered Saturday before the cutoff -> the coming Monday", () => {
+    expect(next(MON, "2026-11-07", "17:59")?.date).toBe("2026-11-09");
+  });
+  it("Monday tour ordered Saturday after the cutoff -> the Monday after", () => {
+    expect(next(MON, "2026-11-07", "18:01")?.date).toBe("2026-11-16");
+  });
+  it("Monday tour ordered on Sunday -> next week", () => {
+    expect(next(MON, "2026-11-08", "10:00")?.date).toBe("2026-11-16");
+  });
+  it("Tuesday tour: cutoff is Monday 18:00", () => {
+    expect(next(TUE, "2026-11-09", "17:59")?.date).toBe("2026-11-10");
+    expect(next(TUE, "2026-11-09", "18:01")?.date).toBe("2026-11-17");
+  });
+  it("a tour day on a holiday is skipped to the next week", () => {
+    expect(next(MON, "2026-04-01", "09:00")?.date).toBe("2026-04-13"); // Mon 6 Apr = Ostermontag
+  });
+  it("nothing for a postcode without delivery weekdays", () => {
+    expect(next([], "2026-11-04", "09:00")).toBeNull();
   });
 });
 
@@ -112,26 +134,5 @@ describe("DST", () => {
     expect(berlinToUtc("2026-03-29", "14:00").toISOString()).toBe("2026-03-29T12:00:00.000Z"); // CEST
     expect(berlinToUtc("2026-10-24", "14:00").toISOString()).toBe("2026-10-24T12:00:00.000Z"); // CEST
     expect(berlinToUtc("2026-10-25", "14:00").toISOString()).toBe("2026-10-25T13:00:00.000Z"); // CET
-  });
-  it("spring forward: Tuesday 2026-03-31 window, 48h cutoff stays Sunday 14:00 local", () => {
-    const west = [weekly(2, 48)];
-    // Sunday 2026-03-29 is the change day (23h). 48h elapsed would be 15:00 local; calendar days keep 14:00.
-    expect(cutoffFor("2026-03-31", "14:00", 48).toISOString()).toBe("2026-03-29T12:00:00.000Z");
-    expect(next(west, ["2026-03-29", "13:59"])?.date).toBe("2026-03-31");
-    expect(next(west, ["2026-03-29", "14:00"])?.date).toBe("2026-04-07");
-  });
-  it("fall back: Tuesday 2026-10-27 window, 48h cutoff stays Sunday 14:00 local", () => {
-    const west = [weekly(2, 48)];
-    expect(cutoffFor("2026-10-27", "14:00", 48).toISOString()).toBe("2026-10-25T13:00:00.000Z");
-    expect(next(west, ["2026-10-25", "13:59"])?.date).toBe("2026-10-27");
-    expect(next(west, ["2026-10-25", "14:00"])?.date).toBe("2026-11-03");
-  });
-  it("24h cutoff on the day after the spring change", () => {
-    // Mon 2026-03-30 14:00 window; cutoff Sun 2026-03-29 14:00 CEST = 12:00Z.
-    expect(cutoffFor("2026-03-30", "14:00", 24).toISOString()).toBe("2026-03-29T12:00:00.000Z");
-  });
-  it("hours that are not whole days are subtracted as elapsed time", () => {
-    // 36h before Tue 14:00 (CET) = Mon 02:00 local.
-    expect(cutoffFor("2026-11-03", "14:00", 36).toISOString()).toBe(berlinToUtc("2026-11-02", "02:00").toISOString());
   });
 });

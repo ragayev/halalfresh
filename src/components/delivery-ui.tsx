@@ -1,63 +1,42 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CalendarClock, CheckCircle2, MapPin, PackageOpen, Truck, X } from "lucide-react";
+import { ArrowRight, CalendarClock, CheckCircle2, MapPin, X } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { LOCALES, LOCALE_LABELS, type Locale } from "@/i18n/config";
 import { isValidPostcode, normalizePostcode, type DeliveryCheck } from "@/domain/delivery";
 import { formatMoney } from "@/domain/money";
-import { formatCutoff, slotParts } from "@/lib/format-delivery";
+import { formatCutoff, formatShortDay } from "@/lib/format-delivery";
 import { useDelivery } from "./delivery-provider";
 import { Spinner } from "./spinner";
 import { Button, Input } from "./ui";
 
-/** Next concrete delivery date + terms for a supported postcode. */
+/** Minimum order value and next delivery date for a supported postcode. No zone or sector is ever shown. */
 export function DeliveryInfo({ check }: { check: DeliveryCheck }) {
   const { d, locale, t } = useI18n();
-  const money = (c: number) => formatMoney(c, locale);
   const slot = check.nextSlot;
   return (
-    <div className="space-y-3 rounded-2xl bg-sage p-4 text-forest-dark" data-testid="delivery-info">
-      <p className="flex items-center gap-2 font-semibold">
-        <CheckCircle2 className="size-5 shrink-0" aria-hidden />
+    <div className="space-y-2 border-t border-border pt-3 text-text" data-testid="delivery-info">
+      <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+        <CheckCircle2 className="size-4 shrink-0" aria-hidden />
         {t(d.delivery.supportedTitle, { postcode: check.postcode })}
-        {check.mode === "PREORDER_ONLY" && (
-          <span className="rounded-full bg-warn px-2 py-0.5 text-xs font-semibold text-warn-ink">{d.delivery.preorderBadge}</span>
-        )}
       </p>
       {slot ? (
-        <div className="flex items-start gap-3">
-          <CalendarClock className="mt-0.5 size-5 shrink-0" aria-hidden />
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide opacity-70">{d.delivery.nextDelivery}</p>
-            <p className="text-base font-bold" data-testid="next-slot">
-              {t(d.delivery.slotLine, slotParts(slot, locale))}
+        <div className="flex items-start gap-2">
+          <CalendarClock className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+          <div className="min-w-0">
+            <p className="text-sm font-semibold leading-snug" data-testid="next-slot">
+              {slot.showTomorrow ? d.delivery.tomorrow : t(d.delivery.nextDeliveryLine, { day: formatShortDay(slot.date, locale) })}
             </p>
-            <p className="text-xs opacity-80">{t(d.delivery.orderBy, { cutoff: formatCutoff(slot.cutoffAt, locale) })}</p>
+            <p className="text-xs text-text-muted">{t(d.delivery.orderBy, { cutoff: formatCutoff(slot.cutoffAt, locale) })}</p>
           </div>
         </div>
       ) : (
         <p className="text-sm font-medium text-warn-ink">{d.delivery.noSlot}</p>
       )}
-      <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        <li className="inline-flex items-center gap-1.5">
-          <PackageOpen className="size-4" aria-hidden />
-          {t(d.delivery.minOrder, { amount: money(check.minOrderCents) })}
-        </li>
-        <li className="inline-flex items-center gap-1.5">
-          <Truck className="size-4" aria-hidden />
-          {check.deliveryFeeCents === 0 ? d.delivery.freeDelivery : t(d.delivery.feeLine, { amount: money(check.deliveryFeeCents) })}
-        </li>
-        {check.freeDeliveryThresholdCents != null && check.deliveryFeeCents > 0 && (
-          <li>{t(d.delivery.freeFrom, { amount: money(check.freeDeliveryThresholdCents) })}</li>
-        )}
-      </ul>
-      {check.mode === "PREORDER_ONLY" && (
-        <div className="rounded-xl bg-white/70 p-3 text-sm">
-          <p className="font-semibold">{d.delivery.preorderTitle}</p>
-          <p>{d.delivery.preorderText}</p>
-        </div>
-      )}
+      <p className="text-sm" data-testid="min-order">
+        {t(d.delivery.minOrder, { amount: formatMoney(check.minOrderCents, locale) })}
+      </p>
     </div>
   );
 }
@@ -161,21 +140,13 @@ export function WaitlistForm({ postcode }: { postcode: string }) {
 
 /** Never a bare "no delivery": explains, offers preorders if any exist, and collects the waitlist. */
 export function UnsupportedNotice({ check }: { check: DeliveryCheck }) {
-  const { d, locale, t } = useI18n();
+  const { d, t } = useI18n();
   return (
     <div className="space-y-4 rounded-2xl bg-warn p-4 text-warn-ink" data-testid="unsupported">
       <div>
         <p className="font-semibold">{t(d.delivery.unsupportedTitle, { postcode: check.postcode })}</p>
         <p className="mt-1 text-sm">{d.delivery.unsupportedText}</p>
       </div>
-      {check.preorderProductsAvailable && (
-        <p className="text-sm">
-          {d.delivery.preorderOffer}{" "}
-          <Link href={`/${locale}/shop?preorder=1`} className="font-semibold underline underline-offset-2">
-            {d.delivery.preorderShop}
-          </Link>
-        </p>
-      )}
       <div className="rounded-xl bg-white p-4 text-ink">
         <WaitlistForm postcode={check.postcode} />
       </div>
@@ -184,7 +155,7 @@ export function UnsupportedNotice({ check }: { check: DeliveryCheck }) {
 }
 
 /** Postcode input + result. Used on the homepage and inside the gate. */
-export function PostcodePanel({ onResolved, autoFocus }: { onResolved?: (c: DeliveryCheck) => void; autoFocus?: boolean }) {
+export function PostcodePanel({ onResolved, autoFocus, hideLabel }: { onResolved?: (c: DeliveryCheck) => void; autoFocus?: boolean; hideLabel?: boolean }) {
   const { d } = useI18n();
   const { postcode, check, status, setPostcode } = useDelivery();
   const [value, setValue] = useState("");
@@ -211,10 +182,10 @@ export function PostcodePanel({ onResolved, autoFocus }: { onResolved?: (c: Deli
 
   const shown = check && check.postcode === postcode ? check : null;
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <form onSubmit={submit} noValidate>
-        <label htmlFor={id} className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
-          <MapPin className="size-4 text-forest" aria-hidden />
+        <label htmlFor={id} className={hideLabel ? "sr-only" : "mb-2 flex items-center gap-2 text-sm font-semibold text-ink"}>
+          {!hideLabel && <MapPin className="size-4 text-forest" aria-hidden />}
           {d.delivery.label}
         </label>
         <div className="flex gap-2">
@@ -222,7 +193,10 @@ export function PostcodePanel({ onResolved, autoFocus }: { onResolved?: (c: Deli
             id={id}
             name="postcode"
             inputMode="numeric"
-            autoComplete="postal-code"
+            autoComplete="off"
+            data-lpignore="true"
+            data-1p-ignore
+            data-form-type="other"
             maxLength={6}
             autoFocus={autoFocus}
             dir="ltr"
@@ -233,12 +207,12 @@ export function PostcodePanel({ onResolved, autoFocus }: { onResolved?: (c: Deli
               setInvalid(false);
             }}
             aria-describedby={`${id}-result`}
-            className="h-12 min-w-0 flex-1 rounded-xl border border-line bg-cream px-4 text-base focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
+            className="h-11 min-w-0 flex-1 rounded-xl border border-line bg-cream px-4 text-base focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
           />
           <button
             type="submit"
             aria-label={d.delivery.check}
-            className="inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-xl bg-forest px-4 font-semibold text-white transition hover:bg-forest-dark"
+            className="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-xl bg-forest px-4 font-semibold text-white transition hover:bg-forest-dark"
           >
             {status === "loading" ? (
               <Spinner />

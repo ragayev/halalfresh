@@ -32,7 +32,7 @@ export default async function Settings() {
               <Input id="telegramChatId" name="telegramChatId" defaultValue={st.telegramChatId} />
             </Field>
           </div>
-          <Checkbox name="halalCertificateVerified" defaultChecked={st.halalCertificateVerified} label="Halal-Zertifikat geprüft (erst dann wird „zertifiziert“ im Shop angezeigt)" />
+          <Checkbox name="halalCertificateVerified" defaultChecked={st.halalCertificateVerified} label="Halal-Nachweis geprüft (erst dann wird er im Shop angezeigt)" />
         </ActionForm>
       </Card>
       <Card className="p-6">
@@ -71,7 +71,7 @@ export default async function Settings() {
       <Card className="p-6">
         <h2 className="mb-1 font-semibold">Delivery</h2>
         <p className="text-sm text-muted">
-          Zones, minimum order, fees, schedules, postcodes and blackout dates moved to{" "}
+          Delivery tiers, minimums, weekdays, cutoffs and blackout dates are configured in code; see{" "}
           <Link href="/admin/delivery" className="font-medium text-forest underline">
             Delivery
           </Link>

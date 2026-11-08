@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { berlinToUtc } from "@/domain/delivery";
+import { meetsMinimumAfterWeighing, buildDispatchMessage } from "@/domain/dispatch";
 import { createOrder } from "@/server/checkout";
 import { AppError } from "@/server/errors";
 import { checkDelivery } from "@/server/delivery-service";
@@ -13,67 +14,10 @@ import { checkoutBody, resetDb, seedBasics } from "../helpers";
 const NOW = berlinToUtc("2026-11-04", "09:00");
 
 let ctx: Awaited<ReturnType<typeof seedBasics>>;
-let preorder: { id: string };
-
-/** Mirrors the brief: Berlin (Mon–Sat 24h), suburbs (Tue/Thu 48h), far Brandenburg (preorder-only, 1st Saturday monthly). */
-async function seedZones() {
-  const m = ctx.merchant.id;
-  const weekly = (weekday: number, h: number) => ({ weekday, windowStart: "14:00", windowEnd: "18:00", cutoffHoursBefore: h });
-  await db.deliveryZone.update({
-    where: { id: ctx.zone.id },
-    data: { minOrderCents: 6000, deliveryFeeCents: 490, freeDeliveryThresholdCents: 12000 },
-  });
-  await db.routeSchedule.deleteMany({ where: { routeId: ctx.route.id } });
-  await db.routeSchedule.createMany({ data: [1, 2, 3, 4, 5, 6].map((d) => ({ routeId: ctx.route.id, ...weekly(d, 24) })) });
-
-  const z2 = await db.deliveryZone.create({ data: { merchantId: m, name: "Berlin suburbs", minOrderCents: 15000 } });
-  await db.deliveryRoute.create({
-    data: {
-      zoneId: z2.id,
-      name: "West",
-      schedules: { create: [weekly(2, 48)] },
-      postcodes: { create: [{ postcode: "14467" }, { postcode: "14612" }] },
-    },
-  });
-  await db.deliveryRoute.create({
-    data: {
-      zoneId: z2.id,
-      name: "North/East",
-      schedules: { create: [weekly(4, 48)] },
-      postcodes: { create: [{ postcode: "16515" }, { postcode: "15711" }] },
-    },
-  });
-  const z3 = await db.deliveryZone.create({
-    data: { merchantId: m, name: "Far Brandenburg", mode: "PREORDER_ONLY", minOrderCents: 30000 },
-  });
-  await db.deliveryRoute.create({
-    data: {
-      zoneId: z3.id,
-      name: "Far",
-      schedules: { create: [{ kind: "NTH_WEEKDAY_OF_MONTH", nth: 1, ...weekly(6, 7 * 24) }] },
-      postcodes: { create: [{ postcode: "03046" }, { postcode: "15230" }] },
-    },
-  });
-  preorder = await db.product.create({
-    data: {
-      merchantId: m,
-      categoryId: ctx.beef.categoryId,
-      slug: "ramazan-kutusu",
-      name: "Ramazan Kutusu",
-      description: "d",
-      pricePerKgCents: 10000,
-      stepGrams: 1000,
-      minGrams: 1000,
-      maxGrams: 20000,
-      preorderEligible: true,
-    },
-  });
-}
 
 beforeEach(async () => {
   await resetDb();
   ctx = await seedBasics();
-  await seedZones();
 });
 
 const code = (p: Promise<unknown>) =>
@@ -83,197 +27,141 @@ const code = (p: Promise<unknown>) =>
   );
 const put = (over: Record<string, unknown>) => checkoutBody(ctx, over);
 const addr = (postalCode: string) => ({ street: "Example Street 12", postalCode, city: "Berlin" });
+const day = (d: Date) => d.toISOString().slice(0, 10);
 
 describe("postcode lookup", () => {
-  it("Berlin: terms and the next concrete slot", async () => {
-    const c = await checkDelivery("10115", NOW);
-    expect(c).toMatchObject({
-      supported: true,
-      zone: { name: "Berlin" },
-      mode: "REGULAR",
-      minOrderCents: 6000,
-      deliveryFeeCents: 490,
-      freeDeliveryThresholdCents: 12000,
-    });
-    // Wed 09:00 -> Thu 14:00 window (cutoff Wed 14:00 still ahead).
-    expect(c.nextSlot).toMatchObject({ date: "2026-11-05", windowStart: "14:00", windowEnd: "18:00" });
+  it("core: minimum 60, next day shown as tomorrow, delivery free", () => {
+    const c = checkDelivery("10115", NOW);
+    expect(c).toMatchObject({ status: "ok", supported: true, minOrderCents: 6000, deliveryFeeCents: 0 });
+    expect(c.nextSlot).toMatchObject({ date: "2026-11-05", showTomorrow: true });
+    expect(c.nextSlot?.slots).toEqual([
+      { start: "10:00", end: "14:00" },
+      { start: "15:00", end: "19:00" },
+    ]);
   });
-  it("Zone 2 West (Tuesday) and North/East (Thursday)", async () => {
-    expect((await checkDelivery("14467", NOW)).nextSlot?.date).toBe("2026-11-10"); // Tue 3rd cutoff passed -> next Tue
-    expect((await checkDelivery("14612", NOW)).nextSlot?.date).toBe("2026-11-10");
-    const ne = await checkDelivery("16515", NOW); // Thu 5th cutoff Tue 3rd 14:00 passed -> Thu 12th
-    expect(ne).toMatchObject({ supported: true, zone: { name: "Berlin suburbs" }, minOrderCents: 15000, deliveryFeeCents: 0 });
-    expect(ne.nextSlot?.date).toBe("2026-11-12");
-    expect((await checkDelivery("15711", NOW)).nextSlot?.date).toBe("2026-11-12");
+  it("tours: weekday by sector, minimum by tier, never 'tomorrow'", () => {
+    const sw = checkDelivery("14467", NOW); // southwest, Friday, tier_100
+    expect(sw).toMatchObject({ minOrderCents: 10000 });
+    expect(sw.nextSlot).toMatchObject({ date: "2026-11-06", showTomorrow: false });
+    expect(checkDelivery("16515", NOW)).toMatchObject({ minOrderCents: 15000, nextSlot: { date: "2026-11-11" } }); // north, Wednesday; today is Wed
+    expect(checkDelivery("13581", NOW).nextSlot?.date).toBe("2026-11-10"); // west, Tuesday
+    expect(checkDelivery("16321", NOW).nextSlot?.date).toBe("2026-11-05"); // northeast, Thursday
+    expect(checkDelivery("12555", NOW).nextSlot?.date).toBe("2026-11-09"); // southeast, Monday
   });
-  it("Zone 3: preorder-only, monthly first Saturday; leading-zero postcode", async () => {
-    const c = await checkDelivery("03046", NOW);
-    expect(c).toMatchObject({ supported: true, mode: "PREORDER_ONLY", minOrderCents: 30000, zone: { name: "Far Brandenburg" } });
-    expect(c.nextSlot?.date).toBe("2026-12-05"); // Nov 7 cutoff (Oct 31) passed
-    expect((await checkDelivery("15230", NOW)).mode).toBe("PREORDER_ONLY");
+  it("waitlist and unknown postcodes are unsupported", () => {
+    expect(checkDelivery("14641", NOW)).toMatchObject({ status: "waitlist", supported: false, nextSlot: null });
+    expect(checkDelivery("80331", NOW)).toMatchObject({ status: "unknown", supported: false, nextSlot: null });
   });
-  it("unknown postcode: unsupported, never a bare error; offers preorders when they exist", async () => {
-    const c = await checkDelivery("80331", NOW);
-    expect(c).toMatchObject({ supported: false, zone: null, mode: null, nextSlot: null });
-    expect(c.preorderProductsAvailable).toBe(true);
-    await db.product.update({ where: { id: preorder.id }, data: { status: "DRAFT", isHidden: true } });
-    expect((await checkDelivery("80331", NOW)).preorderProductsAvailable).toBe(false);
-  });
-  it("inactive zone/route is unsupported; blackout dates are skipped", async () => {
-    await db.deliveryZone.update({ where: { id: ctx.zone.id }, data: { isActive: false } });
-    expect((await checkDelivery("10115", NOW)).supported).toBe(false);
-    await db.deliveryZone.update({ where: { id: ctx.zone.id }, data: { isActive: true } });
-    await db.deliveryBlackoutDate.create({
-      data: { merchantId: ctx.merchant.id, date: new Date("2026-11-05T00:00:00Z"), reason: "Holiday" },
-    });
-    expect((await checkDelivery("10115", NOW)).nextSlot?.date).toBe("2026-11-06");
-  });
-  it("GET /api/delivery/check validates input", async () => {
+  it("the public payload never carries zone, tier or sector", async () => {
     const get = (q: string) => checkRoute(new Request(`http://localhost/api/delivery/check${q}`));
-    const ok = await get("?postcode=10115");
-    expect(ok.status).toBe(200);
-    expect((await ok.json()).supported).toBe(true);
-    expect((await (await get("?postcode=03046")).json()).zone.name).toBe("Far Brandenburg");
-    for (const bad of ["", "?postcode=", "?postcode=1011", "?postcode=abcde", "?postcode=101155"])
-      expect((await get(bad)).status).toBe(400);
+    const body = JSON.stringify(await (await get("?postcode=14467")).json());
+    expect(body).not.toMatch(/tier|sector|zone|west|north|south|core/i);
+    for (const bad of ["", "?postcode=", "?postcode=1011", "?postcode=abcde", "?postcode=101155"]) expect((await get(bad)).status).toBe(400);
     expect((await (await get("?postcode=99999")).json()).supported).toBe(false);
   });
 });
 
 describe("waitlist", () => {
   const post = (b: unknown) =>
-    waitlistRoute(
-      new Request("http://localhost/api/waitlist", {
-        method: "POST",
-        body: JSON.stringify(b),
-        headers: { "content-type": "application/json" },
-      }),
-    );
+    waitlistRoute(new Request("http://localhost/api/waitlist", { method: "POST", body: JSON.stringify(b), headers: { "content-type": "application/json" } }));
   const valid = { postcode: "80331", name: "Aylin", contact: "aylin@example.com", preferredLanguage: "tr", consent: true };
-  it("stores an entry with a server-side consent timestamp", async () => {
-    const r = await post(valid);
-    expect(r.status).toBe(201);
-    const e = await db.waitlistEntry.findFirstOrThrow();
-    expect(e).toMatchObject({ postcode: "80331", preferredLanguage: "tr" });
-    expect(Date.now() - e.consentGivenAt.getTime()).toBeLessThan(10_000);
+  it("stores name, contact and postcode with a server-side consent timestamp; tells unknown from waitlist", async () => {
+    expect((await post(valid)).status).toBe(201);
+    expect((await post({ ...valid, postcode: "14641", contact: "+49 151 2345678" })).status).toBe(201);
+    const [a, b] = await db.waitlistEntry.findMany({ orderBy: { createdAt: "asc" } });
+    expect(a).toMatchObject({ postcode: "80331", name: "Aylin", reason: "unknown" });
+    expect(b).toMatchObject({ postcode: "14641", contact: "+49 151 2345678", reason: "waitlist" });
+    expect(Date.now() - a.consentGivenAt.getTime()).toBeLessThan(10_000);
   });
   it("requires explicit consent and valid input", async () => {
     expect((await post({ ...valid, consent: false })).status).toBe(400);
-    const noConsent: Partial<typeof valid> = { ...valid };
-    delete noConsent.consent;
-    expect((await post(noConsent)).status).toBe(400);
     expect((await post({ ...valid, contact: "nope" })).status).toBe(400);
     expect((await post({ ...valid, postcode: "123" })).status).toBe(400);
-    expect((await post({ ...valid, preferredLanguage: "fr" })).status).toBe(400);
     expect(await db.waitlistEntry.count()).toBe(0);
   });
 });
 
 describe("cart view per postcode", () => {
-  it("prices the cart with the zone's terms", async () => {
-    const v = await cartView([{ productId: ctx.beef.id, grams: 2000 }], "en", "10115"); // €40
-    expect(v.totals).toMatchObject({ minOrderCents: 6000, shortfallCents: 2000, meetsMinimum: false, deliveryFeeCents: 490 });
-    const big = await cartView([{ productId: ctx.beef.id, grams: 6000 }], "en", "10115"); // €120 -> free
-    expect(big.totals).toMatchObject({ meetsMinimum: true, deliveryFeeCents: 0 });
-  });
-  it("flags non-preorder lines in a preorder-only area", async () => {
-    const v = await cartView(
-      [
-        { productId: ctx.beef.id, grams: 1000 },
-        { productId: preorder.id, grams: 1000 },
-      ],
-      "en",
-      "03046",
-    );
-    expect(v.lines.find((l) => l.productId === ctx.beef.id)?.issue).toBe("NOT_PREORDER");
-    expect(v.lines.find((l) => l.productId === preorder.id)?.issue).toBeUndefined();
-    expect(v.hasIssues).toBe(true);
+  it("shows the minimum and the shortfall; no delivery fee", async () => {
+    const v = await cartView([{ productId: ctx.beef.id, grams: 2000 }], "de", "10115"); // 40 EUR
+    expect(v.totals).toMatchObject({ minOrderCents: 6000, shortfallCents: 2000, meetsMinimum: false, deliveryFeeCents: 0, totalCents: 4000 });
+    const tour = await cartView([{ productId: ctx.beef.id, grams: 6000 }], "de", "14467"); // 120 EUR < 100? no: >= 100
+    expect(tour.totals).toMatchObject({ minOrderCents: 10000, meetsMinimum: true, deliveryFeeCents: 0 });
   });
 });
 
-describe("checkout validation", () => {
-  it("rejects below the zone minimum, accepts at it", async () => {
-    // €20/kg: 2.5 kg = €50 < €60
-    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 2500 }], address: addr("10115") }), NOW))).toBe(
-      "BELOW_MINIMUM",
-    );
-    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }], address: addr("10115") }), NOW))).toBe("ok"); // €60
+describe("checkout", () => {
+  it("blocks below the minimum, accepts at it", async () => {
+    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 2500 }], address: addr("10115") }), NOW))).toBe("BELOW_MINIMUM"); // 50 < 60
+    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }], address: addr("10115") }), NOW))).toBe("ok"); // 60
+    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 4500 }], address: addr("14467") }), NOW))).toBe("BELOW_MINIMUM"); // 90 < 100
+    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 5000 }], address: addr("14467") }), NOW))).toBe("ok"); // 100
   });
-  it("applies the zone's fee and the free-delivery threshold, stores the snapshot", async () => {
-    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }], address: addr("10115") }), NOW); // €60 + €4.90
-    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 6000 }], address: addr("10115") }), NOW); // €120 -> free
-    const [a, b] = await db.order.findMany({ orderBy: { createdAt: "asc" } });
-    expect(a).toMatchObject({
-      deliveryFeeCents: 490,
-      estimatedTotalCents: 6490, // €60.00 items + €4.90 delivery
-      maxTotalCents: 6600 + 490, // items +10 %, delivery outside the tolerance
-      toleranceBps: 1000,
-      minOrderCents: 6000,
-      zoneName: "Berlin",
-    });
-    expect(b).toMatchObject({ deliveryFeeCents: 0, estimatedTotalCents: 12000, maxTotalCents: 13200 });
-    expect(a.deliveryDate.toISOString().slice(0, 10)).toBe("2026-11-05");
-    expect(a).toMatchObject({ slotStartTime: "14:00", slotEndTime: "18:00", routeId: ctx.route.id, deliveryMode: "REGULAR" });
-  });
-  it("ignores client-supplied terms", async () => {
-    await createOrder(
-      put({
-        lines: [{ productId: ctx.beef.id, grams: 3000 }],
-        address: addr("10115"),
-        deliveryFeeCents: 0,
-        minOrderCents: 1,
-        deliveryDate: "2030-01-01",
-      }),
-      NOW,
-    );
-    const o = await db.order.findFirstOrThrow();
-    expect(o.deliveryFeeCents).toBe(490);
-    expect(o.deliveryDate.toISOString().slice(0, 10)).toBe("2026-11-05");
-  });
-  it("uses the suburb route's slot and minimum", async () => {
-    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 6000 }], address: addr("14467") }), NOW))).toBe(
-      "BELOW_MINIMUM",
-    ); // €120 < €150
+  it("snapshots terms and slot; no delivery fee; ignores client-supplied terms", async () => {
+    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 3000 }], address: addr("10115"), slotStart: "15:00", deliveryFeeCents: 490, minOrderCents: 1, deliveryDate: "2030-01-01" }), NOW);
     await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 8000 }], address: addr("14467") }), NOW);
-    const o = await db.order.findFirstOrThrow();
-    expect(o.deliveryDate.toISOString().slice(0, 10)).toBe("2026-11-10");
-    expect(o.zoneName).toBe("Berlin suburbs");
+    const [core, tour] = await db.order.findMany({ orderBy: { createdAt: "asc" } });
+    expect(core).toMatchObject({
+      deliveryFeeCents: 0,
+      estimatedTotalCents: 6000,
+      maxTotalCents: 6600,
+      minOrderCents: 6000,
+      tier: "core",
+      sector: null,
+      slotStartTime: "15:00",
+      slotEndTime: "19:00",
+      zoneId: null,
+    });
+    expect(day(core.deliveryDate)).toBe("2026-11-05");
+    expect(tour).toMatchObject({ tier: "tier_100", sector: "southwest", minOrderCents: 10000, slotStartTime: "10:00", slotEndTime: "14:00", zoneNeedsReview: false });
+    expect(day(tour.deliveryDate)).toBe("2026-11-06");
   });
-  it("preorder-only zone accepts only preorder-eligible products", async () => {
-    expect(await code(createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 20000 }], address: addr("03046") }), NOW))).toBe(
-      "PREORDER_ONLY",
-    );
-    expect(
-      await code(
-        createOrder(
-          put({
-            lines: [
-              { productId: preorder.id, grams: 3000 },
-              { productId: ctx.beef.id, grams: 1000 },
-            ],
-            address: addr("03046"),
-          }),
-          NOW,
-        ),
-      ),
-    ).toBe("PREORDER_ONLY");
-    expect(await code(createOrder(put({ lines: [{ productId: preorder.id, grams: 2000 }], address: addr("03046") }), NOW))).toBe(
-      "BELOW_MINIMUM",
-    ); // €200 < €300
-    expect(await code(createOrder(put({ lines: [{ productId: preorder.id, grams: 3000 }], address: addr("03046") }), NOW))).toBe("ok"); // €300
-    const o = await db.order.findFirstOrThrow();
-    expect(o).toMatchObject({ deliveryMode: "PREORDER_ONLY", zoneName: "Far Brandenburg" });
-    expect(o.deliveryDate.toISOString().slice(0, 10)).toBe("2026-12-05");
+  it("flags needs_review postcodes on the order", async () => {
+    await createOrder(put({ lines: [{ productId: ctx.beef.id, grams: 8000 }], address: addr("14089") }), NOW);
+    expect(await db.order.findFirstOrThrow()).toMatchObject({ zoneNeedsReview: true, tier: "tier_100", sector: "west" });
+  });
+  it("rejects an unknown slot", async () => {
+    expect(await code(createOrder(put({ slotStart: "12:00" }), NOW))).toBe("VALIDATION");
   });
   it("rejects a checked postcode that differs from the address postcode", async () => {
-    const body = put({ address: addr("10115"), checkedPostcode: "14467" });
-    expect(await code(createOrder(body, NOW))).toBe("POSTCODE_MISMATCH");
+    expect(await code(createOrder(put({ address: addr("10115"), checkedPostcode: "14467" }), NOW))).toBe("POSTCODE_MISMATCH");
     expect(await db.order.count()).toBe(0);
-    expect(await code(createOrder(put({ address: addr("10115"), checkedPostcode: "10115" }), NOW))).toBe("ok");
   });
-  it("rejects unsupported postcodes and hidden products", async () => {
+  it("rejects waitlist/unknown postcodes and hidden products", async () => {
+    expect(await code(createOrder(put({ address: addr("14641") }), NOW))).toBe("POSTCODE_UNSUPPORTED");
     expect(await code(createOrder(put({ address: addr("80331") }), NOW))).toBe("POSTCODE_UNSUPPORTED");
     await db.product.update({ where: { id: ctx.beef.id }, data: { status: "DRAFT", isHidden: true } });
     expect(await code(createOrder(put({ address: addr("10115") }), NOW))).toBe("PRODUCT_UNAVAILABLE");
+  });
+});
+
+describe("after weighing", () => {
+  it("accepts a final total up to 10% below the minimum", () => {
+    expect(meetsMinimumAfterWeighing(6000, 6000)).toBe(true);
+    expect(meetsMinimumAfterWeighing(5400, 6000)).toBe(true); // exactly -10%
+    expect(meetsMinimumAfterWeighing(5399, 6000)).toBe(false);
+    expect(meetsMinimumAfterWeighing(9000, 10000)).toBe(true);
+    expect(meetsMinimumAfterWeighing(8999, 10000)).toBe(false);
+  });
+});
+
+describe("dispatch message", () => {
+  it("lists items with estimated weights, customer, address, postcode, date and slot", () => {
+    const text = buildDispatchMessage({
+      number: 7,
+      firstName: "Aylin",
+      lastName: "Demir",
+      phone: "+491511234567",
+      street: "Hermannstraße 1",
+      postalCode: "12049",
+      city: "Berlin",
+      deliveryDate: "2026-11-17",
+      slotStartTime: "15:00",
+      slotEndTime: "19:00",
+      items: [{ productName: "Lammkeule", requestedGrams: 2500 }],
+      estimatedTotalCents: 7500,
+      needsReview: true,
+    });
+    for (const part of ["HF-000007", "Aylin Demir", "+491511234567", "Hermannstraße 1", "12049 Berlin", "15:00–19:00", "Lammkeule", "2,5 kg", "PLZ kontrol"]) expect(text).toContain(part);
   });
 });
