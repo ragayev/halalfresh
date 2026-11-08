@@ -151,7 +151,7 @@ export function WaitlistForm({ postcode }: { postcode: string }) {
 
 /** Never a bare "no delivery": explains, offers preorders if any exist, and collects the waitlist. */
 export function UnsupportedNotice({ check }: { check: DeliveryCheck }) {
-  const { d, t } = useI18n();
+  const { d } = useI18n();
   return (
     <div className="space-y-4 rounded-2xl bg-warn p-4 text-warn-ink" data-testid="unsupported">
       <div>
