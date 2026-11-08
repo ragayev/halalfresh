@@ -24,7 +24,7 @@ export function Logo({ className }: { className?: string }) {
         width={1035}
         height={372}
         priority
-        className="h-10 w-auto sm:h-11"
+        className="h-9 w-auto sm:h-11"
       />
     </Link>
   );
@@ -87,13 +87,11 @@ export function Header() {
             {locale === "tr" ? "Nasıl çalışır" : "So funktioniert’s"}
           </Link>
         </nav>
-        <div className="ms-auto flex items-center gap-2">
-          <PostcodeChip />
-          <div className="hidden sm:block">
-            <Suspense fallback={null}>
-              <LanguageToggle />
-            </Suspense>
-          </div>
+        <div className="ms-auto flex items-center gap-1 sm:gap-2">
+          <div className="hidden sm:block"><PostcodeChip /></div>
+          <Suspense fallback={null}>
+            <LanguageToggle />
+          </Suspense>
           <CartButton />
           {/* Mobile menu: full-height sheet without JS (details). */}
           <details className="group lg:hidden">
@@ -105,7 +103,7 @@ export function Header() {
                 <Link href={`/${locale}/shop`} className="flex min-h-12 items-center rounded-[var(--radius-md)] px-3 hover:bg-surface-alt">{d.nav.shop}</Link>
                 <Link href={`/${locale}/how-it-works`} className="flex min-h-12 items-center rounded-[var(--radius-md)] px-3 hover:bg-surface-alt">{locale === "tr" ? "Nasıl çalışır" : "So funktioniert’s"}</Link>
                 <Link href={`/${locale}/cart`} className="flex min-h-12 items-center rounded-[var(--radius-md)] px-3 hover:bg-surface-alt">{d.nav.cart}</Link>
-                <div className="px-3 pt-4"><Suspense fallback={null}><LanguageToggle /></Suspense></div>
+                <div className="px-3 pt-4"><PostcodeChip /></div>
               </nav>
             </div>
           </details>

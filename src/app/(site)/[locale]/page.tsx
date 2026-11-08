@@ -9,23 +9,26 @@ import { BUNDLE_CATEGORY } from "@/domain/bundles";
 import { BundleCard } from "@/components/bundle-card";
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
-import { PostcodeChecker } from "@/components/postcode-checker";
+import { PostcodePanel } from "@/components/delivery-ui";
 import { Container, buttonClasses } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
 const COPY = {
   de: {
-    title: "Frisches Halal-Fleisch. Einfach nach Hause.",
-    heroLabel: "IHR METZGER IN BERLIN",
+    title: "Frisches Halal-Fleisch. Direkt nach Hause.",
+    heroLabel: "Von der Kevser Fleischerei in Berlin",
+    partnerLabel: "Ihr lokaler Metzger-Partner",
+    deliveryTerms: "Liefertermin, Mindestbestellwert und Lieferkosten hängen von Ihrer Postleitzahl ab.",
+    imageDisclaimer: "Symbolbild – das Fleisch wird von Kevser Fleischerei vorbereitet.",
     categoriesSub: "Wählen Sie aus, was heute auf den Tisch kommt.",
     featured: "Fleisch für Ihren Einkauf",
     featuredSub: "Klare Kilopreise. Direkt in den Warenkorb.",
     allProducts: "Alle Produkte",
     deliveryTitle: "Liefern wir zu Ihnen?",
-    deliverySub: "Postleitzahl eingeben und Liefergebiet, Termin und Konditionen prüfen.",
-    sub: "Bestellen Sie nach ungefährem Gewicht. Sie zahlen, was tatsächlich gewogen wurde.",
-    cta: "Jetzt bestellen",
+    deliverySub: "Postleitzahl eingeben und die Konditionen direkt sehen.",
+    sub: "Frisch von Kevser Fleischerei vorbereitet. Sie zahlen nur, was tatsächlich gewogen wurde.",
+    cta: "Fleisch entdecken",
     how: "So funktioniert’s",
     notice: "Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.",
     trust: [
@@ -49,16 +52,19 @@ const COPY = {
     ],
   },
   tr: {
-    title: "Taze helal et. Kolayca kapınızda.",
-    heroLabel: "BERLİN’DEKİ KASABINIZ",
+    title: "Taze helal et. Kapınıza kadar.",
+    heroLabel: "Berlin'deki Kevser Fleischerei'den",
+    partnerLabel: "Yerel kasap iş ortağımız",
+    deliveryTerms: "Teslimat günü, minimum sipariş ve teslimat ücreti posta kodunuza göre belirlenir.",
+    imageDisclaimer: "Temsili görsel – etler Kevser Fleischerei tarafından hazırlanır.",
     categoriesSub: "Sofranız için ihtiyacınız olanı seçin.",
     featured: "Alışverişiniz için etler",
     featuredSub: "Net kilogram fiyatları. Kolayca sepete ekleyin.",
     allProducts: "Tüm ürünler",
     deliveryTitle: "Adresinize teslimat var mı?",
-    deliverySub: "Posta kodunuzu yazın, teslimat gününü ve koşullarını görün.",
-    sub: "Yaklaşık ağırlığa göre sipariş verin. Gerçekten tartılan kadarını ödersiniz.",
-    cta: "Hemen sipariş ver",
+    deliverySub: "Posta kodunuzu yazın, teslimat koşullarını hemen görün.",
+    sub: "Kevser Fleischerei siparişinizi taze hazırlar. Yalnızca tartılan gerçek ağırlığın bedelini ödersiniz.",
+    cta: "Etleri keşfet",
     how: "Nasıl çalışır",
     notice: "Halal Fresh siparişleri aktarır. Satıcı ve teslimatçı Kevser Fleischerei’dir.",
     trust: [
@@ -109,22 +115,38 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
-      {/* Warm, compact shop-first hero, not a luxury steakhouse billboard. */}
+      {/* Local-butcher trust, a clear price promise and a working delivery postcode check. */}
       <section className="bg-[#F6EFE3]">
-        <Container className="grid items-center gap-6 py-7 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:py-12">
-          <div className="max-w-xl">
-            <p className="mb-3 text-xs font-bold uppercase tracking-wider text-primary">{c.heroLabel}</p>
-            <h1 className="text-balance font-display text-[2.25rem] font-semibold leading-[1.12] tracking-tight text-text sm:text-5xl lg:text-[3.25rem]">{c.title}</h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">{c.sub}</p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Link href={"/" + locale + "/shop"} className={buttonClasses({ size: "lg" })}>{c.cta}<ArrowRight className="size-5" aria-hidden /></Link>
-              <Link href="#delivery-check" className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-primary underline-offset-4 hover:underline">{c.deliveryTitle}</Link>
+        <Container className="grid items-start gap-7 py-7 sm:py-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:items-center lg:gap-9 lg:py-12">
+          <div className="min-w-0">
+            <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-white/85 px-3 py-2">
+              <Image src="/kevser-logo.png" alt="" width={400} height={289} className="h-10 w-auto shrink-0 object-contain" />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold leading-snug text-primary">{c.heroLabel}</p>
+                <p className="mt-0.5 text-xs text-text-muted">{c.partnerLabel}</p>
+              </div>
             </div>
-            <p className="mt-5 text-sm text-text-muted">{c.notice}</p>
+            <h1 className="text-balance font-display text-[2.125rem] font-semibold leading-[1.12] tracking-tight text-text sm:text-[2.75rem] lg:text-[3rem]">{c.title}</h1>
+            <p className="mt-3 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">{c.sub}</p>
+            <Link href={"/" + locale + "/shop"} className={buttonClasses({ size: "lg" }) + " mt-5"}>
+              {c.cta}<ArrowRight className="size-5" aria-hidden />
+            </Link>
+            <div id="delivery-check" className="mt-6 max-w-xl scroll-mt-24">
+              <h2 className="text-lg font-semibold text-text">{c.deliveryTitle}</h2>
+              <p className="mt-1 text-sm text-text-muted">{c.deliverySub}</p>
+              <div className="mt-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 sm:p-4" data-testid="hero-postcode">
+                <PostcodePanel />
+              </div>
+              <p className="mt-2 text-xs text-text-muted">{c.deliveryTerms}</p>
+            </div>
+            <p className="mt-4 max-w-xl border-l-2 border-primary/30 pl-3 text-xs leading-relaxed text-text-muted">{c.notice}</p>
           </div>
-          <div className="relative h-48 overflow-hidden rounded-[var(--radius-lg)] bg-surface shadow-sm sm:h-64 lg:h-[310px]">
-            <Image src="/hero-spread.jpg" alt="" fill priority sizes="(min-width:1024px) 43vw, 100vw" className="object-cover" />
-          </div>
+          <figure className="min-w-0">
+            <div className="relative h-52 overflow-hidden rounded-[var(--radius-lg)] bg-surface shadow-sm sm:h-72 lg:h-[390px]">
+              <Image src="/hero-spread.jpg" alt="" fill priority sizes="(min-width:1024px) 40vw, 100vw" className="object-cover" />
+            </div>
+            <figcaption className="mt-2 text-xs text-text-muted">{c.imageDisclaimer}</figcaption>
+          </figure>
         </Container>
       </section>
 
@@ -177,13 +199,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{bundles.map((p) => <BundleCard key={p.id} p={p} locale={locale} d={d} />)}</div>
         </Container>
       )}
-
-      <section id="delivery-check" className="scroll-mt-24 bg-surface-alt py-9 sm:py-12">
-        <Container className="grid items-center gap-5 md:grid-cols-[1fr_1.1fr] md:gap-10">
-          <div><h2 className="t-h2">{c.deliveryTitle}</h2><p className="mt-2 text-text-muted">{c.deliverySub}</p></div>
-          <PostcodeChecker />
-        </Container>
-      </section>
 
       <Container className="py-9 sm:py-12">
         <ul className="grid gap-5 sm:grid-cols-3">
