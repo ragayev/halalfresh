@@ -20,10 +20,27 @@ test.describe.serial("MVP journey", () => {
     await expect(page.getByText("Halal Fresh vermittelt Bestellungen. Verkäufer und Lieferant ist die Kevser Fleischerei.").first()).toBeVisible();
     await page.goto("/de/shop?category=lamb");
     await expect(page.getByTestId("product-card")).toHaveCount(3);
-    // Turkish via the header toggle keeps the page
+    // On narrow screens the language switcher lives inside the menu.
+    if ((page.viewportSize()?.width ?? 1280) < 1024) {
+      await page.locator("header details > summary").click();
+    }
     await page.getByRole("group", { name: /Sprache/ }).getByRole("link", { name: "TR" }).first().click();
     await expect(page).toHaveURL(/\/tr\/shop\?category=lamb/);
     await expect(page.locator("html")).toHaveAttribute("lang", "tr");
+  });
+
+  test("first-time visitors can browse before choosing a delivery postcode", async ({ browser }) => {
+    const context = await browser.newContext({ baseURL: "http://localhost:3100" });
+    try {
+      const firstVisit = await context.newPage();
+      await firstVisit.goto("/de");
+      await expect(firstVisit.getByTestId("postcode-gate")).toHaveCount(0);
+      await expect(firstVisit.getByRole("heading", { level: 1 })).toBeVisible();
+      await firstVisit.getByRole("link", { name: /Alle Produkte/ }).first().click();
+      await expect(firstVisit).toHaveURL(/\/de\/shop/);
+    } finally {
+      await context.close();
+    }
   });
 
   test("sets no cookies and loads nothing from third parties", async ({ page, context }) => {
