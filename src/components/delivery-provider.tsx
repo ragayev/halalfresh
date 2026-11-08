@@ -7,7 +7,7 @@ export const POSTCODE_KEY = "hf_postcode";
 
 type Status = "idle" | "loading" | "ready" | "error";
 interface Ctx {
-  /** false until localStorage/cookie were read (avoid flashing the gate). The MVP sets no cookies: postcode lives in localStorage only.. */
+  /** False until the postcode has been loaded from localStorage; no cookies used. */
   hydrated: boolean;
   postcode: string | null;
   check: DeliveryCheck | null;
@@ -64,7 +64,7 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // localStorage/cookie are only readable in the browser, so the stored postcode is loaded after mount.
+  // Load a saved postcode after mount; first-time visitors may browse before checking delivery.
   useEffect(() => {
     const stored = readStored();
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -72,7 +72,7 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
     if (stored) {
       setPc(stored);
       void run(stored);
-    } else setGateOpen(true);
+    }
   }, [run]);
 
   const setPostcode = useCallback(

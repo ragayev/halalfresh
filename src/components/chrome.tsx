@@ -89,9 +89,11 @@ export function Header() {
         </nav>
         <div className="ms-auto flex items-center gap-2">
           <PostcodeChip />
-          <Suspense fallback={null}>
-            <LanguageToggle />
-          </Suspense>
+          <div className="hidden sm:block">
+            <Suspense fallback={null}>
+              <LanguageToggle />
+            </Suspense>
+          </div>
           <CartButton />
           {/* Mobile menu: full-height sheet without JS (details). */}
           <details className="group lg:hidden">

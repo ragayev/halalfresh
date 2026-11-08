@@ -6,7 +6,6 @@ import { formatWeight } from "@/domain/pricing";
 import { ProductImage } from "./product-image";
 import { QuickAdd } from "./quick-add";
 import { Badge } from "./ui";
-import { PartnerTag } from "./partner-badge";
 import { cn } from "@/lib/utils";
 
 export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale: string; d: Dictionary; priority?: boolean }) {
@@ -14,18 +13,18 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
   const unit = p.bundle ? d.common.perPackage : d.common.perKg;
   return (
     <article
-      className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-line transition-shadow duration-200 hover:shadow-[0_10px_28px_-14px_rgb(16_45_34/0.3)]"
+      className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] bg-surface ring-1 ring-border transition-shadow duration-200 hover:shadow-md"
       data-testid="product-card"
     >
       <Link href={href} className="block" tabIndex={-1} aria-hidden>
-        <div className="relative aspect-[4/3] overflow-hidden bg-sage-soft">
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#FAF9F6]">
           {p.images[0] && (
             <ProductImage
               src={p.images[0].src}
               alt=""
               priority={priority}
               sizes="(min-width:1280px) 22vw, (min-width:768px) 33vw, 50vw"
-              className={cn("transition-transform duration-500 group-hover:scale-[1.03]", !p.isAvailable && "opacity-60 grayscale-[40%]")}
+              className={cn("object-contain p-2 transition-transform duration-300 group-hover:scale-[1.02]", !p.isAvailable && "opacity-60 grayscale-[40%]")}
             />
           )}
           {!p.isAvailable && (
@@ -49,11 +48,10 @@ export function ProductCard({ p, locale, d, priority }: { p: ProductView; locale
             </>
           )}
         </p>
-        <PartnerTag className="pt-1" />
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           {p.pricePerKgCents > 0 ? (
             <p className="leading-none">
-              <span className={cn("text-lg font-bold sm:text-xl", p.isAvailable ? "text-forest" : "text-muted")}>
+              <span className={cn("text-lg font-bold sm:text-xl", p.isAvailable ? "text-primary" : "text-muted")}>
                 {formatMoney(p.pricePerKgCents, locale)}
               </span>
               <span className="ms-0.5 text-xs font-medium text-muted">{unit}</span>
